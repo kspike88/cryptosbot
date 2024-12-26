@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { TradingModal } from "@/components/trading-modal"
-import { Bitcoin, CircleDollarSign, Coins, Gem, Disc, Hexagon, Circle, Hash, Triangle, Link, Droplet, Aperture, CuboidIcon as Cube, Box, Wallet, FileCode, Pyramid, Atom, CircleDot, Target, Network, Database, AlertTriangle } from 'lucide-react'
+import { Bitcoin, Hexagon, Circle, Link, Droplet, CuboidIcon as Cube, Box, FileCode, Pyramid, Atom, CircleDot, Target, Network, Database, AlertTriangle } from 'lucide-react'
 
 interface TradingPair {
   id: string
