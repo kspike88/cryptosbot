@@ -71,20 +71,20 @@ export default function Home() {
           <div className="text-sm text-gray-700">Общий баланс</div>
           <div className="text-2xl font-bold text-black">{balance}</div>
           <div className="flex justify-center gap-8 mt-4">
-            <button className="flex flex-col items-center text-purple-500">
-              <div className="p-2 rounded-full bg-purple-500/10">
+            <button className="flex flex-col items-center text-blue-500">
+              <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowUpFromLine className="h-6 w-6" />
               </div>
               <span className="text-sm mt-1">Пополнить</span>
             </button>
-            <button className="flex flex-col items-center text-purple-500">
-              <div className="p-2 rounded-full bg-purple-500/10">
+            <button className="flex flex-col items-center text-blue-500">
+              <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowDownToLine className="h-6 w-6" />
               </div>
               <span className="text-sm mt-1">Вывести</span>
             </button>
-            <button className="flex flex-col items-center text-purple-500">
-              <div className="p-2 rounded-full bg-purple-500/10">
+            <button className="flex flex-col items-center text-blue-500">
+              <div className="p-2 rounded-full bg-blue-500/10">
                 <RefreshCcw className="h-6 w-6" />
               </div>
               <span className="text-sm mt-1">Обменять</span>
@@ -93,7 +93,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-purple-500/80">Валютные счета</div>
+          <div className="text-sm text-blue-500/80">Валютные счета</div>
           <div className="space-y-2">
             {currencies.map((currency) => (
               <div 
@@ -116,7 +116,7 @@ export default function Home() {
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-purple-500/80">Криптовалюты</div>
+          <div className="text-sm text-blue-500/80">Криптовалюты</div>
           <div className="space-y-2">
             {cryptos.map((crypto) => (
               <div 
