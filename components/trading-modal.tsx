@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from 'react'
-import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
+import { createChart, ColorType, UTCTimestamp, ISeriesApi } from 'lightweight-charts'
 
 interface TradingModalProps {
   isOpen: boolean
@@ -18,7 +18,7 @@ interface TradingModalProps {
 
 export function TradingModal({ isOpen, onClose, pair }: TradingModalProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null)
-  const [candlestickSeries, setCandlestickSeries] = useState<any>(null)
+  const [candlestickSeries, setCandlestickSeries] = useState<ISeriesApi<"Candlestick">>()
   
   useEffect(() => {
     if (!chartContainerRef.current) return
