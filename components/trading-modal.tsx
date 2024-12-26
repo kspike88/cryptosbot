@@ -18,7 +18,6 @@ interface TradingModalProps {
 
 export function TradingModal({ isOpen, onClose, pair }: TradingModalProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null)
-  const [chart, setChart] = useState<any>(null)
   const [candlestickSeries, setCandlestickSeries] = useState<any>(null)
   
   useEffect(() => {
@@ -53,7 +52,7 @@ export function TradingModal({ isOpen, onClose, pair }: TradingModalProps) {
       wickDownColor: '#ef5350',
     })
 
-    setChart(chartInstance)
+    // Chart instance created
     setCandlestickSeries(candlestickSeriesInstance)
 
     const initialData = generateInitialData(pair?.price || 0)
@@ -62,7 +61,7 @@ export function TradingModal({ isOpen, onClose, pair }: TradingModalProps) {
     return () => {
       chartInstance.remove()
     }
-  }, [pair])
+  }, [pair, candlestickSeries])
 
   useEffect(() => {
     if (!candlestickSeries || !pair) return
