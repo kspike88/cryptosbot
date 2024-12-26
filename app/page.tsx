@@ -1,14 +1,8 @@
-'use client'
+"use client"
 
-import { useState, useEffect } from 'react'
-import {
-  ArrowUpFromLine,
-  ArrowDownToLine,
-  RefreshCcw,
-  Bitcoin,
-  CircleDollarSign,
-  Coins,
-} from 'lucide-react'
+import { useState, useEffect } from "react"
+import { Navigation } from "@/components/navigation"
+import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Bitcoin, CircleDollarSign, Coins } from 'lucide-react'
 
 interface Currency {
   name: string
@@ -30,45 +24,45 @@ interface Crypto {
 }
 
 export default function Home() {
-  const [balance] = useState('0.00$')
+  const [balance] = useState("0.00$")
   const [userId, setUserId] = useState<string>('0')
   const [currencies] = useState<Currency[]>([
     {
-      name: 'Российский рубль',
-      symbol: '₽',
-      rate: '104.92₽',
-      balance: '0.00₽',
-      bgColor: 'bg-green-500',
-      textColor: 'text-green-500',
-      icon: <span className="text-lg">₽</span>,
-    },
+      name: "Российский рубль",
+      symbol: "₽",
+      rate: "104.92₽",
+      balance: "0.00₽",
+      bgColor: "bg-green-500",
+      textColor: "text-green-500",
+      icon: <span className="text-lg">₽</span>
+    }
   ])
-
+  
   const [cryptos] = useState<Crypto[]>([
     {
-      name: 'Bitcoin',
+      name: "Bitcoin",
       balance: 0,
-      price: '$0.00',
-      bgColor: 'bg-orange-500',
-      textColor: 'text-orange-500',
-      icon: <Bitcoin className="w-5 h-5" />,
+      price: "$0.00",
+      bgColor: "bg-orange-500",
+      textColor: "text-orange-500",
+      icon: <Bitcoin className="w-5 h-5" />
     },
     {
-      name: 'Tether',
+      name: "Tether",
       balance: 0,
-      price: '$0.00',
-      bgColor: 'bg-sky-500',
-      textColor: 'text-sky-500',
-      icon: <CircleDollarSign className="w-5 h-5" />,
+      price: "$0.00",
+      bgColor: "bg-sky-500",
+      textColor: "text-sky-500",
+      icon: <CircleDollarSign className="w-5 h-5" />
     },
     {
-      name: 'Toncoin',
+      name: "Toncoin",
       balance: 0,
-      price: '$0.00',
-      bgColor: 'bg-blue-500',
-      textColor: 'text-blue-500',
-      icon: <Coins className="w-5 h-5" />,
-    },
+      price: "$0.00",
+      bgColor: "bg-blue-500",
+      textColor: "text-blue-500",
+      icon: <Coins className="w-5 h-5" />
+    }
   ])
 
   useEffect(() => {
@@ -76,7 +70,7 @@ export default function Home() {
     const userIdFromUrl = searchParams.get('user_id') || '0'
     setUserId(userIdFromUrl)
   }, [])
-
+  
   return (
     <main className="pb-20">
       <div className="p-4 space-y-6">
@@ -106,40 +100,37 @@ export default function Home() {
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">Профиль</div>
-          <div className="p-3 rounded bg-ededed">
-            <div className="text-gray-900">{userId}</div>
-            <div className="text-gray-600 text-sm">ID аккаунта</div>
-          </div>
-          <div className="p-3 rounded bg-ededed">
-            <div className="flex items-center gap-2 text-gray-900">
-              <span>0</span>
-              <span>/</span>
-              <span className="text-green-500">0</span>
-              <span>/</span>
-              <span className="text-red-500">0</span>
+            <div className="text-sm text-blue-500/80">Профиль</div>
+            <div className="p-3 rounded bg-ededed">
+              <div className="text-gray-900">{userId}</div>
+              <div className="text-gray-600 text-sm">ID аккаунта</div>
             </div>
-            <div className="text-gray-600 text-sm">Статистика</div>
+            <div className="p-3 rounded bg-ededed">
+              <div className="flex items-center gap-2 text-gray-900">
+                <span>0</span>
+                <span>/</span>
+                <span className="text-green-500">0</span>
+                <span>/</span>
+                <span className="text-red-500">0</span>
+              </div>
+              <div className="text-gray-600 text-sm">Статистика</div>
+            </div>
+            <div className="p-3 rounded bg-ededed">
+              <div className="text-gray-900">0,00 USDT</div>
+              <div className="text-gray-600 text-sm">Объем торгов</div>
+            </div>
           </div>
-          <div className="p-3 rounded bg-ededed">
-            <div className="text-gray-900">0,00 USDT</div>
-            <div className="text-gray-600 text-sm">Объем торгов</div>
-          </div>
-          s
-        </div>
 
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Валютные счета</div>
           <div className="space-y-2">
             {currencies.map((currency) => (
-              <div
-                key={currency.name}
+              <div 
+                key={currency.name} 
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 ${currency.bgColor} rounded-full flex items-center justify-center text-white`}
-                  >
+                  <div className={`w-8 h-8 ${currency.bgColor} rounded-full flex items-center justify-center text-white`}>
                     {currency.icon}
                   </div>
                   <div>
@@ -157,14 +148,12 @@ export default function Home() {
           <div className="text-sm text-blue-500/80">Криптовалюты</div>
           <div className="space-y-2">
             {cryptos.map((crypto) => (
-              <div
-                key={crypto.name}
+              <div 
+                key={crypto.name} 
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
-                  <div
-                    className={`w-8 h-8 ${crypto.bgColor} rounded-full flex items-center justify-center text-white`}
-                  >
+                  <div className={`w-8 h-8 ${crypto.bgColor} rounded-full flex items-center justify-center text-white`}>
                     {crypto.icon}
                   </div>
                   <div>
@@ -178,6 +167,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Navigation />
     </main>
   )
 }
