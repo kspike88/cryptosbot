@@ -1,204 +1,219 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
+import { useState, useEffect } from "react"
+import { Navigation } from "@/components/navigation"
+import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 
-interface Item {
+interface Currency {
   id: string
   name: string
-  subtitle: string
   symbol: string
-  icon: string
+  rate: string
+  balance: string
   bgColor: string
+  textColor: string
+  icon: React.ReactNode
   isVisible: boolean
 }
 
-const INITIAL_CURRENCIES: Item[] = [
-  {
-    id: 'RUB',
-    name: 'Российский рубль',
-    subtitle: 'RUB',
-    symbol: '₽',
-    icon: '₽',
-    bgColor: 'bg-emerald-500',
-    isVisible: true
-  },
-  {
-    id: 'KZT',
-    name: 'Казахстанский тенге',
-    subtitle: 'KZT',
-    symbol: '₸',
-    icon: '₸',
-    bgColor: 'bg-emerald-500',
-    isVisible: false
-  },
-  {
-    id: 'BYN',
-    name: 'Белорусский рубль',
-    subtitle: 'BYN',
-    symbol: 'Br',
-    icon: 'Br',
-    bgColor: 'bg-emerald-500',
-    isVisible: false
-  }
-]
+interface Crypto {
+  id: string
+  name: string
+  symbol: string
+  balance: number
+  price: number
+  bgColor: string
+  textColor: string
+  icon: React.ReactNode
+  isVisible: boolean
+}
 
-const INITIAL_CRYPTOS: Item[] = [
-  {
-    id: 'BTC',
-    name: 'Bitcoin',
-    subtitle: 'BTC',
-    symbol: 'BTC',
-    icon: '₿',
-    bgColor: 'bg-orange-500',
-    isVisible: true
-  },
-  {
-    id: 'ETH',
-    name: 'Ethereum',
-    subtitle: 'ETH',
-    symbol: 'ETH',
-    icon: 'Ξ',
-    bgColor: 'bg-blue-500',
-    isVisible: true
-  },
-  {
-    id: 'USDT',
-    name: 'Tether',
-    subtitle: 'USDT',
-    symbol: 'USDT',
-    icon: '₮',
-    bgColor: 'bg-green-500',
-    isVisible: true
-  }
-]
+interface SavedCurrency {
+  id: string
+  name: string
+  symbol: string
+  icon: string
+  isVisible: boolean
+}
 
-export default function Settings() {
-  const searchParams = useSearchParams()
-  const type = searchParams.get('type')
+interface SavedCrypto {
+  id: string
+  name: string
+  symbol: string
+  bgColor: string
+  textColor: string
+  icon: string
+  isVisible: boolean
+}
 
-  const [currencies, setCurrencies] = useState<Item[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('currencies')
-      return saved ? JSON.parse(saved) : INITIAL_CURRENCIES
-    }
-    return INITIAL_CURRENCIES
-  })
-
-  const [cryptos, setCryptos] = useState<Item[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('cryptos')
-      return saved ? JSON.parse(saved) : INITIAL_CRYPTOS
-    }
-    return INITIAL_CRYPTOS
-  })
-
+export default function Home() {
+  const [balance] = useState("0.00$")
+  const [userId, setUserId] = useState<string>('0')
+  const [currencies, setCurrencies] = useState<Currency[]>([])
+  const [cryptos, setCryptos] = useState<Crypto[]>([])
+  const [exchangeRates, setExchangeRates] = useState<{[key: string]: number}>({})
+  
   useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies))
-  }, [currencies])
+    const searchParams = new URLSearchParams(window.location.search)
+    const userIdFromUrl = searchParams.get('user_id') || '0'
+    setUserId(userIdFromUrl)
+  }, [])
 
+  // Fetch exchange rates
   useEffect(() => {
-    localStorage.setItem('cryptos', JSON.stringify(cryptos))
-  }, [cryptos])
+    const fetchRates = async () => {
+      try {
+        const response = await fetch('https://open.er-api.com/v6/latest/USD')
+        const data = await response.json()
+        setExchangeRates(data.rates)
+      } catch (error) {
+        console.error('Error fetching exchange rates:', error)
+      }
+    }
+    fetchRates()
+  }, [])
 
-  const toggleVisibility = (id: string, type: 'currency' | 'crypto') => {
-    const setter = type === 'currency' ? setCurrencies : setCryptos
-    setter(current =>
-      current.map(item =>
-        item.id === id
-          ? { ...item, isVisible: !item.isVisible }
-          : item
-      )
-    )
-  }
-
+  // Load saved settings
+  useEffect(() => {
+    const savedCurrencies = localStorage.getItem('currencies')
+    if (savedCurrencies) {
+      const parsed = JSON.parse(savedCurrencies) as SavedCurrency[]
+      const currencies = parsed.map((c: SavedCurrency) => ({
+        ...c,
+        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+        balance: `0.00${c.symbol}`,
+        bgColor: 'bg-emerald-500',
+        textColor: 'text-emerald-500',
+        icon: <span className="text-lg">{c.icon}</span>
+      }))
+      setCurrencies(currencies)
+    }
+    
+    const savedCryptos = localStorage.getItem('cryptos')
+    if (savedCryptos) {
+      const parsed = JSON.parse(savedCryptos) as SavedCrypto[]
+      const cryptos = parsed.map((c: SavedCrypto) => ({
+        ...c,
+        balance: 0,
+        price: 0,
+        icon: <span className="text-lg">{c.icon}</span>
+      }))
+      setCryptos(cryptos)
+    }
+  }, [exchangeRates])
+  
   return (
-    <main className="min-h-screen bg-white">
-      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
-        <div className="flex items-center p-4">
-          <Link href="/" className="text-gray-600 hover:text-gray-900">
-            <ChevronLeft className="h-6 w-6" />
+    <main className="pb-20">
+      <div className="p-4 space-y-6">
+        <div className="text-center">
+          <div className="text-sm text-gray-700">Общий баланс</div>
+          <div className="text-2xl font-bold text-black">{balance}</div>
+          <div className="flex justify-center gap-8 mt-4">
+            <button className="flex flex-col items-center text-blue-500">
+              <div className="p-2 rounded-full bg-blue-500/10">
+                <ArrowUpFromLine className="h-6 w-6" />
+              </div>
+              <span className="text-sm mt-1">Пополнить</span>
+            </button>
+            <button className="flex flex-col items-center text-blue-500">
+              <div className="p-2 rounded-full bg-blue-500/10">
+                <ArrowDownToLine className="h-6 w-6" />
+              </div>
+              <span className="text-sm mt-1">Вывести</span>
+            </button>
+            <button className="flex flex-col items-center text-blue-500">
+              <div className="p-2 rounded-full bg-blue-500/10">
+                <RefreshCcw className="h-6 w-6" />
+              </div>
+              <span className="text-sm mt-1">Обменять</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="text-sm text-blue-500/80">Профиль</div>
+          <div className="p-3 rounded bg-ededed">
+            <div className="text-gray-900">{userId}</div>
+            <div className="text-gray-600 text-sm">ID аккаунта</div>
+          </div>
+          <div className="p-3 rounded bg-ededed">
+            <div className="flex items-center gap-2 text-gray-900">
+              <span>0</span>
+              <span>/</span>
+              <span className="text-green-500">0</span>
+              <span>/</span>
+              <span className="text-red-500">0</span>
+            </div>
+            <div className="text-gray-600 text-sm">Статистика</div>
+          </div>
+          <div className="p-3 rounded bg-ededed">
+            <div className="text-gray-900">0,00 USDT</div>
+            <div className="text-gray-600 text-sm">Объем торгов</div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="text-sm text-blue-500/80">Валютные счета</div>
+          <div className="space-y-2">
+            {currencies.filter(currency => currency.isVisible).map((currency) => (
+              <div 
+                key={currency.id} 
+                className="flex items-center justify-between p-3 rounded bg-ededed"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 ${currency.bgColor} rounded-full flex items-center justify-center text-white`}>
+                    {currency.icon}
+                  </div>
+                  <div>
+                    <div className="text-gray-900">{currency.name}</div>
+                    <div className="text-sm text-gray-600">{currency.rate}</div>
+                  </div>
+                </div>
+                <div className="text-gray-900">{currency.balance}</div>
+              </div>
+            ))}
+          </div>
+          <Link 
+            href="/settings?type=currencies"
+            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
+          >
+            <Settings2 className="w-5 h-5" />
+            <span className="text-sm">Настроить</span>
+          </Link>
+        </div>
+
+        <div className="space-y-3">
+          <div className="text-sm text-blue-500/80">Криптовалюты</div>
+          <div className="space-y-2">
+            {cryptos.filter(crypto => crypto.isVisible).map((crypto) => (
+              <div 
+                key={crypto.id} 
+                className="flex items-center justify-between p-3 rounded bg-ededed"
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 ${crypto.bgColor} rounded-full flex items-center justify-center text-white`}>
+                    {crypto.icon}
+                  </div>
+                  <div>
+                    <div className="text-gray-900">{crypto.name}</div>
+                    <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
+                  </div>
+                </div>
+                <div className="text-gray-900">{crypto.balance}</div>
+              </div>
+            ))}
+          </div>
+          <Link 
+            href="/settings?type=cryptos"
+            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
+          >
+            <Settings2 className="w-5 h-5" />
+            <span className="text-sm">Настроить</span>
           </Link>
         </div>
       </div>
-
-      <div className="pt-16 p-4">
-        <h2 className="text-sm text-gray-500 mb-4">Избранное</h2>
-        
-        {type === 'currencies' && (
-          <div>
-            <h3 className="text-sm text-blue-500/80 mb-2">Валютные счета</h3>
-            <div className="space-y-2">
-              {currencies.map((currency) => (
-                <div
-                  key={currency.id}
-                  className="flex items-center justify-between p-3 rounded bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 ${currency.isVisible ? 'bg-emerald-500' : 'bg-gray-400'} rounded-full flex items-center justify-center text-white`}>
-                      <span className="text-lg">{currency.icon}</span>
-                    </div>
-                    <div>
-                      <div className="text-gray-900">{currency.id}</div>
-                      <div className="text-sm text-gray-500">{currency.name}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => toggleVisibility(currency.id, 'currency')}
-                    className={`p-2 rounded-full ${
-                      currency.isVisible ? 'text-blue-500' : 'text-gray-400'
-                    }`}
-                  >
-                    {currency.isVisible ? (
-                      <Eye className="h-5 w-5" />
-                    ) : (
-                      <EyeOff className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {type === 'cryptos' && (
-          <div>
-            <h3 className="text-sm text-blue-500/80 mb-2">Криптовалюты</h3>
-            <div className="space-y-2">
-              {cryptos.map((crypto) => (
-                <div
-                  key={crypto.id}
-                  className="flex items-center justify-between p-3 rounded bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 ${crypto.isVisible ? crypto.bgColor : 'bg-gray-400'} rounded-full flex items-center justify-center text-white`}>
-                      <span className="text-lg">{crypto.icon}</span>
-                    </div>
-                    <div>
-                      <div className="text-gray-900">{crypto.id}</div>
-                      <div className="text-sm text-gray-500">{crypto.name}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => toggleVisibility(crypto.id, 'crypto')}
-                    className={`p-2 rounded-full ${
-                      crypto.isVisible ? 'text-blue-500' : 'text-gray-400'
-                    }`}
-                  >
-                    {crypto.isVisible ? (
-                      <Eye className="h-5 w-5" />
-                    ) : (
-                      <EyeOff className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <Navigation />
     </main>
   )
 }
