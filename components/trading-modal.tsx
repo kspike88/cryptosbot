@@ -162,14 +162,14 @@ export function TradingModal({ isOpen, onClose, pair }: TradingModalProps) {
         
         <div ref={chartContainerRef} className="w-full h-[calc(100vh-200px)]" />
         
-        {/* <div className="p-4 grid grid-cols-2 gap-4 absolute bottom-0 left-0 right-0">
+        <div className="p-4 grid grid-cols-2 gap-4 absolute bottom-0 left-0 right-0">
           <button className="py-3 px-6 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-center">
             Купить
           </button>
           <button className="py-3 px-6 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-center">
             Продать
           </button>
-        </div> */}
+        </div>
       </div>
     </div>
   )

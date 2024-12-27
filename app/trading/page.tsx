@@ -144,7 +144,7 @@ export default function Trading() {
           change: pair.change + (Math.random() * 0.4 - 0.2)
         }))
       )
-    }, 1000)
+    }, 10000)
 
     return () => clearInterval(interval)
   }, [])

@@ -14,7 +14,7 @@ export function Navigation() {
         className={`flex flex-col items-center ${pathname === '/' ? 'text-blue-500' : 'text-gray-600'}`}
       >
         <Wallet className="h-6 w-6" />
-        <span className="text-sm">Активы</span>
+        <span className="text-sm ">Активы</span>
       </Link>
       <Link 
         href="/trading"
@@ -26,3 +26,4 @@ export function Navigation() {
     </div>
   )
 }
+

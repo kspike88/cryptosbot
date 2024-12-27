@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
-import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Bitcoin, CircleDollarSign, Coins } from 'lucide-react'
+import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
+import Link from 'next/link'
 
 interface Currency {
+  id: string
   name: string
   symbol: string
   rate: string
@@ -12,64 +14,76 @@ interface Currency {
   bgColor: string
   textColor: string
   icon: React.ReactNode
+  isVisible: boolean
 }
 
 interface Crypto {
+  id: string
   name: string
+  symbol: string
   balance: number
-  price: string
+  price: number
   bgColor: string
   textColor: string
   icon: React.ReactNode
+  isVisible: boolean
 }
 
 export default function Home() {
   const [balance] = useState("0.00$")
   const [userId, setUserId] = useState<string>('0')
-  const [currencies] = useState<Currency[]>([
-    {
-      name: "Российский рубль",
-      symbol: "₽",
-      rate: "104.92₽",
-      balance: "0.00₽",
-      bgColor: "bg-green-500",
-      textColor: "text-green-500",
-      icon: <span className="text-lg">₽</span>
-    }
-  ])
+  const [currencies, setCurrencies] = useState<Currency[]>([])
+  const [cryptos, setCryptos] = useState<Crypto[]>([])
+  const [exchangeRates, setExchangeRates] = useState<{[key: string]: number}>({})
   
-  const [cryptos] = useState<Crypto[]>([
-    {
-      name: "Bitcoin",
-      balance: 0,
-      price: "$0.00",
-      bgColor: "bg-orange-500",
-      textColor: "text-orange-500",
-      icon: <Bitcoin className="w-5 h-5" />
-    },
-    {
-      name: "Tether",
-      balance: 0,
-      price: "$0.00",
-      bgColor: "bg-sky-500",
-      textColor: "text-sky-500",
-      icon: <CircleDollarSign className="w-5 h-5" />
-    },
-    {
-      name: "Toncoin",
-      balance: 0,
-      price: "$0.00",
-      bgColor: "bg-blue-500",
-      textColor: "text-blue-500",
-      icon: <Coins className="w-5 h-5" />
-    }
-  ])
-
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const userIdFromUrl = searchParams.get('user_id') || '0'
     setUserId(userIdFromUrl)
   }, [])
+
+  // Fetch exchange rates
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const response = await fetch('https://open.er-api.com/v6/latest/USD')
+        const data = await response.json()
+        setExchangeRates(data.rates)
+      } catch (error) {
+        console.error('Error fetching exchange rates:', error)
+      }
+    }
+    fetchRates()
+  }, [])
+
+  // Load saved settings
+  useEffect(() => {
+    const savedCurrencies = localStorage.getItem('currencies')
+    if (savedCurrencies) {
+      const parsed = JSON.parse(savedCurrencies)
+      const currencies = parsed.map((c: any) => ({
+        ...c,
+        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+        balance: `0.00${c.symbol}`,
+        bgColor: 'bg-emerald-500',
+        textColor: 'text-emerald-500',
+        icon: <span className="text-lg">{c.icon}</span>
+      }))
+      setCurrencies(currencies)
+    }
+    
+    const savedCryptos = localStorage.getItem('cryptos')
+    if (savedCryptos) {
+      const parsed = JSON.parse(savedCryptos)
+      const cryptos = parsed.map((c: any) => ({
+        ...c,
+        balance: 0,
+        price: 0,
+        icon: <span className="text-lg">{c.icon}</span>
+      }))
+      setCryptos(cryptos)
+    }
+  }, [exchangeRates])
   
   return (
     <main className="pb-20">
@@ -100,33 +114,33 @@ export default function Home() {
         </div>
 
         <div className="space-y-3">
-            <div className="text-sm text-blue-500/80">Профиль</div>
-            <div className="p-3 rounded bg-ededed">
-              <div className="text-gray-900">{userId}</div>
-              <div className="text-gray-600 text-sm">ID аккаунта</div>
-            </div>
-            <div className="p-3 rounded bg-ededed">
-              <div className="flex items-center gap-2 text-gray-900">
-                <span>0</span>
-                <span>/</span>
-                <span className="text-green-500">0</span>
-                <span>/</span>
-                <span className="text-red-500">0</span>
-              </div>
-              <div className="text-gray-600 text-sm">Статистика</div>
-            </div>
-            <div className="p-3 rounded bg-ededed">
-              <div className="text-gray-900">0,00 USDT</div>
-              <div className="text-gray-600 text-sm">Объем торгов</div>
-            </div>
+          <div className="text-sm text-blue-500/80">Профиль</div>
+          <div className="p-3 rounded bg-ededed">
+            <div className="text-gray-900">{userId}</div>
+            <div className="text-gray-600 text-sm">ID аккаунта</div>
           </div>
+          <div className="p-3 rounded bg-ededed">
+            <div className="flex items-center gap-2 text-gray-900">
+              <span>0</span>
+              <span>/</span>
+              <span className="text-green-500">0</span>
+              <span>/</span>
+              <span className="text-red-500">0</span>
+            </div>
+            <div className="text-gray-600 text-sm">Статистика</div>
+          </div>
+          <div className="p-3 rounded bg-ededed">
+            <div className="text-gray-900">0,00 USDT</div>
+            <div className="text-gray-600 text-sm">Объем торгов</div>
+          </div>
+        </div>
 
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Валютные счета</div>
           <div className="space-y-2">
-            {currencies.map((currency) => (
+            {currencies.filter(currency => currency.isVisible).map((currency) => (
               <div 
-                key={currency.name} 
+                key={currency.id} 
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
@@ -142,14 +156,21 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <Link 
+            href="/settings?type=currencies"
+            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
+          >
+            <Settings2 className="w-5 h-5" />
+            <span className="text-sm">Настроить</span>
+          </Link>
         </div>
 
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Криптовалюты</div>
           <div className="space-y-2">
-            {cryptos.map((crypto) => (
+            {cryptos.filter(crypto => crypto.isVisible).map((crypto) => (
               <div 
-                key={crypto.name} 
+                key={crypto.id} 
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
@@ -158,16 +179,24 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-gray-900">{crypto.name}</div>
-                    <div className="text-sm text-gray-600">{crypto.price}</div>
+                    <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
                   </div>
                 </div>
                 <div className="text-gray-900">{crypto.balance}</div>
               </div>
             ))}
           </div>
+          <Link 
+            href="/settings?type=cryptos"
+            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
+          >
+            <Settings2 className="w-5 h-5" />
+            <span className="text-sm">Настроить</span>
+          </Link>
         </div>
       </div>
       <Navigation />
     </main>
   )
 }
+
