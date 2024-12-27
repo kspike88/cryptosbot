@@ -29,6 +29,24 @@ interface Crypto {
   isVisible: boolean
 }
 
+interface SavedCurrency {
+  id: string
+  name: string
+  symbol: string
+  icon: string
+  isVisible: boolean
+}
+
+interface SavedCrypto {
+  id: string
+  name: string
+  symbol: string
+  bgColor: string
+  textColor: string
+  icon: string
+  isVisible: boolean
+}
+
 export default function Home() {
   const [balance] = useState("0.00$")
   const [userId, setUserId] = useState<string>('0')
@@ -60,8 +78,8 @@ export default function Home() {
   useEffect(() => {
     const savedCurrencies = localStorage.getItem('currencies')
     if (savedCurrencies) {
-      const parsed = JSON.parse(savedCurrencies)
-      const currencies = parsed.map((c: any) => ({
+      const parsed = JSON.parse(savedCurrencies) as SavedCurrency[]
+      const currencies = parsed.map((c: SavedCurrency) => ({
         ...c,
         rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
         balance: `0.00${c.symbol}`,
@@ -74,8 +92,8 @@ export default function Home() {
     
     const savedCryptos = localStorage.getItem('cryptos')
     if (savedCryptos) {
-      const parsed = JSON.parse(savedCryptos)
-      const cryptos = parsed.map((c: any) => ({
+      const parsed = JSON.parse(savedCryptos) as SavedCrypto[]
+      const cryptos = parsed.map((c: SavedCrypto) => ({
         ...c,
         balance: 0,
         price: 0,
