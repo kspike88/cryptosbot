@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { TradingModal } from "@/components/trading-modal"
 import Image from 'next/image'
-import { Bitcoin, Hexagon, Circle, Link, Droplet, CuboidIcon as Cube, Box, FileCode, Pyramid, Atom, CircleDot, Target, Network, Database, AlertTriangle } from 'lucide-react'
 
 interface TradingPair {
   id: string
