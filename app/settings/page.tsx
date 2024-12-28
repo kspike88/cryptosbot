@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react';
 import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -24,7 +24,7 @@ const INITIAL_CURRENCIES: Item[] = [
     symbol: '₽',
     icon: '₽',
     bgColor: 'bg-emerald-500',
-    isVisible: true
+    isVisible: true,
   },
   {
     id: 'KZT',
@@ -33,7 +33,7 @@ const INITIAL_CURRENCIES: Item[] = [
     symbol: '₸',
     icon: '₸',
     bgColor: 'bg-emerald-500',
-    isVisible: false
+    isVisible: false,
   },
   {
     id: 'BYN',
@@ -42,10 +42,9 @@ const INITIAL_CURRENCIES: Item[] = [
     symbol: 'Br',
     icon: 'Br',
     bgColor: 'bg-emerald-500',
-    isVisible: false
-  }
+    isVisible: false,
+  },
 ]
-
 
 const INITIAL_CRYPTOS: Item[] = [
   {
@@ -266,7 +265,7 @@ const INITIAL_CRYPTOS: Item[] = [
   },
 ]
 
-export default function Settings() {
+function SettingsContent() {
   const searchParams = useSearchParams()
   const type = searchParams.get('type')
 
@@ -318,6 +317,92 @@ export default function Settings() {
   }
 
   return (
+    <div className="pt-16 p-4">
+      <h2 className="text-sm text-gray-500 mb-4">Избранное</h2>
+
+      {type === 'currencies' && (
+        <div>
+          <h3 className="text-sm text-blue-500/80 mb-2">Валютные счета</h3>
+          <div className="space-y-2">
+            {currencies.map((currency) => (
+              <div
+                key={currency.id}
+                className="flex items-center justify-between p-3 rounded bg-gray-100"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className={`w-8 h-8 ${
+                      currency.isVisible ? 'bg-emerald-500' : 'bg-gray-400'
+                    } rounded-full flex items-center justify-center text-white`}
+                  >
+                    <span className="text-lg">{currency.icon}</span>
+                  </div>
+                  <div>
+                    <div className="text-gray-900">{currency.id}</div>
+                    <div className="text-sm text-gray-500">{currency.name}</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => toggleVisibility(currency.id, 'currency')}
+                  className={`p-2 rounded-full ${
+                    currency.isVisible ? 'text-blue-500' : 'text-gray-400'
+                  }`}
+                >
+                  {currency.isVisible ? (
+                    <Eye className="h-5 w-5" />
+                  ) : (
+                    <EyeOff className="h-5 w-5" />
+                  )}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {type === 'cryptos' && (
+        <div>
+          <h3 className="text-sm text-blue-500/80 mb-2">Криптовалюты</h3>
+          <div className="space-y-2">
+            {cryptos.map((crypto) => (
+              <div
+                key={crypto.id}
+                className="flex items-center justify-between p-3 rounded bg-gray-100"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+                    <Image
+                      src={crypto.icon}
+                      alt={crypto.name}
+                      width={24}
+                      height={24}
+                      className="object-cover"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-gray-900">{crypto.id}</div>
+                    <div className="text-sm text-gray-500">{crypto.name}</div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => toggleVisibility(crypto.id, 'crypto')}
+                  className={`p-2 rounded-full ${
+                    crypto.isVisible ? 'text-blue-500' : 'text-gray-400'
+                  }`}
+                >
+                  {crypto.isVisible ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function SettingsPage() {
+  return (
     <main className="min-h-screen bg-white">
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
         <div className="flex items-center p-4">
@@ -327,92 +412,9 @@ export default function Settings() {
           <h1 className="ml-4 text-xl font-medium text-gray-900">BTSE Trade</h1>
         </div>
       </div>
-
-      <div className="pt-16 p-4">
-        <h2 className="text-sm text-gray-500 mb-4">Избранное</h2>
-
-        {type === 'currencies' && (
-          <div>
-            <h3 className="text-sm text-blue-500/80 mb-2">Валютные счета</h3>
-            <div className="space-y-2">
-              {currencies.map((currency) => (
-                <div
-                  key={currency.id}
-                  className="flex items-center justify-between p-3 rounded bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-8 h-8 ${
-                        currency.isVisible ? 'bg-emerald-500' : 'bg-gray-400'
-                      } rounded-full flex items-center justify-center text-white`}
-                    >
-                      <span className="text-lg">{currency.icon}</span>
-                    </div>
-                    <div>
-                      <div className="text-gray-900">{currency.id}</div>
-                      <div className="text-sm text-gray-500">{currency.name}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => toggleVisibility(currency.id, 'currency')}
-                    className={`p-2 rounded-full ${
-                      currency.isVisible ? 'text-blue-500' : 'text-gray-400'
-                    }`}
-                  >
-                    {currency.isVisible ? (
-                      <Eye className="h-5 w-5" />
-                    ) : (
-                      <EyeOff className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {type === 'cryptos' && (
-          <div>
-            <h3 className="text-sm text-blue-500/80 mb-2">Криптовалюты</h3>
-            <div className="space-y-2">
-              {cryptos.map((crypto) => (
-                <div
-                  key={crypto.id}
-                  className="flex items-center justify-between p-3 rounded bg-gray-100"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
-                      <Image
-                        src={crypto.icon}
-                        alt={crypto.name}
-                        width={24}
-                        height={24}
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <div className="text-gray-900">{crypto.id}</div>
-                      <div className="text-sm text-gray-500">{crypto.name}</div>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => toggleVisibility(crypto.id, 'crypto')}
-                    className={`p-2 rounded-full ${
-                      crypto.isVisible ? 'text-blue-500' : 'text-gray-400'
-                    }`}
-                  >
-                    {crypto.isVisible ? (
-                      <Eye className="h-5 w-5" />
-                    ) : (
-                      <EyeOff className="h-5 w-5" />
-                    )}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <Suspense fallback={<div className="p-4 text-gray-500">Loading settings...</div>}>
+        <SettingsContent />
+      </Suspense>
     </main>
   )
 }
