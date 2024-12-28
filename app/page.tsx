@@ -147,9 +147,7 @@ export default function Home() {
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`w-8 h-8 ${
-                        currency.isVisible ? 'bg-emerald-500' : 'bg-gray-400'
-                      } rounded-full flex items-center justify-center text-white`}
+                      className={`w-8 h-8 ${currency.bgColor} rounded-full flex items-center justify-center text-white`}
                     >
                       {currency.icon}
                     </div>

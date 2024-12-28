@@ -24,7 +24,7 @@ const INITIAL_CURRENCIES: Item[] = [
     symbol: '₽',
     icon: '₽',
     bgColor: 'bg-emerald-500',
-    isVisible: true,
+    isVisible: true
   },
   {
     id: 'KZT',
@@ -33,7 +33,7 @@ const INITIAL_CURRENCIES: Item[] = [
     symbol: '₸',
     icon: '₸',
     bgColor: 'bg-emerald-500',
-    isVisible: false,
+    isVisible: false
   },
   {
     id: 'BYN',
@@ -42,9 +42,10 @@ const INITIAL_CURRENCIES: Item[] = [
     symbol: 'Br',
     icon: 'Br',
     bgColor: 'bg-emerald-500',
-    isVisible: false,
-  },
+    isVisible: false
+  }
 ]
+
 
 const INITIAL_CRYPTOS: Item[] = [
   {
