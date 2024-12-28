@@ -208,7 +208,7 @@ export default function Trading() {
   return (
     <main className="pb-20">
       <div className="p-4">
-        <h1 className="text-sm text-purple-500 mb-3">Торговая пара</h1>
+        <h1 className="text-sm text-blue-500 mb-3">Торговая пара</h1>
         <div className="space-y-2">
           {pairs.map((pair) => (
             <div 
