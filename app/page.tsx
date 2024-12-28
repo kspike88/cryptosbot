@@ -61,8 +61,8 @@ export default function Home() {
   useEffect(() => {
     const savedCurrencies = localStorage.getItem('currencies')
     if (savedCurrencies) {
-      const parsedCurrencies = JSON.parse(savedCurrencies)
-      const currencies = parsedCurrencies.map((c: any) => ({
+      const parsedCurrencies: Currency[] = JSON.parse(savedCurrencies)
+      const currencies = parsedCurrencies.map((c: Currency) => ({
         ...c,
         rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
         balance: `0.00${c.symbol}`,
@@ -70,17 +70,19 @@ export default function Home() {
         textColor: c.textColor || 'text-emerald-500',
         icon: <span className="text-lg">{c.icon}</span>,
       }))
+
       setCurrencies(currencies)
     }
 
     const savedCryptos = localStorage.getItem('cryptos')
     if (savedCryptos) {
-      const parsedCryptos = JSON.parse(savedCryptos)
-      const cryptos = parsedCryptos.map((c: any) => ({
+      const parsedCryptos: Crypto[] = JSON.parse(savedCryptos)
+      const cryptos = parsedCryptos.map((c: Crypto) => ({
         ...c,
         balance: 0,
         price: 0,
       }))
+
       setCryptos(cryptos)
     }
   }, [exchangeRates])
