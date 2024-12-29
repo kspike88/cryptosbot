@@ -16,6 +16,8 @@ interface Item {
   isVisible: boolean
 }
 
+const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT'];
+
 const INITIAL_CURRENCIES: Item[] = [
   {
     id: 'RUB',
@@ -23,7 +25,7 @@ const INITIAL_CURRENCIES: Item[] = [
     subtitle: 'RUB',
     symbol: '₽',
     icon: '₽',
-    bgColor: 'bg-emerald-500',
+    bgColor: 'bg-[#28c281]',
     isVisible: true,
   },
   {
@@ -32,7 +34,7 @@ const INITIAL_CURRENCIES: Item[] = [
     subtitle: 'KZT',
     symbol: '₸',
     icon: '₸',
-    bgColor: 'bg-emerald-500',
+    bgColor: 'bg-[#28c281]',
     isVisible: false,
   },
   {
@@ -41,7 +43,7 @@ const INITIAL_CURRENCIES: Item[] = [
     subtitle: 'BYN',
     symbol: 'Br',
     icon: 'Br',
-    bgColor: 'bg-emerald-500',
+    bgColor: 'bg-[#28c281]',
     isVisible: false,
   },
 ]
@@ -57,12 +59,21 @@ const INITIAL_CRYPTOS: Item[] = [
     isVisible: true,
   },
   {
+    id: 'ETH',
+    name: 'Ethereum',
+    subtitle: 'ETH',
+    symbol: 'ETH',
+    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+    bgColor: 'bg-blue-500',
+    isVisible: true,
+  },
+  {
     id: 'USDT',
     name: 'Tether',
     subtitle: 'USDT',
     symbol: 'USDT',
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
-    bgColor: '',
+    bgColor: 'bg-green-500',
     isVisible: true,
   },
   {
@@ -71,15 +82,6 @@ const INITIAL_CRYPTOS: Item[] = [
     subtitle: 'TON',
     symbol: 'TON',
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png',
-    bgColor: 'bg-green-500',
-    isVisible: true,
-  },
-  {
-    id: 'ETH',
-    name: 'Ethereum',
-    subtitle: 'ETH',
-    symbol: 'ETH',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
     bgColor: 'bg-blue-500',
     isVisible: false,
   },
@@ -272,49 +274,41 @@ function SettingsContent() {
   const [currencies, setCurrencies] = useState<Item[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('currencies')
-      return saved ? JSON.parse(saved) : INITIAL_CURRENCIES
+      if (saved) {
+        return JSON.parse(saved)
+      }
     }
-    return INITIAL_CURRENCIES
+    return INITIAL_CURRENCIES.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   const [cryptos, setCryptos] = useState<Item[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('cryptos')
-      return saved ? JSON.parse(saved) : INITIAL_CRYPTOS
+      if (saved) {
+        return JSON.parse(saved)
+      }
     }
-    return INITIAL_CRYPTOS
+    return INITIAL_CRYPTOS.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedCurrencies = localStorage.getItem('currencies')
-      if (savedCurrencies) {
-        setCurrencies(JSON.parse(savedCurrencies))
-      } else {
-        setCurrencies(INITIAL_CURRENCIES)
-        localStorage.setItem('currencies', JSON.stringify(INITIAL_CURRENCIES))
-      }
+    localStorage.setItem('currencies', JSON.stringify(currencies));
+  }, [currencies]);
 
-      const savedCryptos = localStorage.getItem('cryptos')
-      if (savedCryptos) {
-        setCryptos(JSON.parse(savedCryptos))
-      } else {
-        setCryptos(INITIAL_CRYPTOS)
-        localStorage.setItem('cryptos', JSON.stringify(INITIAL_CRYPTOS))
-      }
-    }
-  }, [])
+  useEffect(() => {
+    localStorage.setItem('cryptos', JSON.stringify(cryptos));
+  }, [cryptos]);
 
   const toggleVisibility = (id: string, type: 'currency' | 'crypto') => {
-    const setter = type === 'currency' ? setCurrencies : setCryptos
+    const setter = type === 'currency' ? setCurrencies : setCryptos;
     setter((current) => {
       const updated = current.map((item) =>
-        item.id === id ? { ...item, isVisible: !item.isVisible } : item,
-      )
-      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated))
-      return updated
-    })
-  }
+        item.id === id ? { ...item, isVisible: !item.isVisible } : item
+      );
+      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   return (
     <div className="pt-16 p-4">
@@ -332,7 +326,7 @@ function SettingsContent() {
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-8 h-8 ${
-                      currency.isVisible ? 'bg-emerald-500' : 'bg-gray-400'
+                      currency.isVisible ? 'bg-[#28c281]' : 'bg-gray-400'
                     } rounded-full flex items-center justify-center text-white`}
                   >
                     <span className="text-lg">{currency.icon}</span>
@@ -418,3 +412,4 @@ export default function SettingsPage() {
     </main>
   )
 }
+
