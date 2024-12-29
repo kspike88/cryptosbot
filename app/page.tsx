@@ -30,7 +30,7 @@ interface Crypto {
   isVisible: boolean
 }
 
-const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT'];
+const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
 
 const INITIAL_CURRENCIES = [
   {
@@ -43,7 +43,7 @@ const INITIAL_CURRENCIES = [
     isVisible: true,
   },
   // Add other currencies here if needed
-];
+]
 
 const INITIAL_CRYPTOS = [
   {
@@ -74,7 +74,7 @@ const INITIAL_CRYPTOS = [
     isVisible: true,
   },
   // Add other cryptos here if needed
-];
+]
 
 export default function Home() {
   const [balance] = useState('0.00$')
@@ -105,43 +105,51 @@ export default function Home() {
 
   // Load saved settings
   useEffect(() => {
-    const savedCurrencies = localStorage.getItem('currencies');
-    const savedCryptos = localStorage.getItem('cryptos');
+    const savedCurrencies = localStorage.getItem('currencies')
+    const savedCryptos = localStorage.getItem('cryptos')
 
     if (savedCurrencies) {
-      const parsedCurrencies = JSON.parse(savedCurrencies);
-      setCurrencies(parsedCurrencies.map((c: any) => ({
-        ...c,
-        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
-        balance: `0.00${c.symbol}`,
-        icon: <span className="text-lg text-white">{c.icon}</span>
-      })));
+      const parsedCurrencies: Currency[] = JSON.parse(savedCurrencies)
+      setCurrencies(
+        parsedCurrencies.map((c: Currency) => ({
+          ...c,
+          rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+          balance: `0.00${c.symbol}`,
+          icon: <span className="text-lg text-white">{c.icon}</span>,
+        })),
+      )
     } else {
-      setCurrencies(INITIAL_CURRENCIES.map(c => ({
-        ...c,
-        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
-        balance: `0.00${c.symbol}`,
-        icon: <span className="text-lg text-white">{c.icon}</span>,
-        isVisible: DEFAULT_VISIBLE.includes(c.id)
-      })));
+      setCurrencies(
+        INITIAL_CURRENCIES.map((c) => ({
+          ...c,
+          rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+          balance: `0.00${c.symbol}`,
+          icon: <span className="text-lg text-white">{c.icon}</span>,
+          isVisible: DEFAULT_VISIBLE.includes(c.id),
+        })),
+      )
     }
-    
+
     if (savedCryptos) {
-      const parsedCryptos = JSON.parse(savedCryptos);
-      setCryptos(parsedCryptos.map((c: any) => ({
-        ...c,
-        balance: 0,
-        price: 0,
-      })));
+      const parsedCryptos: Crypto[] = JSON.parse(savedCryptos)
+      setCryptos(
+        parsedCryptos.map((c: Crypto) => ({
+          ...c,
+          balance: 0,
+          price: 0,
+        })),
+      )
     } else {
-      setCryptos(INITIAL_CRYPTOS.map(c => ({
-        ...c,
-        balance: 0,
-        price: 0,
-        isVisible: DEFAULT_VISIBLE.includes(c.id)
-      })));
+      setCryptos(
+        INITIAL_CRYPTOS.map((c) => ({
+          ...c,
+          balance: 0,
+          price: 0,
+          isVisible: DEFAULT_VISIBLE.includes(c.id),
+        })),
+      )
     }
-  }, [exchangeRates]);
+  }, [exchangeRates])
 
   return (
     <main className="pb-20">
@@ -196,25 +204,29 @@ export default function Home() {
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Валютные счета</div>
           <div className="space-y-2">
-            {currencies.filter(currency => currency.isVisible).map((currency) => (
-              <div 
-                key={currency.id} 
-                className="flex items-center justify-between p-3 rounded bg-ededed"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${currency.bgColor}`}>
-                    {currency.icon}
+            {currencies
+              .filter((currency) => currency.isVisible)
+              .map((currency) => (
+                <div
+                  key={currency.id}
+                  className="flex items-center justify-between p-3 rounded bg-ededed"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${currency.bgColor}`}
+                    >
+                      {currency.icon}
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{currency.name}</div>
+                      <div className="text-sm text-gray-600">{currency.rate}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-gray-900">{currency.name}</div>
-                    <div className="text-sm text-gray-600">{currency.rate}</div>
-                  </div>
+                  <div className="text-gray-900">{currency.balance}</div>
                 </div>
-                <div className="text-gray-900">{currency.balance}</div>
-              </div>
-            ))}
+              ))}
           </div>
-          <Link 
+          <Link
             href="/settings?type=currencies"
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
           >
@@ -226,31 +238,33 @@ export default function Home() {
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Криптовалюты</div>
           <div className="space-y-2">
-            {cryptos.filter(crypto => crypto.isVisible).map((crypto) => (
-              <div 
-                key={crypto.id} 
-                className="flex items-center justify-between p-3 rounded bg-ededed"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
-                    <Image
-                      src={crypto.icon}
-                      alt={crypto.name}
-                      width={32}
-                      height={32}
-                      className="object-cover"
-                    />
+            {cryptos
+              .filter((crypto) => crypto.isVisible)
+              .map((crypto) => (
+                <div
+                  key={crypto.id}
+                  className="flex items-center justify-between p-3 rounded bg-ededed"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={crypto.icon}
+                        alt={crypto.name}
+                        width={32}
+                        height={32}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{crypto.name}</div>
+                      <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-gray-900">{crypto.name}</div>
-                    <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
-                  </div>
+                  <div className="text-gray-900">{crypto.balance}</div>
                 </div>
-                <div className="text-gray-900">{crypto.balance}</div>
-              </div>
-            ))}
+              ))}
           </div>
-          <Link 
+          <Link
             href="/settings?type=cryptos"
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
           >
@@ -263,4 +277,3 @@ export default function Home() {
     </main>
   )
 }
-
