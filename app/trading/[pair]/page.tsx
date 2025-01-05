@@ -150,12 +150,12 @@ export default function TradingPairPage() {
     setAmount('')
   }
 
-  const formatDuration = (duration: string) => {
-    const ms = DURATION_MAP[duration]
-    const minutes = Math.floor(ms / 60000)
-    const seconds = Math.floor((ms % 60000) / 1000)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
+  // const formatDuration = (duration: string) => {
+  //   const ms = DURATION_MAP[duration]
+  //   const minutes = Math.floor(ms / 60000)
+  //   const seconds = Math.floor((ms % 60000) / 1000)
+  //   return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  // }
 
   if (!pair) return null
 

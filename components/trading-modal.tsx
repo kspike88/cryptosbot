@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
+import { createChart, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/navigation'
 import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
@@ -25,13 +25,13 @@ interface Crypto {
   icon: string
 }
 
-interface Transaction {
-  id: string
-  type: 'buy' | 'sell'
-  amount: string
-  timestamp: number
-  expiryTime: number
-}
+// interface Transaction {
+//   id: string
+//   type: 'buy' | 'sell'
+//   amount: string
+//   timestamp: number
+//   expiryTime: number
+// }
 
 const DURATION_MAP = {
   '30s': 30 * 1000,
@@ -176,12 +176,12 @@ export default function Home() {
     fetchPair()
   }, [pairId])
 
-  const formatDuration = (duration: string) => {
-    const ms = DURATION_MAP[duration]
-    const minutes = Math.floor(ms / 60000)
-    const seconds = Math.floor((ms % 60000) / 1000)
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  }
+  // const formatDuration = (duration: string) => {
+  //   const ms = DURATION_MAP[duration]
+  //   const minutes = Math.floor(ms / 60000)
+  //   const seconds = Math.floor((ms % 60000) / 1000)
+  //   return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  // }
 
   return (
     <main className="pb-20">
