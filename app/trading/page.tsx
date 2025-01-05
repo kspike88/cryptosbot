@@ -1,16 +1,10 @@
 'use client'
 
-<<<<<<< HEAD
-import { useEffect, useState } from 'react'
-import { Navigation } from '@/components/navigation'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-=======
 import { useEffect, useState } from "react"
 import { Navigation } from "@/components/navigation"
 import { TradingModal } from "@/components/trading-modal"
 import Image from 'next/image'
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
+import { useRouter } from 'next/navigation'
 
 interface TradingPair {
   id: string
@@ -25,226 +19,244 @@ interface TradingPair {
 
 const INITIAL_PAIRS: TradingPair[] = [
   { 
-    id: "BTC/USDT", name: "Bitcoin", base: "BTC", 
-    price: 98315.21, change: -0.11,
+    id: "BTC/USDT", 
+    name: "Bitcoin", 
+    base: "BTC", 
+    price: 98315.21, 
+    change: -0.11,
     icon: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
     subtitle: "Bitcoin",
-<<<<<<< HEAD
-    bgColor: "bg-white-500"
-  },
-  { 
-    id: "USDT/USDT", name: "Tether", base: "USDT", 
-    price: 1.0, change: 0.00,
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
-    subtitle: "Tether",
-    bgColor: "bg-white-500"
-=======
     bgColor: "bg-orange-0"
   },
   { 
-    id: "USDT/USDT", name: "Tether", base: "USDT", 
-    price: 3450.8, change: -1.40,
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    id: "USDT/USDT", 
+    name: "Tether", 
+    base: "USDT", 
+    price: 1.0, 
+    change: 0.00,
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
     subtitle: "Tether",
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "TON/USDT", name: "Toncoin", base: "TON", 
-    price: 5848.0, change: -1.40,
+    id: "TON/USDT", 
+    name: "Toncoin", 
+    base: "TON", 
+    price: 5848.0, 
+    change: -1.40,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png",
     subtitle: "TON",
-<<<<<<< HEAD
-    bgColor: "bg-white-500"
-  },
-  { 
-    id: "USDC/USDT", name: "USD Coin", base: "USDC", 
-    price: 1.0, change: 0.00,
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
-    subtitle: "USDC",
-    bgColor: "bg-white-500"
-=======
     bgColor: "bg-blue-500"
   },
   { 
-    id: "USDC/USDT", name: "USD Coin", base: "USDC", 
-    price: 3450.8, change: -1.40,
+    id: "USDC/USDT", 
+    name: "USD Coin", 
+    base: "USDC", 
+    price: 1.0, 
+    change: 0.00,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
     subtitle: "USDC",
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "BNB/USDT", name: "BNB", base: "BNB", 
-    price: 3450.8, change: -1.40,
+    id: "BNB/USDT", 
+    name: "BNB", 
+    base: "BNB", 
+    price: 3450.8, 
+    change: -1.40,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
     subtitle: "BNB",
-<<<<<<< HEAD
-    bgColor: "bg-white-500"
-=======
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "SOL/USDT", name: "Solana", base: "SOL", 
-    price: 3450.8, change: -1.40,
+    id: "SOL/USDT", 
+    name: "Solana", 
+    base: "SOL", 
+    price: 3450.8, 
+    change: -1.40,
     icon: "https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756",
     subtitle: "SOL",
-<<<<<<< HEAD
-    bgColor: "bg-white-500"
-=======
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "DOGE/USDT", name: "Dogecoin", base: "DOGE", 
-    price: 0.31793, change: -0.11,
+    id: "DOGE/USDT", 
+    name: "Dogecoin", 
+    base: "DOGE", 
+    price: 0.31793, 
+    change: -0.11,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
     subtitle: "DOGE",
-<<<<<<< HEAD
-    bgColor: "bg-white-400"
-=======
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "ADA/USDT", name: "Cardano", base: "ADA", 
-    price: 0.8802, change: -2.00,
+    id: "ADA/USDT", 
+    name: "Cardano", 
+    base: "ADA", 
+    price: 0.8802, 
+    change: -2.00,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
     subtitle: "ADA",
-<<<<<<< HEAD
-    bgColor: "bg-white-400"
-=======
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "TRX/USDT", name: "Tron", base: "TRX", 
-    price: 0.2582, change: -2.23,
+    id: "TRX/USDT", 
+    name: "Tron", 
+    base: "TRX", 
+    price: 0.2582, 
+    change: -2.23,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png",
     subtitle: "TRX",
-<<<<<<< HEAD
-    bgColor: "bg-white-500"
-=======
     bgColor: "bg-blue-500"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
-    id: "ETH/USDT", name: "Ethereum", base: "ETH", 
-    price: 3450.8, change: -1.40,
+    id: "ETH/USDT", 
+    name: "Ethereum", 
+    base: "ETH", 
+    price: 3450.8, 
+    change: -1.40,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
     subtitle: "Ethereum",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "DOT/USDT", name: "Polkadot", base: "DOT", 
-    price: 6.969, change: -2.45,
+    id: "DOT/USDT", 
+    name: "Polkadot", 
+    base: "DOT", 
+    price: 6.969, 
+    change: -2.45,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png",
     subtitle: "Polkadot",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "LINK/USDT", name: "Chainlink", base: "LINK", 
-    price: 24.34, change: -1.10,
+    id: "LINK/USDT", 
+    name: "Chainlink", 
+    base: "LINK", 
+    price: 24.34, 
+    change: -1.10,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
     subtitle: "Chainlink",
-    bgColor: "bg-white-400"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "LTC/USDT", name: "Litecoin", base: "LTC", 
-    price: 107.52, change: -2.08,
+    id: "LTC/USDT", 
+    name: "Litecoin", 
+    base: "LTC", 
+    price: 107.52, 
+    change: -2.08,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     subtitle: "Litecoin",
-    bgColor: "bg-white-400"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "UNI/USDT", name: "Uniswap", base: "UNI", 
-    price: 13.769, change: -5.87,
-<<<<<<< HEAD
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png",
-=======
+    id: "UNI/USDT", 
+    name: "Uniswap", 
+    base: "UNI", 
+    price: 13.769, 
+    change: -5.87,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png",
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
     subtitle: "Uniswap",
-    bgColor: "bg-white-400"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "ETC/USDT", name: "Ethereum Classic", base: "ETC", 
-    price: 27.09, change: -4.04,
+    id: "ETC/USDT", 
+    name: "Ethereum Classic", 
+    base: "ETC", 
+    price: 27.09, 
+    change: -4.04,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1321.png",
     subtitle: "Ethereum Classic",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "APT/USDT", name: "Aptos", base: "APT", 
-    price: 9.54, change: -2.85,
+    id: "APT/USDT", 
+    name: "Aptos", 
+    base: "APT", 
+    price: 9.54, 
+    change: -2.85,
     icon: "https://assets.coingecko.com/coins/images/26455/standard/aptos_round.png?1696525528",
     subtitle: "Aptos",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "FIL/USDT", name: "Filecoin", base: "FIL", 
-    price: 5.261, change: -4.71,
+    id: "FIL/USDT", 
+    name: "Filecoin", 
+    base: "FIL", 
+    price: 5.261, 
+    change: -4.71,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2280.png",
     subtitle: "Filecoin",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "RENDER/USDT", name: "Render", base: "RENDER", 
-    price: 7.513, change: -5.32,
+    id: "RENDER/USDT", 
+    name: "Render", 
+    base: "RENDER", 
+    price: 7.513, 
+    change: -5.32,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/5690.png",
     subtitle: "Render",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "ATOM/USDT", name: "Cosmos", base: "ATOM", 
-    price: 6.877, change: -3.39,
+    id: "ATOM/USDT", 
+    name: "Cosmos", 
+    base: "ATOM", 
+    price: 6.877, 
+    change: -3.39,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3794.png",
     subtitle: "Cosmos",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "SUI/USDT", name: "Sui", base: "SUI", 
-    price: 4.5175, change: -2.03,
+    id: "SUI/USDT", 
+    name: "Sui", 
+    base: "SUI", 
+    price: 4.5175, 
+    change: -2.03,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/20947.png",
     subtitle: "Sui",
-    bgColor: "bg-white-400"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "OP/USDT", name: "Optimism", base: "OP", 
-    price: 1.897, change: -3.41,
-<<<<<<< HEAD
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/11840.png",
-=======
+    id: "OP/USDT", 
+    name: "Optimism", 
+    base: "OP", 
+    price: 1.897, 
+    change: -3.41,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/12419.png",
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
     subtitle: "Optimism",
-    bgColor: "bg-white-400"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "GRT/USDT", name: "The Graph", base: "GRT", 
-    price: 0.2214, change: -4.85,
+    id: "GRT/USDT", 
+    name: "The Graph", 
+    base: "GRT", 
+    price: 0.2214, 
+    change: -4.85,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/6719.png",
     subtitle: "The Graph",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "AAVE/USDT", name: "Aave", base: "AAVE", 
-    price: 368.56, change: -2.19,
-<<<<<<< HEAD
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png",
-=======
+    id: "AAVE/USDT", 
+    name: "Aave", 
+    base: "AAVE", 
+    price: 368.56, 
+    change: -2.19,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7256.png",
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
     subtitle: "Aave",
-    bgColor: "bg-white-400"
+    bgColor: "bg-blue-500"
   },
   { 
-    id: "NOT/USDT", name: "Notcoin", base: "NOT", 
-    price: 0.00671, change: -2.39,
+    id: "NOT/USDT", 
+    name: "Notcoin", 
+    base: "NOT", 
+    price: 0.00671, 
+    change: -2.39,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/28850.png",
     subtitle: "Notcoin",
-    bgColor: "bg-white-500"
+    bgColor: "bg-blue-500"
   }
 ]
 
@@ -310,21 +322,13 @@ export default function Trading() {
               onClick={() => router.push(`/trading/${encodeURIComponent(pair.id)}`)}
             >
               <div className="flex items-center gap-3">
-<<<<<<< HEAD
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white overflow-hidden">
-=======
                 <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
                   <Image
                     src={pair.icon}
                     alt={pair.name}
                     width={32}
                     height={32}
-<<<<<<< HEAD
-                    className="object-contain"
-=======
                     className="object-cover"
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
                   />
                 </div>
                 <div>
@@ -349,4 +353,3 @@ export default function Trading() {
     </main>
   )
 }
-
