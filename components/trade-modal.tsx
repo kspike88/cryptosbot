@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
-import type { Transaction } from '@/types/trading'
+import type { Transaction } from '@/app/types/trading'
 
 interface TradeModalProps {
   isOpen: boolean
