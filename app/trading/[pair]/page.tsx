@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
@@ -24,63 +24,18 @@ const DURATION_MAP = {
   '1h': 60 * 60 * 1000,
 }
 
-const formatTime = (ms: number) => {
-  const minutes = Math.floor(ms / 60000)
-  const seconds = Math.floor((ms % 60000) / 1000)
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
-}
-
 export default function TradingPairPage() {
   const params = useParams()
   const pairId = decodeURIComponent(params.pair as string)
   
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
-  const [tradeType, setTr  adeType] = useState<'buy' | 'sell'>('buy')
+  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
   const [pair, setPair] = useState<any>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [showTradeMenu, setShowTradeMenu] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState('30s')
-  const [timeLeft, setTimeLeft] = useState<number>(0)
-
-  // Load transactions from localStorage on mount
-  useEffect(() => {
-    const savedTransactions = localStorage.getItem('transactions')
-    if (savedTransactions) {
-      setTransactions(JSON.parse(savedTransactions))
-    }
-  }, [])
-
-  // Save transactions to localStorage when updated
-  useEffect(() => {
-    localStorage.setItem('transactions', JSON.stringify(transactions))
-  }, [transactions])
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (!transactions.length) return
-
-    const interval = setInterval(() => {
-      const now = Date.now()
-      
-      // Update transactions and remove expired
-      setTransactions(prev => {
-        const updated = prev.filter(t => t.expiryTime > now)
-        localStorage.setItem('transactions', JSON.stringify(updated))
-        return updated
-      })
-
-      // Update countdown for first active transaction
-      const activeTransaction = transactions[0]
-      if (activeTransaction) {
-        const remaining = activeTransaction.expiryTime - now
-        setTimeLeft(remaining > 0 ? remaining : 0)
-      }
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [transactions])
 
   useEffect(() => {
     // Clean expired transactions
@@ -191,19 +146,9 @@ export default function TradingPairPage() {
       timestamp: now,
       expiryTime: now + duration
     }
-    setTransactions(prev => [newTransaction, ...prev]) // Add new transactions at the start
+    setTransactions(prev => [newTransaction, ...prev])
     setAmount('')
   }
-
-  const formatDuration = (duration: string) => {
-    const seconds = parseInt(duration.replace('s', ''), 10);
-    if (seconds >= 60) {
-      const minutes = Math.floor(seconds / 60);
-      const remainingSeconds = seconds % 60;
-      return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-    }
-    return `${seconds}s`;
-  };
 
   if (!pair) return null
 
@@ -339,9 +284,6 @@ export default function TradingPairPage() {
                       </button>
                     ))}
                   </div>
-                  <div>
-                    Selected Duration: {formatDuration(selectedDuration)}
-                  </div>
                 </div>
 
                 <div className="p-4 border-t">
@@ -372,3 +314,4 @@ export default function TradingPairPage() {
     </div>
   )
 }
+
