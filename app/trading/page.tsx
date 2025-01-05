@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { Navigation } from "@/components/navigation"
-import { TradingModal } from "@/components/trading-modal"
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 

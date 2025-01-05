@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { Navigation } from '@/components/navigation'
-import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2, ArrowLeft } from 'lucide-react'
+import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { useParams } from 'next/navigation'
 
 interface Currency {
@@ -97,15 +96,6 @@ export default function Home() {
   const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({})
   const params = useParams()
   const pairId = decodeURIComponent(params.pair as string)
-  
-  const chartContainerRef = useRef<HTMLDivElement>(null)
-  const [candleData, setCandleData] = useState<any[]>([])
-  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
-  const [amount, setAmount] = useState('')
-  const [pair, setPair] = useState<any>(null)
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [showTradeMenu, setShowTradeMenu] = useState(false)
-  const [selectedDuration, setSelectedDuration] = useState('30s')
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
