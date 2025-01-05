@@ -1,9 +1,10 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { Navigation } from "@/components/navigation"
+import { useState, useEffect } from 'react'
+import { Navigation } from '@/components/navigation'
 import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Currency {
   id: string
@@ -25,35 +26,63 @@ interface Crypto {
   price: number
   bgColor: string
   textColor: string
-  icon: React.ReactNode
-  isVisible: boolean
-}
-
-interface SavedCurrency {
-  id: string
-  name: string
-  symbol: string
   icon: string
   isVisible: boolean
 }
 
-interface SavedCrypto {
-  id: string
-  name: string
-  symbol: string
-  bgColor: string
-  textColor: string
-  icon: string
-  isVisible: boolean
-}
+const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT'];
+
+const INITIAL_CURRENCIES = [
+  {
+    id: 'RUB',
+    name: 'Российский рубль',
+    symbol: '₽',
+    bgColor: 'bg-[#28c281]',
+    textColor: 'text-white',
+    icon: '₽',
+    isVisible: true,
+  },
+  // Add other currencies here if needed
+];
+
+const INITIAL_CRYPTOS = [
+  {
+    id: 'BTC',
+    name: 'Bitcoin',
+    symbol: 'BTC',
+    bgColor: 'bg-orange-500',
+    textColor: 'text-white',
+    icon: 'https://assets.coingecko.com/coins/images/1/large/bitcoin.png',
+    isVisible: true,
+  },
+  {
+    id: 'ETH',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    bgColor: 'bg-blue-500',
+    textColor: 'text-white',
+    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png',
+    isVisible: true,
+  },
+  {
+    id: 'USDT',
+    name: 'Tether',
+    symbol: 'USDT',
+    bgColor: 'bg-green-500',
+    textColor: 'text-white',
+    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
+    isVisible: true,
+  },
+  // Add other cryptos here if needed
+];
 
 export default function Home() {
-  const [balance] = useState("0.00$")
+  const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
   const [currencies, setCurrencies] = useState<Currency[]>([])
   const [cryptos, setCryptos] = useState<Crypto[]>([])
-  const [exchangeRates, setExchangeRates] = useState<{[key: string]: number}>({})
-  
+  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({})
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const userIdFromUrl = searchParams.get('user_id') || '0'
@@ -76,33 +105,44 @@ export default function Home() {
 
   // Load saved settings
   useEffect(() => {
-    const savedCurrencies = localStorage.getItem('currencies')
+    const savedCurrencies = localStorage.getItem('currencies');
+    const savedCryptos = localStorage.getItem('cryptos');
+
     if (savedCurrencies) {
-      const parsed = JSON.parse(savedCurrencies) as SavedCurrency[]
-      const currencies = parsed.map((c: SavedCurrency) => ({
+      const parsedCurrencies = JSON.parse(savedCurrencies);
+      setCurrencies(parsedCurrencies.map((c: any) => ({
         ...c,
         rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
         balance: `0.00${c.symbol}`,
-        bgColor: 'bg-emerald-500',
-        textColor: 'text-emerald-500',
-        icon: <span className="text-lg">{c.icon}</span>
-      }))
-      setCurrencies(currencies)
+        icon: <span className="text-lg text-white">{c.icon}</span>
+      })));
+    } else {
+      setCurrencies(INITIAL_CURRENCIES.map(c => ({
+        ...c,
+        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+        balance: `0.00${c.symbol}`,
+        icon: <span className="text-lg text-white">{c.icon}</span>,
+        isVisible: DEFAULT_VISIBLE.includes(c.id)
+      })));
     }
     
-    const savedCryptos = localStorage.getItem('cryptos')
     if (savedCryptos) {
-      const parsed = JSON.parse(savedCryptos) as SavedCrypto[]
-      const cryptos = parsed.map((c: SavedCrypto) => ({
+      const parsedCryptos = JSON.parse(savedCryptos);
+      setCryptos(parsedCryptos.map((c: any) => ({
         ...c,
         balance: 0,
         price: 0,
-        icon: <span className="text-lg">{c.icon}</span>
-      }))
-      setCryptos(cryptos)
+      })));
+    } else {
+      setCryptos(INITIAL_CRYPTOS.map(c => ({
+        ...c,
+        balance: 0,
+        price: 0,
+        isVisible: DEFAULT_VISIBLE.includes(c.id)
+      })));
     }
-  }, [exchangeRates])
-  
+  }, [exchangeRates]);
+
   return (
     <main className="pb-20">
       <div className="p-4 space-y-6">
@@ -162,7 +202,7 @@ export default function Home() {
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 ${currency.bgColor} rounded-full flex items-center justify-center text-white`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${currency.bgColor}`}>
                     {currency.icon}
                   </div>
                   <div>
@@ -192,8 +232,14 @@ export default function Home() {
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-8 h-8 ${crypto.bgColor} rounded-full flex items-center justify-center text-white`}>
-                    {crypto.icon}
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                    <Image
+                      src={crypto.icon}
+                      alt={crypto.name}
+                      width={32}
+                      height={32}
+                      className="object-cover"
+                    />
                   </div>
                   <div>
                     <div className="text-gray-900">{crypto.name}</div>
