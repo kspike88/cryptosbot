@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { createChart, UTCTimestamp } from 'lightweight-charts'
+import { useEffect, useRef, useState } from 'react'
+import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,7 +27,7 @@ const DURATION_MAP = {
 export default function TradingPairPage() {
   const params = useParams()
   const pairId = decodeURIComponent(params.pair as string)
-
+  
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
@@ -41,19 +41,19 @@ export default function TradingPairPage() {
     // Clean expired transactions
     const interval = setInterval(() => {
       const now = Date.now()
-      setTransactions((prev) => prev.filter((t) => t.expiryTime > now))
+      setTransactions(prev => prev.filter(t => t.expiryTime > now))
     }, 1000)
 
     return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
+    // Fetch pair data
     const fetchPair = async () => {
       try {
         const response = await fetch('https://api.binance.com/api/v3/ticker/24hr')
-        const data: { symbol: string; lastPrice: string; priceChangePercent: string }[] =
-          await response.json()
-        const binancePair = data.find((p) => p.symbol === pairId.split('/')[0] + 'USDT')
+        const data = await response.json()
+        const binancePair = data.find((p: any) => p.symbol === pairId.split('/')[0] + 'USDT')
         if (binancePair) {
           setPair({
             id: pairId,
@@ -62,7 +62,7 @@ export default function TradingPairPage() {
             price: parseFloat(binancePair.lastPrice),
             change: parseFloat(binancePair.priceChangePercent),
             icon: `https://s2.coinmarketcap.com/static/img/coins/64x64/1.png`,
-            bgColor: 'bg-white',
+            bgColor: 'bg-white'
           })
         }
       } catch (error) {
@@ -78,10 +78,10 @@ export default function TradingPairPage() {
     const fetchCandleData = async () => {
       try {
         const response = await fetch(
-          `https://api.binance.com/api/v3/klines?symbol=${pair.base}USDT&interval=1m&limit=100`,
+          `https://api.binance.com/api/v3/klines?symbol=${pair.base}USDT&interval=1m&limit=100`
         )
-        const data: any[] = await response.json()
-        const formattedData = data.map((d: [number, string, string, string, string]) => ({
+        const data = await response.json()
+        const formattedData = data.map((d: any[]) => ({
           time: (d[0] / 1000) as UTCTimestamp,
           open: parseFloat(d[1]),
           high: parseFloat(d[2]),
@@ -144,18 +144,11 @@ export default function TradingPairPage() {
       type: tradeType,
       amount: amount,
       timestamp: now,
-      expiryTime: now + duration,
+      expiryTime: now + duration
     }
-    setTransactions((prev) => [newTransaction, ...prev])
+    setTransactions(prev => [newTransaction, ...prev])
     setAmount('')
   }
-
-  // const formatDuration = (duration: string) => {
-  //   const ms = DURATION_MAP[duration]
-  //   const minutes = Math.floor(ms / 60000)
-  //   const seconds = Math.floor((ms % 60000) / 1000)
-  //   return `${minutes}:${seconds.toString().padStart(2, '0')}`
-  // }
 
   if (!pair) return null
 
@@ -178,7 +171,9 @@ export default function TradingPairPage() {
             </div>
             <div className="text-[#6b7280]">
               <div className="font-medium">{pair.id}</div>
-              <div className="text-sm">${pair.price.toFixed(2)}</div>
+              <div className="text-sm">
+                ${pair.price.toFixed(2)}
+              </div>
             </div>
           </div>
         </div>
@@ -190,18 +185,8 @@ export default function TradingPairPage() {
             {transactions.length === 0 ? (
               <div className="text-center text-[#6b7280]">
                 <div className="mb-2">
-                  <svg
-                    className="w-12 h-12 mx-auto text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
+                  <svg className="w-12 h-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
                 <div>Нет сделок</div>
@@ -279,7 +264,9 @@ export default function TradingPairPage() {
                       />
                       <span className="text-3xl text-gray-400">USDT</span>
                     </div>
-                    <div className="text-sm text-gray-400 mt-2">Доступно: 0 USDT</div>
+                    <div className="text-sm text-gray-400 mt-2">
+                      Доступно: 0 USDT
+                    </div>
                   </div>
 
                   <div className="flex gap-2 mb-4 overflow-x-auto">
@@ -288,8 +275,8 @@ export default function TradingPairPage() {
                         key={time}
                         onClick={() => setSelectedDuration(time)}
                         className={`px-4 py-2 rounded whitespace-nowrap ${
-                          selectedDuration === time
-                            ? 'bg-gray-200 text-gray-800'
+                          selectedDuration === time 
+                            ? 'bg-gray-200 text-gray-800' 
                             : 'bg-gray-100 text-gray-600'
                         }`}
                       >
@@ -311,7 +298,7 @@ export default function TradingPairPage() {
                   >
                     {tradeType === 'buy' ? 'Купить' : 'Продать'} {pair.base}
                   </button>
-
+                  
                   <button
                     onClick={() => setShowTradeMenu(false)}
                     className="w-full mt-2 py-4 text-gray-600 font-medium"
@@ -327,3 +314,4 @@ export default function TradingPairPage() {
     </div>
   )
 }
+
