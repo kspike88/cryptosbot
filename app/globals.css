@@ -4,14 +4,20 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
+<<<<<<< HEAD
   --background-start-rgb: 214, 214, 214;
   --background-end-rgb: 214, 214, 214;
+=======
+  --background-start-rgb: 235, 235, 235;
+  --background-end-rgb: 235, 235, 235;
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
 }
+<<<<<<< HEAD
 
 @keyframes slide-up {
   from {
@@ -26,3 +32,5 @@ body {
   animation: slide-up 0.3s ease-out;
 }
 
+=======
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6

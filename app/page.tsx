@@ -30,7 +30,11 @@ interface Crypto {
   isVisible: boolean
 }
 
+<<<<<<< HEAD
 const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT'];
+=======
+const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
 
 const INITIAL_CURRENCIES = [
   {
@@ -43,7 +47,11 @@ const INITIAL_CURRENCIES = [
     isVisible: true,
   },
   // Add other currencies here if needed
+<<<<<<< HEAD
 ];
+=======
+]
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
 
 const INITIAL_CRYPTOS = [
   {
@@ -74,7 +82,11 @@ const INITIAL_CRYPTOS = [
     isVisible: true,
   },
   // Add other cryptos here if needed
+<<<<<<< HEAD
 ];
+=======
+]
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
 
 export default function Home() {
   const [balance] = useState('0.00$')
@@ -105,6 +117,7 @@ export default function Home() {
 
   // Load saved settings
   useEffect(() => {
+<<<<<<< HEAD
     const savedCurrencies = localStorage.getItem('currencies');
     const savedCryptos = localStorage.getItem('cryptos');
 
@@ -142,6 +155,53 @@ export default function Home() {
       })));
     }
   }, [exchangeRates]);
+=======
+    const savedCurrencies = localStorage.getItem('currencies')
+    const savedCryptos = localStorage.getItem('cryptos')
+
+    if (savedCurrencies) {
+      const parsedCurrencies: Currency[] = JSON.parse(savedCurrencies)
+      setCurrencies(
+        parsedCurrencies.map((c: Currency) => ({
+          ...c,
+          rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+          balance: `0.00${c.symbol}`,
+          icon: <span className="text-lg text-white">{c.icon}</span>,
+        })),
+      )
+    } else {
+      setCurrencies(
+        INITIAL_CURRENCIES.map((c) => ({
+          ...c,
+          rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
+          balance: `0.00${c.symbol}`,
+          icon: <span className="text-lg text-white">{c.icon}</span>,
+          isVisible: DEFAULT_VISIBLE.includes(c.id),
+        })),
+      )
+    }
+
+    if (savedCryptos) {
+      const parsedCryptos: Crypto[] = JSON.parse(savedCryptos)
+      setCryptos(
+        parsedCryptos.map((c: Crypto) => ({
+          ...c,
+          balance: 0,
+          price: 0,
+        })),
+      )
+    } else {
+      setCryptos(
+        INITIAL_CRYPTOS.map((c) => ({
+          ...c,
+          balance: 0,
+          price: 0,
+          isVisible: DEFAULT_VISIBLE.includes(c.id),
+        })),
+      )
+    }
+  }, [exchangeRates])
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
 
   return (
     <main className="pb-20">
@@ -196,6 +256,7 @@ export default function Home() {
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Валютные счета</div>
           <div className="space-y-2">
+<<<<<<< HEAD
             {currencies.filter(currency => currency.isVisible).map((currency) => (
               <div 
                 key={currency.id} 
@@ -208,13 +269,31 @@ export default function Home() {
                   <div>
                     <div className="text-gray-900">{currency.name}</div>
                     <div className="text-sm text-gray-600">{currency.rate}</div>
+=======
+            {currencies
+              .filter((currency) => currency.isVisible)
+              .map((currency) => (
+                <div
+                  key={currency.id}
+                  className="flex items-center justify-between p-3 rounded bg-ededed"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${currency.bgColor}`}
+                    >
+                      {currency.icon}
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{currency.name}</div>
+                      <div className="text-sm text-gray-600">{currency.rate}</div>
+                    </div>
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
                   </div>
+                  <div className="text-gray-900">{currency.balance}</div>
                 </div>
-                <div className="text-gray-900">{currency.balance}</div>
-              </div>
-            ))}
+              ))}
           </div>
-          <Link 
+          <Link
             href="/settings?type=currencies"
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
           >
@@ -226,6 +305,7 @@ export default function Home() {
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">Криптовалюты</div>
           <div className="space-y-2">
+<<<<<<< HEAD
             {cryptos.filter(crypto => crypto.isVisible).map((crypto) => (
               <div 
                 key={crypto.id} 
@@ -244,13 +324,35 @@ export default function Home() {
                   <div>
                     <div className="text-gray-900">{crypto.name}</div>
                     <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
+=======
+            {cryptos
+              .filter((crypto) => crypto.isVisible)
+              .map((crypto) => (
+                <div
+                  key={crypto.id}
+                  className="flex items-center justify-between p-3 rounded bg-ededed"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={crypto.icon}
+                        alt={crypto.name}
+                        width={32}
+                        height={32}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{crypto.name}</div>
+                      <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
+                    </div>
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
                   </div>
+                  <div className="text-gray-900">{crypto.balance}</div>
                 </div>
-                <div className="text-gray-900">{crypto.balance}</div>
-              </div>
-            ))}
+              ))}
           </div>
-          <Link 
+          <Link
             href="/settings?type=cryptos"
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
           >
@@ -263,4 +365,3 @@ export default function Home() {
     </main>
   )
 }
-

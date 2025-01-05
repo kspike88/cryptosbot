@@ -1,9 +1,16 @@
 'use client'
 
+<<<<<<< HEAD
 import { useEffect, useState } from 'react'
 import { Navigation } from '@/components/navigation'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+=======
+import { useEffect, useState } from "react"
+import { Navigation } from "@/components/navigation"
+import { TradingModal } from "@/components/trading-modal"
+import Image from 'next/image'
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
 
 interface TradingPair {
   id: string
@@ -22,6 +29,7 @@ const INITIAL_PAIRS: TradingPair[] = [
     price: 98315.21, change: -0.11,
     icon: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
     subtitle: "Bitcoin",
+<<<<<<< HEAD
     bgColor: "bg-white-500"
   },
   { 
@@ -30,12 +38,23 @@ const INITIAL_PAIRS: TradingPair[] = [
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
     subtitle: "Tether",
     bgColor: "bg-white-500"
+=======
+    bgColor: "bg-orange-0"
+  },
+  { 
+    id: "USDT/USDT", name: "Tether", base: "USDT", 
+    price: 3450.8, change: -1.40,
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
+    subtitle: "Tether",
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "TON/USDT", name: "Toncoin", base: "TON", 
     price: 5848.0, change: -1.40,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png",
     subtitle: "TON",
+<<<<<<< HEAD
     bgColor: "bg-white-500"
   },
   { 
@@ -44,41 +63,71 @@ const INITIAL_PAIRS: TradingPair[] = [
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
     subtitle: "USDC",
     bgColor: "bg-white-500"
+=======
+    bgColor: "bg-blue-500"
+  },
+  { 
+    id: "USDC/USDT", name: "USD Coin", base: "USDC", 
+    price: 3450.8, change: -1.40,
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
+    subtitle: "USDC",
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "BNB/USDT", name: "BNB", base: "BNB", 
     price: 3450.8, change: -1.40,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
     subtitle: "BNB",
+<<<<<<< HEAD
     bgColor: "bg-white-500"
+=======
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "SOL/USDT", name: "Solana", base: "SOL", 
     price: 3450.8, change: -1.40,
     icon: "https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756",
     subtitle: "SOL",
+<<<<<<< HEAD
     bgColor: "bg-white-500"
+=======
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "DOGE/USDT", name: "Dogecoin", base: "DOGE", 
     price: 0.31793, change: -0.11,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
     subtitle: "DOGE",
+<<<<<<< HEAD
     bgColor: "bg-white-400"
+=======
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "ADA/USDT", name: "Cardano", base: "ADA", 
     price: 0.8802, change: -2.00,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
     subtitle: "ADA",
+<<<<<<< HEAD
     bgColor: "bg-white-400"
+=======
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "TRX/USDT", name: "Tron", base: "TRX", 
     price: 0.2582, change: -2.23,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png",
     subtitle: "TRX",
+<<<<<<< HEAD
     bgColor: "bg-white-500"
+=======
+    bgColor: "bg-blue-500"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
   },
   { 
     id: "ETH/USDT", name: "Ethereum", base: "ETH", 
@@ -111,7 +160,11 @@ const INITIAL_PAIRS: TradingPair[] = [
   { 
     id: "UNI/USDT", name: "Uniswap", base: "UNI", 
     price: 13.769, change: -5.87,
+<<<<<<< HEAD
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png",
+=======
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png",
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
     subtitle: "Uniswap",
     bgColor: "bg-white-400"
   },
@@ -160,7 +213,11 @@ const INITIAL_PAIRS: TradingPair[] = [
   { 
     id: "OP/USDT", name: "Optimism", base: "OP", 
     price: 1.897, change: -3.41,
+<<<<<<< HEAD
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/11840.png",
+=======
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/12419.png",
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
     subtitle: "Optimism",
     bgColor: "bg-white-400"
   },
@@ -174,7 +231,11 @@ const INITIAL_PAIRS: TradingPair[] = [
   { 
     id: "AAVE/USDT", name: "Aave", base: "AAVE", 
     price: 368.56, change: -2.19,
+<<<<<<< HEAD
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png",
+=======
+    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7256.png",
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
     subtitle: "Aave",
     bgColor: "bg-white-400"
   },
@@ -249,13 +310,21 @@ export default function Trading() {
               onClick={() => router.push(`/trading/${encodeURIComponent(pair.id)}`)}
             >
               <div className="flex items-center gap-3">
+<<<<<<< HEAD
                 <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white overflow-hidden">
+=======
+                <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
                   <Image
                     src={pair.icon}
                     alt={pair.name}
                     width={32}
                     height={32}
+<<<<<<< HEAD
                     className="object-contain"
+=======
+                    className="object-cover"
+>>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
                   />
                 </div>
                 <div>

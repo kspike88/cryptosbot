@@ -36,7 +36,7 @@ export default function TradingPairPage() {
   
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
-  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
+  const [tradeType, setTr  adeType] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
   const [pair, setPair] = useState<any>(null)
   const [transactions, setTransactions] = useState<Transaction[]>([])
