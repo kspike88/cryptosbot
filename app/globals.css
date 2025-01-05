@@ -4,33 +4,29 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
-<<<<<<< HEAD
   --background-start-rgb: 214, 214, 214;
   --background-end-rgb: 214, 214, 214;
-=======
-  --background-start-rgb: 235, 235, 235;
-  --background-end-rgb: 235, 235, 235;
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
+  --primary-glow: conic-gradient(
+    from 180deg at 50% 50%,
+    #16abff33 0deg,
+    #0885ff33 55deg,
+    #54d6ff33 120deg,
+    #0071ff33 160deg,
+    transparent 360deg
+  );
+  --secondary-glow: radial-gradient(
+    rgba(255, 255, 255, 1),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-start-rgb));
 }
-<<<<<<< HEAD
 
-@keyframes slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
 }
-
-.animate-slide-up {
-  animation: slide-up 0.3s ease-out;
-}
-
-=======
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
