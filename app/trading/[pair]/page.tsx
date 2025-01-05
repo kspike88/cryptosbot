@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
@@ -148,6 +148,13 @@ export default function TradingPairPage() {
     }
     setTransactions(prev => [newTransaction, ...prev])
     setAmount('')
+  }
+
+  const formatDuration = (duration: string) => {
+    const ms = DURATION_MAP[duration]
+    const minutes = Math.floor(ms / 60000)
+    const seconds = Math.floor((ms % 60000) / 1000)
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
   if (!pair) return null
@@ -314,4 +321,3 @@ export default function TradingPairPage() {
     </div>
   )
 }
-

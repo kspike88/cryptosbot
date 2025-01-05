@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
@@ -27,10 +27,10 @@ export function TradingModal({ isOpen, onClose, pair, onTransactionComplete }: T
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
   const [transactions, setTransactions] = useState<Array<{
-    id: string;
-    type: 'buy' | 'sell';
-    amount: string;
-    timestamp: number;
+    id: string
+    type: 'buy' | 'sell'
+    amount: string
+    timestamp: number
   }>>([])
 
   useEffect(() => {
@@ -200,7 +200,6 @@ export function TradingModal({ isOpen, onClose, pair, onTransactionComplete }: T
             Продать
           </button>
         </div>
-<<<<<<< HEAD
 
         {showTradePanel && (
           <div className="fixed inset-x-0 bottom-0 bg-[#1c1c1c] rounded-t-xl animate-slide-up">
@@ -254,21 +253,7 @@ export function TradingModal({ isOpen, onClose, pair, onTransactionComplete }: T
             </div>
           </div>
         )}
-=======
-        
-        <div ref={chartContainerRef} className="w-full h-[calc(100vh-200px)]" />
-        
-        <div className="p-4 grid grid-cols-2 gap-4 absolute bottom-0 left-0 right-0">
-          <button className="py-3 px-6 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors text-center">
-            Купить
-          </button>
-          <button className="py-3 px-6 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-center">
-            Продать
-          </button>
-        </div>
->>>>>>> e18488812e45c3ca6abf25cfc2545794884db9b6
       </div>
     </div>
   )
 }
-

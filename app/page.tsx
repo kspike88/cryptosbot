@@ -1,38 +1,51 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Navigation } from '@/components/navigation'
-import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
+import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
+import { useParams } from 'next/navigation'
 
 interface Currency {
   id: string
   name: string
   symbol: string
-  rate: string
-  balance: string
-  bgColor: string
-  textColor: string
-  icon: React.ReactNode
-  isVisible: boolean
-}
-
-interface Crypto {
-  id: string
-  name: string
-  symbol: string
-  balance: number
-  price: number
   bgColor: string
   textColor: string
   icon: string
   isVisible: boolean
 }
 
+interface Crypto {
+  id: string
+  name: string
+  price: number
+  balance: number
+  icon: string
+}
+
+interface Transaction {
+  id: string
+  type: 'buy' | 'sell'
+  amount: string
+  timestamp: number
+  expiryTime: number
+}
+
+const DURATION_MAP = {
+  '30s': 30 * 1000,
+  '1m': 60 * 1000,
+  '5m': 5 * 60 * 1000,
+  '15m': 15 * 60 * 1000,
+  '30m': 30 * 60 * 1000,
+  '1h': 60 * 60 * 1000,
+}
+
 const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
 
-const INITIAL_CURRENCIES = [
+const INITIAL_CURRENCIES: Currency[] = [
   {
     id: 'RUB',
     name: 'Российский рубль',
@@ -42,7 +55,8 @@ const INITIAL_CURRENCIES = [
     icon: '₽',
     isVisible: true,
   },
-]
+  // Add other currencies here if needed
+];
 
 const INITIAL_CRYPTOS = [
   {
@@ -72,7 +86,8 @@ const INITIAL_CRYPTOS = [
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
     isVisible: true,
   },
-]
+  // Add other cryptos here if needed
+];
 
 export default function Home() {
   const [balance] = useState('0.00$')
@@ -80,6 +95,17 @@ export default function Home() {
   const [currencies, setCurrencies] = useState<Currency[]>([])
   const [cryptos, setCryptos] = useState<Crypto[]>([])
   const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({})
+  const params = useParams()
+  const pairId = decodeURIComponent(params.pair as string)
+  
+  const chartContainerRef = useRef<HTMLDivElement>(null)
+  const [candleData, setCandleData] = useState<any[]>([])
+  const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
+  const [amount, setAmount] = useState('')
+  const [pair, setPair] = useState<any>(null)
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [showTradeMenu, setShowTradeMenu] = useState(false)
+  const [selectedDuration, setSelectedDuration] = useState('30s')
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
@@ -87,6 +113,7 @@ export default function Home() {
     setUserId(userIdFromUrl)
   }, [])
 
+  // Fetch exchange rates
   useEffect(() => {
     const fetchRates = async () => {
       try {
@@ -100,18 +127,19 @@ export default function Home() {
     fetchRates()
   }, [])
 
+  // Load saved settings
   useEffect(() => {
-    const savedCurrencies = localStorage.getItem('currencies')
-    const savedCryptos = localStorage.getItem('cryptos')
+    const savedCurrencies = localStorage.getItem('currencies');
+    const savedCryptos = localStorage.getItem('cryptos');
 
     if (savedCurrencies) {
-      const parsedCurrencies = JSON.parse(savedCurrencies)
+      const parsedCurrencies = JSON.parse(savedCurrencies);
       setCurrencies(parsedCurrencies.map((c: any) => ({
         ...c,
         rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
         balance: `0.00${c.symbol}`,
         icon: <span className="text-lg text-white">{c.icon}</span>
-      })))
+      })));
     } else {
       setCurrencies(INITIAL_CURRENCIES.map(c => ({
         ...c,
@@ -119,25 +147,51 @@ export default function Home() {
         balance: `0.00${c.symbol}`,
         icon: <span className="text-lg text-white">{c.icon}</span>,
         isVisible: DEFAULT_VISIBLE.includes(c.id)
-      })))
+      })));
     }
     
     if (savedCryptos) {
-      const parsedCryptos = JSON.parse(savedCryptos)
+      const parsedCryptos = JSON.parse(savedCryptos);
       setCryptos(parsedCryptos.map((c: any) => ({
         ...c,
         balance: 0,
         price: 0,
-      })))
+      })));
     } else {
       setCryptos(INITIAL_CRYPTOS.map(c => ({
         ...c,
         balance: 0,
         price: 0,
         isVisible: DEFAULT_VISIBLE.includes(c.id)
-      })))
+      })));
     }
-  }, [exchangeRates])
+  }, [exchangeRates]);
+
+  useEffect(() => {
+    // Clean expired transactions
+    const interval = setInterval(() => {
+      const now = Date.now()
+      setTransactions(prev => prev.filter(t => t.expiryTime > now))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    // Fetch pair data
+    const fetchPair = async () => {
+      // Fetch pair data logic here
+    }
+
+    fetchPair()
+  }, [pairId])
+
+  const formatDuration = (duration: string) => {
+    const ms = DURATION_MAP[duration]
+    const minutes = Math.floor(ms / 60000)
+    const seconds = Math.floor((ms % 60000) / 1000)
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  }
 
   return (
     <main className="pb-20">
