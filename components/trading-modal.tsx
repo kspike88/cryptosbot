@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
-import { createChart, UTCTimestamp } from 'lightweight-charts'
+import { useEffect, useRef, useState } from 'react'
+import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 
@@ -27,10 +27,10 @@ export function TradingModal({ isOpen, onClose, pair, onTransactionComplete }: T
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
   const [transactions, setTransactions] = useState<Array<{
-    id: string
-    type: 'buy' | 'sell'
-    amount: string
-    timestamp: number
+    id: string;
+    type: 'buy' | 'sell';
+    amount: string;
+    timestamp: number;
   }>>([])
 
   useEffect(() => {
@@ -257,3 +257,4 @@ export function TradingModal({ isOpen, onClose, pair, onTransactionComplete }: T
     </div>
   )
 }
+
