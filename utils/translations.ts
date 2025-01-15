@@ -1,10 +1,10 @@
-import { TranslationKey } from '@/types/app'
-// import { TranslationKey } from '@/app/types/app'
+// import { TranslationKey } from '@/types/app'
+import { TranslationKey } from '@/app/types/app'
 
 export const translations: TranslationKey = {
   deposit: {
     ru: 'Пополнить',
-    en: 'Deposit'
+    en: 'Deposit',
   },
   withdraw: {
     ru: 'Вывести',
@@ -139,12 +139,12 @@ export const translations: TranslationKey = {
   navigation: {
     assets: {
       ru: 'Активы',
-      en: 'Assets'
+      en: 'Assets',
     },
     trading: {
       ru: 'Торговля',
-      en: 'Trading'
-    }
+      en: 'Trading',
+    },
   }
 }
 

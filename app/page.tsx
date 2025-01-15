@@ -100,43 +100,50 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [currencies, setCurrencies] = useState<Currency[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('currencies')
-      if (saved) {
-        return JSON.parse(saved)
-      }
+
+  // Синхронізація мови
+  const [language, setLanguage] = useState<Language>('ru')
+  useEffect(() => {
+    const preferredLanguage = localStorage.getItem('preferred-language') as Language
+    if (preferredLanguage) {
+      setLanguage(preferredLanguage)
     }
-    return INITIAL_CURRENCIES.map(c => ({
+  }, [])
+
+  // Синхронізація валют
+  const [currencies, setCurrencies] = useState<Currency[]>(
+    INITIAL_CURRENCIES.map((c) => ({
       ...c,
       rate: `0.00${c.symbol}`,
       balance: `0.00`,
-      isVisible: DEFAULT_VISIBLE.includes(c.id)
-    }))
-  })
-  const [cryptos, setCryptos] = useState<Crypto[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('cryptos')
-      if (saved) {
-        return JSON.parse(saved)
-      }
+      isVisible: DEFAULT_VISIBLE.includes(c.id),
+    })),
+  )
+  useEffect(() => {
+    const savedCurrencies = localStorage.getItem('currencies')
+    if (savedCurrencies) {
+      setCurrencies(JSON.parse(savedCurrencies))
     }
-    return INITIAL_CRYPTOS.map(c => ({
+  }, [])
+
+  // Синхронізація криптовалют
+  const [cryptos, setCryptos] = useState<Crypto[]>(
+    INITIAL_CRYPTOS.map((c) => ({
       ...c,
       balance: 0,
       price: 0,
       change: 0,
-      isVisible: DEFAULT_VISIBLE.includes(c.id)
-    }))
-  })
-  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
-  const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('preferred-language') as Language) || 'ru'
+      isVisible: DEFAULT_VISIBLE.includes(c.id),
+    })),
+  )
+  useEffect(() => {
+    const savedCryptos = localStorage.getItem('cryptos')
+    if (savedCryptos) {
+      setCryptos(JSON.parse(savedCryptos))
     }
-    return 'ru'
-  })
+  }, [])
 
+  // Отримання userId з URL
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
     const userIdFromUrl = searchParams.get('user_id') || '0'
@@ -154,18 +161,17 @@ export default function Home() {
   return (
     <main className="pb-20">
       <div className="fixed top-4 right-4 z-10">
-        <LanguageSwitcher 
-          language={language}
-          onChange={setLanguage}
-        />
+        <LanguageSwitcher language={language} onChange={setLanguage} />
       </div>
 
       <div className="p-4 space-y-6">
         <div className="text-center">
-          <div className="text-sm text-gray-700">{translations.totalBalance[language]}</div>
+          <div suppressHydrationWarning className="text-sm text-gray-700">
+            {translations.totalBalance[language]}
+          </div>
           <div className="text-2xl font-bold text-black">{balance}</div>
           <div className="flex justify-center gap-8 mt-4">
-            <button 
+            <button
               className="flex flex-col items-center text-blue-500"
               onClick={() => setIsDepositModalOpen(true)}
             >
@@ -214,31 +220,35 @@ export default function Home() {
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">{translations.fiatAccounts[language]}</div>
           <div className="space-y-2">
-            {currencies.filter(currency => currency.isVisible).map((currency) => (
-              <div 
-                key={currency.id} 
-                className="flex items-center justify-between p-3 rounded bg-ededed"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm ${currency.bgColor}`}>
-                    {currency.icon}
-                  </div>
-                  <div>
-                    <div className="text-gray-900">
-                      {translations.currencyNames[currency.id as keyof typeof translations.currencyNames][language]}
+            {currencies
+              .filter((currency) => currency.isVisible)
+              .map((currency) => (
+                <div
+                  key={currency.id}
+                  className="flex items-center justify-between p-3 rounded bg-ededed"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm ${currency.bgColor}`}
+                    >
+                      {currency.icon}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      {`${currency.rate}`}
+                    <div>
+                      <div className="text-gray-900">
+                        {
+                          translations.currencyNames[
+                            currency.id as keyof typeof translations.currencyNames
+                          ][language]
+                        }
+                      </div>
+                      <div className="text-sm text-gray-600">{`${currency.rate}`}</div>
                     </div>
                   </div>
+                  <div className="text-gray-900">{`${currency.balance}${currency.symbol}`}</div>
                 </div>
-                <div className="text-gray-900">
-                  {`${currency.balance}${currency.symbol}`}
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
-          <Link 
+          <Link
             href="/settings?type=currencies"
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded-xl bg-gray-100"
           >
@@ -250,31 +260,33 @@ export default function Home() {
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">{translations.cryptocurrencies[language]}</div>
           <div className="space-y-2">
-            {cryptos.filter(crypto => crypto.isVisible).map((crypto) => (
-              <div 
-                key={crypto.id} 
-                className="flex items-center justify-between p-3 rounded bg-ededed"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm bg-white">
-                    <Image
-                      src={crypto.icon || "/placeholder.svg"}
-                      alt={crypto.name}
-                      width={32}
-                      height={32}
-                      className="object-cover"
-                    />
+            {cryptos
+              .filter((crypto) => crypto.isVisible)
+              .map((crypto) => (
+                <div
+                  key={crypto.id}
+                  className="flex items-center justify-between p-3 rounded bg-ededed"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm bg-white">
+                      <Image
+                        src={crypto.icon || '/placeholder.svg'}
+                        alt={crypto.name}
+                        width={32}
+                        height={32}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{crypto.name}</div>
+                      <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-gray-900">{crypto.name}</div>
-                    <div className="text-sm text-gray-600">${crypto.price.toFixed(2)}</div>
-                  </div>
+                  <div className="text-gray-900">{crypto.balance}</div>
                 </div>
-                <div className="text-gray-900">{crypto.balance}</div>
-              </div>
-            ))}
+              ))}
           </div>
-          <Link 
+          <Link
             href="/settings?type=cryptos"
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded-xl bg-gray-100"
           >
@@ -283,15 +295,10 @@ export default function Home() {
           </Link>
         </div>
       </div>
-      
+
       <Navigation />
-      
-      <DepositModal 
-        isOpen={isDepositModalOpen}
-        onClose={() => setIsDepositModalOpen(false)}
-        language={language}
-      />
+
+      <DepositModal isOpen={false} onClose={() => {}} language={language} />
     </main>
   )
 }
-
