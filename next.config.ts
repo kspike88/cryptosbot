@@ -4,18 +4,29 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 's2.coinmarketcap.com'
+        hostname: 's2.coinmarketcap.com',
       },
       {
         protocol: 'https',
-        hostname: 'assets.coingecko.com'
+        hostname: 'assets.coingecko.com',
       },
       {
         protocol: 'https',
-        hostname: 'static.vecteezy.com'
-      }
+        hostname: 'static.vecteezy.com',
+      },
+    ],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'ngrok-skip-browser-warning', value: '1' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+        ],
+      },
     ]
-  }
+  },
 }
 
 module.exports = nextConfig
