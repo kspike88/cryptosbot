@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  compiler: {
+    styledComponents: true, // Optional, depending on usage
+  },
   images: {
     remotePatterns: [
       {
@@ -25,13 +29,8 @@ const nextConfig = {
           { key: 'Access-Control-Allow-Origin', value: '*' },
         ],
       },
-    ]
-  },
-}
-
-module.exports = {
-  reactStrictMode: true,
-  compiler: {
-    styledComponents: true, // Optional, depending on usage
+    ];
   },
 };
+
+module.exports = nextConfig;
