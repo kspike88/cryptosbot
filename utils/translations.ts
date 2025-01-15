@@ -1,6 +1,6 @@
-import { Translations } from '../types/translations'
+import { TranslationKey } from '@/app/types/app'
 
-export const translations: Translations = {
+export const translations: TranslationKey = {
   deposit: {
     ru: 'Пополнить',
     en: 'Deposit'
