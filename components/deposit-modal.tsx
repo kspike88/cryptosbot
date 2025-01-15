@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import { Language, DepositCurrency } from '@/app/types/app'
+import type { Language, DepositCurrency } from '@/app/types/app'
 import { translations } from '@/utils/translations'
 
 interface DepositModalProps {

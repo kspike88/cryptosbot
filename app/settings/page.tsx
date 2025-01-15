@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react'
+import { Suspense, useState, useEffect } from 'react';
 import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -16,7 +16,7 @@ interface Item {
   isVisible: boolean
 }
 
-const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
+const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT'];
 
 const INITIAL_CURRENCIES: Item[] = [
   {
@@ -267,7 +267,7 @@ const INITIAL_CRYPTOS: Item[] = [
   },
 ]
 
-type Language = 'ru' | 'en'
+type Language = 'ru' | 'en';
 
 const translations = {
   favorites: {
@@ -296,11 +296,12 @@ const translations = {
       en: 'Belarusian Ruble',
     },
   },
-}
+};
+
 
 function SettingsContent() {
   const searchParams = useSearchParams()
-  const type = searchParams ? searchParams.get('type') : null
+  const type = searchParams.get('type')
 
   const [currencies, setCurrencies] = useState<Item[]>(() => {
     if (typeof window !== 'undefined') {
@@ -309,7 +310,7 @@ function SettingsContent() {
         return JSON.parse(saved)
       }
     }
-    return INITIAL_CURRENCIES.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+    return INITIAL_CURRENCIES.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   const [cryptos, setCryptos] = useState<Item[]>(() => {
@@ -319,27 +320,27 @@ function SettingsContent() {
         return JSON.parse(saved)
       }
     }
-    return INITIAL_CRYPTOS.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+    return INITIAL_CRYPTOS.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies))
-  }, [currencies])
+    localStorage.setItem('currencies', JSON.stringify(currencies));
+  }, [currencies]);
 
   useEffect(() => {
-    localStorage.setItem('cryptos', JSON.stringify(cryptos))
-  }, [cryptos])
+    localStorage.setItem('cryptos', JSON.stringify(cryptos));
+  }, [cryptos]);
 
   const toggleVisibility = (id: string, type: 'currency' | 'crypto') => {
-    const setter = type === 'currency' ? setCurrencies : setCryptos
+    const setter = type === 'currency' ? setCurrencies : setCryptos;
     setter((current) => {
       const updated = current.map((item) =>
-        item.id === id ? { ...item, isVisible: !item.isVisible } : item,
-      )
-      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated))
-      return updated
-    })
-  }
+        item.id === id ? { ...item, isVisible: !item.isVisible } : item
+      );
+      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   return (
     <div className="pt-16 p-4">
@@ -397,7 +398,7 @@ function SettingsContent() {
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
                     <Image
-                      src={crypto.icon || '/placeholder.svg'}
+                      src={crypto.icon || "/placeholder.svg"}
                       alt={crypto.name}
                       width={24}
                       height={24}
@@ -435,7 +436,7 @@ export default function SettingsPage() {
   })
 
   const searchParams = useSearchParams()
-  const type = searchParams ? searchParams.get('type') : null
+  const type = searchParams.get('type')
 
   const [currencies, setCurrencies] = useState<Item[]>(() => {
     if (typeof window !== 'undefined') {
@@ -444,7 +445,7 @@ export default function SettingsPage() {
         return JSON.parse(saved)
       }
     }
-    return INITIAL_CURRENCIES.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+    return INITIAL_CURRENCIES.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   const [cryptos, setCryptos] = useState<Item[]>(() => {
@@ -454,27 +455,27 @@ export default function SettingsPage() {
         return JSON.parse(saved)
       }
     }
-    return INITIAL_CRYPTOS.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+    return INITIAL_CRYPTOS.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies))
-  }, [currencies])
+    localStorage.setItem('currencies', JSON.stringify(currencies));
+  }, [currencies]);
 
   useEffect(() => {
-    localStorage.setItem('cryptos', JSON.stringify(cryptos))
-  }, [cryptos])
+    localStorage.setItem('cryptos', JSON.stringify(cryptos));
+  }, [cryptos]);
 
   const toggleVisibility = (id: string, type: 'currency' | 'crypto') => {
-    const setter = type === 'currency' ? setCurrencies : setCryptos
+    const setter = type === 'currency' ? setCurrencies : setCryptos;
     setter((current) => {
       const updated = current.map((item) =>
-        item.id === id ? { ...item, isVisible: !item.isVisible } : item,
-      )
-      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated))
-      return updated
-    })
-  }
+        item.id === id ? { ...item, isVisible: !item.isVisible } : item
+      );
+      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   return (
     <main className="min-h-screen bg-white">
@@ -509,11 +510,7 @@ export default function SettingsPage() {
                     <div>
                       <div className="text-gray-900">{currency.id}</div>
                       <div className="text-sm text-gray-500">
-                        {
-                          translations.currencyNames[
-                            currency.id as keyof typeof translations.currencyNames
-                          ][language]
-                        }
+                        {translations.currencyNames[currency.id as keyof typeof translations.currencyNames][language]}
                       </div>
                     </div>
                   </div>
@@ -537,9 +534,7 @@ export default function SettingsPage() {
 
         {type === 'cryptos' && (
           <div>
-            <h3 className="text-sm text-blue-500/80 mb-2">
-              {translations.cryptocurrencies[language]}
-            </h3>
+            <h3 className="text-sm text-blue-500/80 mb-2">{translations.cryptocurrencies[language]}</h3>
             <div className="space-y-2">
               {cryptos.map((crypto) => (
                 <div
@@ -549,7 +544,7 @@ export default function SettingsPage() {
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
                       <Image
-                        src={crypto.icon || '/placeholder.svg'}
+                        src={crypto.icon || "/placeholder.svg"}
                         alt={crypto.name}
                         width={24}
                         height={24}
@@ -567,11 +562,7 @@ export default function SettingsPage() {
                       crypto.isVisible ? 'text-blue-500' : 'text-gray-400'
                     }`}
                   >
-                    {crypto.isVisible ? (
-                      <Eye className="h-5 w-5" />
-                    ) : (
-                      <EyeOff className="h-5 w-5" />
-                    )}
+                    {crypto.isVisible ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                   </button>
                 </div>
               ))}
@@ -582,3 +573,4 @@ export default function SettingsPage() {
     </main>
   )
 }
+

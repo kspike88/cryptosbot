@@ -28,7 +28,7 @@ const DURATION_MAP = {
 
 export default function TradingPairPage() {
   const params = useParams()
-  const pairId = decodeURIComponent(params?.pair as string || '');
+  const pairId = decodeURIComponent(params.pair as string)
   
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
