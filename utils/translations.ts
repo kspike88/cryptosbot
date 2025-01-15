@@ -1,5 +1,5 @@
-import { TranslationKey } from '@/types/app'
-// import { TranslationKey } from '@/app/types/app'
+// import { TranslationKey } from '@/types/app'
+import { TranslationKey } from '@/app/types/app'
 
 export const translations: TranslationKey = {
   deposit: {
@@ -147,4 +147,3 @@ export const translations: TranslationKey = {
     }
   }
 }
-
