@@ -98,17 +98,17 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 ]
 
 export default function Home() {
-  const [balance] = useState('0.00$')
-  const [userId, setUserId] = useState<string>('0')
+  const [balance] = useState('0.00$');
+  const [userId, setUserId] = useState<string>('0');
 
   // Синхронізація мови
-  const [language, setLanguage] = useState<Language>('ru')
+  const [language, setLanguage] = useState<Language>('ru');
   useEffect(() => {
-    const preferredLanguage = localStorage.getItem('preferred-language') as Language
+    const preferredLanguage = localStorage.getItem('preferred-language') as Language;
     if (preferredLanguage) {
-      setLanguage(preferredLanguage)
+      setLanguage(preferredLanguage);
     }
-  }, [])
+  }, []);
 
   // Синхронізація валют
   const [currencies, setCurrencies] = useState<Currency[]>(
@@ -117,14 +117,17 @@ export default function Home() {
       rate: `0.00${c.symbol}`,
       balance: `0.00`,
       isVisible: DEFAULT_VISIBLE.includes(c.id),
-    })),
-  )
+    }))
+  );
   useEffect(() => {
-    const savedCurrencies = localStorage.getItem('currencies')
+    const savedCurrencies = localStorage.getItem('currencies');
     if (savedCurrencies) {
-      setCurrencies(JSON.parse(savedCurrencies))
+      setCurrencies(JSON.parse(savedCurrencies));
     }
-  }, [])
+  }, []);
+  useEffect(() => {
+    localStorage.setItem('currencies', JSON.stringify(currencies));
+  }, [currencies]);
 
   // Синхронізація криптовалют
   const [cryptos, setCryptos] = useState<Crypto[]>(
@@ -134,29 +137,27 @@ export default function Home() {
       price: 0,
       change: 0,
       isVisible: DEFAULT_VISIBLE.includes(c.id),
-    })),
-  )
+    }))
+  );
   useEffect(() => {
-    const savedCryptos = localStorage.getItem('cryptos')
+    const savedCryptos = localStorage.getItem('cryptos');
     if (savedCryptos) {
-      setCryptos(JSON.parse(savedCryptos))
+      setCryptos(JSON.parse(savedCryptos));
     }
-  }, [])
+  }, []);
+  useEffect(() => {
+    localStorage.setItem('cryptos', JSON.stringify(cryptos));
+  }, [cryptos]);
 
   // Отримання userId з URL
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
-    const userIdFromUrl = searchParams.get('user_id') || '0'
-    setUserId(userIdFromUrl)
-  }, [])
+    const searchParams = new URLSearchParams(window.location.search);
+    const userIdFromUrl = searchParams.get('user_id') || '0';
+    setUserId(userIdFromUrl);
+  }, []);
 
-  useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies))
-  }, [currencies])
-
-  useEffect(() => {
-    localStorage.setItem('cryptos', JSON.stringify(cryptos))
-  }, [cryptos])
+  // Модальне вікно для депозиту
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
 
   return (
     <main className="pb-20">
@@ -169,7 +170,9 @@ export default function Home() {
           <div suppressHydrationWarning className="text-sm text-gray-700">
             {translations.totalBalance[language]}
           </div>
-          <div className="text-2xl font-bold text-black">{balance}</div>
+          <div className="text-2xl font-bold text-black">
+            {balance}
+          </div>
           <div className="flex justify-center gap-8 mt-4">
             <button
               className="flex flex-col items-center text-blue-500"
@@ -298,7 +301,11 @@ export default function Home() {
 
       <Navigation />
 
-      <DepositModal isOpen={false} onClose={() => {}} language={language} />
+      <DepositModal 
+        isOpen={false}
+        onClose={() => {}}
+        language={language}
+      />
     </main>
   )
 }
