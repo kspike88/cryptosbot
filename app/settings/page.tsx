@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react'
 import { Eye, EyeOff, ChevronLeft } from 'lucide-react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -16,7 +16,7 @@ interface Item {
   isVisible: boolean
 }
 
-const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT'];
+const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
 
 const INITIAL_CURRENCIES: Item[] = [
   {
@@ -269,7 +269,7 @@ const INITIAL_CRYPTOS: Item[] = [
 
 function SettingsContent() {
   const searchParams = useSearchParams()
-  const type = searchParams.get('type')
+  const type = searchParams ? searchParams.get('type') : null
 
   const [currencies, setCurrencies] = useState<Item[]>(() => {
     if (typeof window !== 'undefined') {
@@ -278,7 +278,7 @@ function SettingsContent() {
         return JSON.parse(saved)
       }
     }
-    return INITIAL_CURRENCIES.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+    return INITIAL_CURRENCIES.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   const [cryptos, setCryptos] = useState<Item[]>(() => {
@@ -288,27 +288,27 @@ function SettingsContent() {
         return JSON.parse(saved)
       }
     }
-    return INITIAL_CRYPTOS.map(c => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+    return INITIAL_CRYPTOS.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
   })
 
   useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies));
-  }, [currencies]);
+    localStorage.setItem('currencies', JSON.stringify(currencies))
+  }, [currencies])
 
   useEffect(() => {
-    localStorage.setItem('cryptos', JSON.stringify(cryptos));
-  }, [cryptos]);
+    localStorage.setItem('cryptos', JSON.stringify(cryptos))
+  }, [cryptos])
 
   const toggleVisibility = (id: string, type: 'currency' | 'crypto') => {
-    const setter = type === 'currency' ? setCurrencies : setCryptos;
+    const setter = type === 'currency' ? setCurrencies : setCryptos
     setter((current) => {
       const updated = current.map((item) =>
-        item.id === id ? { ...item, isVisible: !item.isVisible } : item
-      );
-      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated));
-      return updated;
-    });
-  };
+        item.id === id ? { ...item, isVisible: !item.isVisible } : item,
+      )
+      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated))
+      return updated
+    })
+  }
 
   return (
     <div className="pt-16 p-4">
@@ -412,4 +412,3 @@ export default function SettingsPage() {
     </main>
   )
 }
-
