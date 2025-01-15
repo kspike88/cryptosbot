@@ -6,18 +6,6 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 214, 214;
   --background-end-rgb: 214, 214, 214;
-  --primary-glow: conic-gradient(
-    from 180deg at 50% 50%,
-    #16abff33 0deg,
-    #0885ff33 55deg,
-    #54d6ff33 120deg,
-    #0071ff33 160deg,
-    transparent 360deg
-  );
-  --secondary-glow: radial-gradient(
-    rgba(255, 255, 255, 1),
-    rgba(255, 255, 255, 0)
-  );
 }
 
 body {
@@ -25,8 +13,16 @@ body {
   background: rgb(var(--background-start-rgb));
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
   }
 }
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+

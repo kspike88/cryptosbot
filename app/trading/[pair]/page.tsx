@@ -6,6 +6,8 @@ import { ArrowLeft } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { translations } from '@/utils/translations'
+import type { Language } from '@/app/types/app'
 
 interface Transaction {
   id: string
@@ -26,7 +28,7 @@ const DURATION_MAP = {
 
 export default function TradingPairPage() {
   const params = useParams()
-  const pairId = decodeURIComponent(params.pair as string)
+  const pairId = decodeURIComponent(params?.pair as string || '');
   
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
@@ -36,6 +38,12 @@ export default function TradingPairPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [showTradeMenu, setShowTradeMenu] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState('30s')
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('preferred-language') as Language) || 'ru'
+    }
+    return 'ru'
+  })
 
   useEffect(() => {
     // Clean expired transactions
@@ -159,21 +167,9 @@ export default function TradingPairPage() {
           <Link href="/trading" className="text-gray-600">
             <ArrowLeft className="h-6 w-6" />
           </Link>
-          <div className="ml-4 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-white overflow-hidden">
-              <Image
-                src={pair.icon}
-                alt={pair.name}
-                width={24}
-                height={24}
-                className="object-contain"
-              />
-            </div>
-            <div className="text-[#6b7280]">
-              <div className="font-medium">{pair.id}</div>
-              <div className="text-sm">
-                ${pair.price.toFixed(2)}
-              </div>
+          <div className="ml-4 text-[#6b7280]">
+            <div className="font-medium">
+              {tradeType === 'buy' ? translations.buyingBTC[language] : translations.sellingBTC[language]}
             </div>
           </div>
         </div>
@@ -189,7 +185,7 @@ export default function TradingPairPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <div>Нет сделок</div>
+                <div>{translations.noDeals[language]}</div>
               </div>
             ) : (
               <div className="space-y-2">
@@ -197,7 +193,7 @@ export default function TradingPairPage() {
                   <div key={transaction.id} className="p-3 bg-white rounded-lg">
                     <div className="flex justify-between items-center">
                       <div className="text-[#6b7280]">
-                        <div>{transaction.type === 'buy' ? 'Покупка' : 'Продажа'}</div>
+                        <div>{transaction.type === 'buy' ? translations.buy[language] : translations.sell[language]}</div>
                         <div className="text-sm">
                           {new Date(transaction.timestamp).toLocaleTimeString()}
                         </div>
@@ -225,7 +221,7 @@ export default function TradingPairPage() {
               }}
               className="flex-1 py-3 rounded-lg text-white font-medium bg-emerald-500"
             >
-              Купить
+              {translations.buy[language]}
             </button>
             <button
               onClick={() => {
@@ -234,7 +230,7 @@ export default function TradingPairPage() {
               }}
               className="flex-1 py-3 rounded-lg text-white font-medium bg-[#ef4444]"
             >
-              Продать
+              {translations.sell[language]}
             </button>
           </div>
 
@@ -247,7 +243,7 @@ export default function TradingPairPage() {
                   </button>
                   <div className="ml-4 text-[#6b7280]">
                     <div className="font-medium">
-                      {tradeType === 'buy' ? 'Покупка' : 'Продажа'} {pair.base}
+                      {tradeType === 'buy' ? translations.buyingBTC[language] : translations.sellingBTC[language]}
                     </div>
                   </div>
                 </div>
@@ -265,7 +261,7 @@ export default function TradingPairPage() {
                       <span className="text-3xl text-gray-400">USDT</span>
                     </div>
                     <div className="text-sm text-gray-400 mt-2">
-                      Доступно: 0 USDT
+                      {translations.available[language]}: 0 USDT
                     </div>
                   </div>
 
@@ -296,14 +292,17 @@ export default function TradingPairPage() {
                       tradeType === 'buy' ? 'bg-emerald-500' : 'bg-[#ef4444]'
                     }`}
                   >
-                    {tradeType === 'buy' ? 'Купить' : 'Продать'} {pair.base}
+                    {tradeType === 'buy' 
+                      ? `${translations.buy[language]} ${pair?.base}`
+                      : `${translations.sell[language]} ${pair?.base}`
+                    }
                   </button>
                   
                   <button
                     onClick={() => setShowTradeMenu(false)}
                     className="w-full mt-2 py-4 text-gray-600 font-medium"
                   >
-                    Назад
+                    {translations.back[language]}
                   </button>
                 </div>
               </div>

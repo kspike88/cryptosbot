@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/navigation'
+import { DepositModal } from '@/components/deposit-modal'
 import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import type { Language } from '@/app/types/app'
+import { translations } from '@/utils/translations'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
 interface Currency {
   id: string
@@ -24,6 +28,7 @@ interface Crypto {
   symbol: string
   balance: number
   price: number
+  change: number
   bgColor: string
   textColor: string
   icon: string
@@ -32,7 +37,7 @@ interface Crypto {
 
 const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
 
-const INITIAL_CURRENCIES = [
+const INITIAL_CURRENCIES: Omit<Currency, 'rate' | 'balance'>[] = [
   {
     id: 'RUB',
     name: 'Российский рубль',
@@ -42,9 +47,27 @@ const INITIAL_CURRENCIES = [
     icon: '₽',
     isVisible: true,
   },
+  {
+    id: 'KZT',
+    name: 'Казахстанский тенге',
+    symbol: '₸',
+    bgColor: 'bg-[#28c281]',
+    textColor: 'text-white',
+    icon: '₸',
+    isVisible: false,
+  },
+  {
+    id: 'BYN',
+    name: 'Белорусский рубль',
+    symbol: 'Br',
+    bgColor: 'bg-[#28c281]',
+    textColor: 'text-white',
+    icon: 'Br',
+    isVisible: false,
+  },
 ]
 
-const INITIAL_CRYPTOS = [
+const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
   {
     id: 'BTC',
     name: 'Bitcoin',
@@ -77,9 +100,42 @@ const INITIAL_CRYPTOS = [
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [currencies, setCurrencies] = useState<Currency[]>([])
-  const [cryptos, setCryptos] = useState<Crypto[]>([])
-  const [exchangeRates, setExchangeRates] = useState<{ [key: string]: number }>({})
+  const [currencies, setCurrencies] = useState<Currency[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('currencies')
+      if (saved) {
+        return JSON.parse(saved)
+      }
+    }
+    return INITIAL_CURRENCIES.map(c => ({
+      ...c,
+      rate: `0.00${c.symbol}`,
+      balance: `0.00`,
+      isVisible: DEFAULT_VISIBLE.includes(c.id)
+    }))
+  })
+  const [cryptos, setCryptos] = useState<Crypto[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cryptos')
+      if (saved) {
+        return JSON.parse(saved)
+      }
+    }
+    return INITIAL_CRYPTOS.map(c => ({
+      ...c,
+      balance: 0,
+      price: 0,
+      change: 0,
+      isVisible: DEFAULT_VISIBLE.includes(c.id)
+    }))
+  })
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('preferred-language') as Language) || 'ru'
+    }
+    return 'ru'
+  })
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search)
@@ -88,90 +144,56 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
-    const fetchRates = async () => {
-      try {
-        const response = await fetch('https://open.er-api.com/v6/latest/USD')
-        const data = await response.json()
-        setExchangeRates(data.rates)
-      } catch (error) {
-        console.error('Error fetching exchange rates:', error)
-      }
-    }
-    fetchRates()
-  }, [])
+    localStorage.setItem('currencies', JSON.stringify(currencies))
+  }, [currencies])
 
   useEffect(() => {
-    const savedCurrencies = localStorage.getItem('currencies')
-    const savedCryptos = localStorage.getItem('cryptos')
-
-    if (savedCurrencies) {
-      const parsedCurrencies = JSON.parse(savedCurrencies)
-      setCurrencies(parsedCurrencies.map((c: any) => ({
-        ...c,
-        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
-        balance: `0.00${c.symbol}`,
-        icon: <span className="text-lg text-white">{c.icon}</span>
-      })))
-    } else {
-      setCurrencies(INITIAL_CURRENCIES.map(c => ({
-        ...c,
-        rate: `${exchangeRates[c.id]?.toFixed(2) || '0.00'}${c.symbol}`,
-        balance: `0.00${c.symbol}`,
-        icon: <span className="text-lg text-white">{c.icon}</span>,
-        isVisible: DEFAULT_VISIBLE.includes(c.id)
-      })))
-    }
-    
-    if (savedCryptos) {
-      const parsedCryptos = JSON.parse(savedCryptos)
-      setCryptos(parsedCryptos.map((c: any) => ({
-        ...c,
-        balance: 0,
-        price: 0,
-      })))
-    } else {
-      setCryptos(INITIAL_CRYPTOS.map(c => ({
-        ...c,
-        balance: 0,
-        price: 0,
-        isVisible: DEFAULT_VISIBLE.includes(c.id)
-      })))
-    }
-  }, [exchangeRates])
+    localStorage.setItem('cryptos', JSON.stringify(cryptos))
+  }, [cryptos])
 
   return (
     <main className="pb-20">
+      <div className="fixed top-4 right-4 z-10">
+        <LanguageSwitcher 
+          language={language}
+          onChange={setLanguage}
+        />
+      </div>
+
       <div className="p-4 space-y-6">
         <div className="text-center">
-          <div className="text-sm text-gray-700">Общий баланс</div>
+          <div className="text-sm text-gray-700">{translations.totalBalance[language]}</div>
           <div className="text-2xl font-bold text-black">{balance}</div>
           <div className="flex justify-center gap-8 mt-4">
-            <button className="flex flex-col items-center text-blue-500">
+            <button 
+              className="flex flex-col items-center text-blue-500"
+              onClick={() => setIsDepositModalOpen(true)}
+            >
               <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowUpFromLine className="h-6 w-6" />
               </div>
-              <span className="text-sm mt-1">Пополнить</span>
+              <span className="text-sm mt-1">{translations.deposit[language]}</span>
             </button>
             <button className="flex flex-col items-center text-blue-500">
               <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowDownToLine className="h-6 w-6" />
               </div>
-              <span className="text-sm mt-1">Вывести</span>
+              <span className="text-sm mt-1">{translations.withdraw[language]}</span>
             </button>
             <button className="flex flex-col items-center text-blue-500">
               <div className="p-2 rounded-full bg-blue-500/10">
                 <RefreshCcw className="h-6 w-6" />
               </div>
-              <span className="text-sm mt-1">Обменять</span>
+              <span className="text-sm mt-1">{translations.exchange[language]}</span>
             </button>
           </div>
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">Профиль</div>
+          <div className="text-sm text-blue-500/80">{translations.profile[language]}</div>
           <div className="p-3 rounded bg-ededed">
             <div className="text-gray-900">{userId}</div>
-            <div className="text-gray-600 text-sm">ID аккаунта</div>
+            <div className="text-gray-600 text-sm">{translations.accountId[language]}</div>
           </div>
           <div className="p-3 rounded bg-ededed">
             <div className="flex items-center gap-2 text-gray-900">
@@ -181,16 +203,16 @@ export default function Home() {
               <span>/</span>
               <span className="text-red-500">0</span>
             </div>
-            <div className="text-gray-600 text-sm">Статистика</div>
+            <div className="text-gray-600 text-sm">{translations.statistics[language]}</div>
           </div>
           <div className="p-3 rounded bg-ededed">
             <div className="text-gray-900">0,00 USDT</div>
-            <div className="text-gray-600 text-sm">Объем торгов</div>
+            <div className="text-gray-600 text-sm">{translations.tradingVolume[language]}</div>
           </div>
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">Валютные счета</div>
+          <div className="text-sm text-blue-500/80">{translations.fiatAccounts[language]}</div>
           <div className="space-y-2">
             {currencies.filter(currency => currency.isVisible).map((currency) => (
               <div 
@@ -198,29 +220,35 @@ export default function Home() {
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${currency.bgColor}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm ${currency.bgColor}`}>
                     {currency.icon}
                   </div>
                   <div>
-                    <div className="text-gray-900">{currency.name}</div>
-                    <div className="text-sm text-gray-600">{currency.rate}</div>
+                    <div className="text-gray-900">
+                      {translations.currencyNames[currency.id as keyof typeof translations.currencyNames][language]}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {`${currency.rate}`}
+                    </div>
                   </div>
                 </div>
-                <div className="text-gray-900">{currency.balance}</div>
+                <div className="text-gray-900">
+                  {`${currency.balance}${currency.symbol}`}
+                </div>
               </div>
             ))}
           </div>
           <Link 
             href="/settings?type=currencies"
-            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
+            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded-xl bg-gray-100"
           >
             <Settings2 className="w-5 h-5" />
-            <span className="text-sm">Настроить</span>
+            <span className="text-sm">{translations.settings[language]}</span>
           </Link>
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">Криптовалюты</div>
+          <div className="text-sm text-blue-500/80">{translations.cryptocurrencies[language]}</div>
           <div className="space-y-2">
             {cryptos.filter(crypto => crypto.isVisible).map((crypto) => (
               <div 
@@ -228,9 +256,9 @@ export default function Home() {
                 className="flex items-center justify-between p-3 rounded bg-ededed"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm bg-white">
                     <Image
-                      src={crypto.icon}
+                      src={crypto.icon || "/placeholder.svg"}
                       alt={crypto.name}
                       width={32}
                       height={32}
@@ -248,14 +276,21 @@ export default function Home() {
           </div>
           <Link 
             href="/settings?type=cryptos"
-            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded bg-gray-100"
+            className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded-xl bg-gray-100"
           >
             <Settings2 className="w-5 h-5" />
-            <span className="text-sm">Настроить</span>
+            <span className="text-sm">{translations.settings[language]}</span>
           </Link>
         </div>
       </div>
+      
       <Navigation />
+      
+      <DepositModal 
+        isOpen={isDepositModalOpen}
+        onClose={() => setIsDepositModalOpen(false)}
+        language={language}
+      />
     </main>
   )
 }

@@ -267,6 +267,37 @@ const INITIAL_CRYPTOS: Item[] = [
   },
 ]
 
+type Language = 'ru' | 'en'
+
+const translations = {
+  favorites: {
+    ru: 'Избранное',
+    en: 'Favorites',
+  },
+  fiatAccounts: {
+    ru: 'Валютные счета',
+    en: 'Fiat Accounts',
+  },
+  cryptocurrencies: {
+    ru: 'Криптовалюты',
+    en: 'Cryptocurrencies',
+  },
+  currencyNames: {
+    RUB: {
+      ru: 'Российский рубль',
+      en: 'Russian Ruble',
+    },
+    KZT: {
+      ru: 'Казахстанский тенге',
+      en: 'Kazakhstani Tenge',
+    },
+    BYN: {
+      ru: 'Белорусский рубль',
+      en: 'Belarusian Ruble',
+    },
+  },
+}
+
 function SettingsContent() {
   const searchParams = useSearchParams()
   const type = searchParams ? searchParams.get('type') : null
@@ -366,7 +397,7 @@ function SettingsContent() {
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
                     <Image
-                      src={crypto.icon}
+                      src={crypto.icon || '/placeholder.svg'}
                       alt={crypto.name}
                       width={24}
                       height={24}
@@ -396,6 +427,55 @@ function SettingsContent() {
 }
 
 export default function SettingsPage() {
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('preferred-language') as Language) || 'ru'
+    }
+    return 'ru'
+  })
+
+  const searchParams = useSearchParams()
+  const type = searchParams ? searchParams.get('type') : null
+
+  const [currencies, setCurrencies] = useState<Item[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('currencies')
+      if (saved) {
+        return JSON.parse(saved)
+      }
+    }
+    return INITIAL_CURRENCIES.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+  })
+
+  const [cryptos, setCryptos] = useState<Item[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cryptos')
+      if (saved) {
+        return JSON.parse(saved)
+      }
+    }
+    return INITIAL_CRYPTOS.map((c) => ({ ...c, isVisible: DEFAULT_VISIBLE.includes(c.id) }))
+  })
+
+  useEffect(() => {
+    localStorage.setItem('currencies', JSON.stringify(currencies))
+  }, [currencies])
+
+  useEffect(() => {
+    localStorage.setItem('cryptos', JSON.stringify(cryptos))
+  }, [cryptos])
+
+  const toggleVisibility = (id: string, type: 'currency' | 'crypto') => {
+    const setter = type === 'currency' ? setCurrencies : setCryptos
+    setter((current) => {
+      const updated = current.map((item) =>
+        item.id === id ? { ...item, isVisible: !item.isVisible } : item,
+      )
+      localStorage.setItem(type === 'currency' ? 'currencies' : 'cryptos', JSON.stringify(updated))
+      return updated
+    })
+  }
+
   return (
     <main className="min-h-screen bg-white">
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
@@ -406,9 +486,99 @@ export default function SettingsPage() {
           <h1 className="ml-4 text-xl font-medium text-gray-900">BTSE Trade</h1>
         </div>
       </div>
-      <Suspense fallback={<div className="p-4 text-gray-500">Loading settings...</div>}>
-        <SettingsContent />
-      </Suspense>
+      <div className="pt-16 p-4">
+        <h2 className="text-sm text-gray-500 mb-4">{translations.favorites[language]}</h2>
+
+        {type === 'currencies' && (
+          <div>
+            <h3 className="text-sm text-blue-500/80">{translations.fiatAccounts[language]}</h3>
+            <div className="space-y-2">
+              {currencies.map((currency) => (
+                <div
+                  key={currency.id}
+                  className="flex items-center justify-between p-3 rounded bg-gray-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-8 h-8 ${
+                        currency.isVisible ? 'bg-[#28c281]' : 'bg-gray-400'
+                      } rounded-full flex items-center justify-center text-white`}
+                    >
+                      <span className="text-lg">{currency.icon}</span>
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{currency.id}</div>
+                      <div className="text-sm text-gray-500">
+                        {
+                          translations.currencyNames[
+                            currency.id as keyof typeof translations.currencyNames
+                          ][language]
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => toggleVisibility(currency.id, 'currency')}
+                    className={`p-2 rounded-full ${
+                      currency.isVisible ? 'text-blue-500' : 'text-gray-400'
+                    }`}
+                  >
+                    {currency.isVisible ? (
+                      <Eye className="h-5 w-5" />
+                    ) : (
+                      <EyeOff className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {type === 'cryptos' && (
+          <div>
+            <h3 className="text-sm text-blue-500/80 mb-2">
+              {translations.cryptocurrencies[language]}
+            </h3>
+            <div className="space-y-2">
+              {cryptos.map((crypto) => (
+                <div
+                  key={crypto.id}
+                  className="flex items-center justify-between p-3 rounded bg-gray-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 flex items-center justify-center overflow-hidden">
+                      <Image
+                        src={crypto.icon || '/placeholder.svg'}
+                        alt={crypto.name}
+                        width={24}
+                        height={24}
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="text-gray-900">{crypto.id}</div>
+                      <div className="text-sm text-gray-500">{crypto.name}</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => toggleVisibility(crypto.id, 'crypto')}
+                    className={`p-2 rounded-full ${
+                      crypto.isVisible ? 'text-blue-500' : 'text-gray-400'
+                    }`}
+                  >
+                    {crypto.isVisible ? (
+                      <Eye className="h-5 w-5" />
+                    ) : (
+                      <EyeOff className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </main>
   )
 }

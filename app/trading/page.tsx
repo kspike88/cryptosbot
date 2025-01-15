@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react'
 import { Navigation } from '@/components/navigation'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import type { Language } from '@/app/types/app'
+import { translations } from '@/utils/translations'
 
 interface TradingPair {
   id: string
@@ -19,177 +21,186 @@ interface TradingPair {
 const INITIAL_PAIRS: TradingPair[] = [
   { 
     id: "BTC/USDT", name: "Bitcoin", base: "BTC", 
-    price: 98315.21, change: -0.11,
+    price: 0, change: 0,
     icon: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
     subtitle: "Bitcoin",
-    bgColor: "bg-white-500"
-  },
-  { 
-    id: "USDT/USDT", name: "Tether", base: "USDT", 
-    price: 1.0, change: 0.00,
-    icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/825.png",
-    subtitle: "Tether",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "TON/USDT", name: "Toncoin", base: "TON", 
-    price: 5848.0, change: -1.40,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png",
     subtitle: "TON",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "USDC/USDT", name: "USD Coin", base: "USDC", 
-    price: 1.0, change: 0.00,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png",
     subtitle: "USDC",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "BNB/USDT", name: "BNB", base: "BNB", 
-    price: 3450.8, change: -1.40,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
     subtitle: "BNB",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "SOL/USDT", name: "Solana", base: "SOL", 
-    price: 3450.8, change: -1.40,
+    price: 0, change: 0,
     icon: "https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756",
     subtitle: "SOL",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "DOGE/USDT", name: "Dogecoin", base: "DOGE", 
-    price: 0.31793, change: -0.11,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
     subtitle: "DOGE",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "ADA/USDT", name: "Cardano", base: "ADA", 
-    price: 0.8802, change: -2.00,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
     subtitle: "ADA",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "TRX/USDT", name: "Tron", base: "TRX", 
-    price: 0.2582, change: -2.23,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png",
     subtitle: "TRX",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "ETH/USDT", name: "Ethereum", base: "ETH", 
-    price: 3450.8, change: -1.40,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
     subtitle: "Ethereum",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "DOT/USDT", name: "Polkadot", base: "DOT", 
-    price: 6.969, change: -2.45,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/6636.png",
     subtitle: "Polkadot",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "LINK/USDT", name: "Chainlink", base: "LINK", 
-    price: 24.34, change: -1.10,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png",
     subtitle: "Chainlink",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "LTC/USDT", name: "Litecoin", base: "LTC", 
-    price: 107.52, change: -2.08,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2.png",
     subtitle: "Litecoin",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "UNI/USDT", name: "Uniswap", base: "UNI", 
-    price: 13.769, change: -5.87,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png",
     subtitle: "Uniswap",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "ETC/USDT", name: "Ethereum Classic", base: "ETC", 
-    price: 27.09, change: -4.04,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/1321.png",
     subtitle: "Ethereum Classic",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "APT/USDT", name: "Aptos", base: "APT", 
-    price: 9.54, change: -2.85,
+    price: 0, change: 0,
     icon: "https://assets.coingecko.com/coins/images/26455/standard/aptos_round.png?1696525528",
     subtitle: "Aptos",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "FIL/USDT", name: "Filecoin", base: "FIL", 
-    price: 5.261, change: -4.71,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/2280.png",
     subtitle: "Filecoin",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "RENDER/USDT", name: "Render", base: "RENDER", 
-    price: 7.513, change: -5.32,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/5690.png",
     subtitle: "Render",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "ATOM/USDT", name: "Cosmos", base: "ATOM", 
-    price: 6.877, change: -3.39,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/3794.png",
     subtitle: "Cosmos",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "SUI/USDT", name: "Sui", base: "SUI", 
-    price: 4.5175, change: -2.03,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/20947.png",
     subtitle: "Sui",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "OP/USDT", name: "Optimism", base: "OP", 
-    price: 1.897, change: -3.41,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/11840.png",
     subtitle: "Optimism",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "GRT/USDT", name: "The Graph", base: "GRT", 
-    price: 0.2214, change: -4.85,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/6719.png",
     subtitle: "The Graph",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   },
   { 
     id: "AAVE/USDT", name: "Aave", base: "AAVE", 
-    price: 368.56, change: -2.19,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png",
     subtitle: "Aave",
-    bgColor: "bg-white-400"
+    bgColor: "bg-white"
   },
   { 
     id: "NOT/USDT", name: "Notcoin", base: "NOT", 
-    price: 0.00671, change: -2.39,
+    price: 0, change: 0,
     icon: "https://s2.coinmarketcap.com/static/img/coins/64x64/28850.png",
     subtitle: "Notcoin",
-    bgColor: "bg-white-500"
+    bgColor: "bg-white"
   }
 ]
 
 export default function Trading() {
   const router = useRouter()
   const [pairs, setPairs] = useState<TradingPair[]>(INITIAL_PAIRS)
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== 'undefined') {
+      return (localStorage.getItem('preferred-language') as Language) || 'ru'
+    }
+    return 'ru'
+  })
+
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      const newLanguage = localStorage.getItem('preferred-language') as Language
+      setLanguage(newLanguage || 'ru')
+    }
+
+    window.addEventListener('storage', handleLanguageChange)
+    return () => window.removeEventListener('storage', handleLanguageChange)
+  }, [])
 
   useEffect(() => {
     const fetchPrices = async () => {
@@ -199,7 +210,7 @@ export default function Trading() {
         
         setPairs(currentPairs => 
           currentPairs.map(pair => {
-            const binancePair = data.find((p: any) => p.symbol === pair.base + 'USDT')
+            const binancePair = data.find((p: any) => p.symbol === `${pair.base}USDT`)
             if (binancePair) {
               return {
                 ...pair,
@@ -216,42 +227,25 @@ export default function Trading() {
     }
 
     fetchPrices()
-    const apiInterval = setInterval(fetchPrices, 60000)
-
-    // Simulate real-time updates
-    const simulateRealTimeUpdates = () => {
-      setPairs(currentPairs => 
-        currentPairs.map(pair => ({
-          ...pair,
-          price: pair.price * (1 + (Math.random() - 0.5) * 0.001),
-          change: pair.change + (Math.random() - 0.5) * 0.1
-        }))
-      )
-    }
-
-    const simulationInterval = setInterval(simulateRealTimeUpdates, 1000)
-
-    return () => {
-      clearInterval(apiInterval)
-      clearInterval(simulationInterval)
-    }
+    const interval = setInterval(fetchPrices, 10000)
+    return () => clearInterval(interval)
   }, [])
 
   return (
     <main className="pb-20 bg-white">
       <div className="p-4">
-        <h1 className="text-sm text-blue-500 mb-3">Торговая пара</h1>
+        <h1 className="text-sm text-blue-500 mb-3">{translations.tradingPair[language]}</h1>
         <div className="space-y-2">
           {pairs.map((pair) => (
             <div 
               key={pair.id} 
-              className="flex items-center justify-between p-3 rounded hover:bg-gray-50 transition-colors cursor-pointer"
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
               onClick={() => router.push(`/trading/${encodeURIComponent(pair.id)}`)}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white overflow-hidden">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white overflow-hidden shadow-sm border border-gray-100">
                   <Image
-                    src={pair.icon}
+                    src={pair.icon || "/placeholder.svg"}
                     alt={pair.name}
                     width={32}
                     height={32}
@@ -259,15 +253,15 @@ export default function Trading() {
                   />
                 </div>
                 <div>
-                  <div className="text-[#6b7280]">{pair.id}</div>
-                  <div className="text-sm text-[#6b7280]">{pair.subtitle}</div>
+                  <div className="text-gray-900 font-medium">{pair.id}</div>
+                  <div className="text-sm text-gray-500">{pair.subtitle}</div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-[#6b7280]">
+                <div className="text-gray-900 font-medium">
                   {pair.price.toFixed(2)}
                 </div>
-                <div className={`text-sm ${pair.change >= 0 ? 'text-green-500' : 'text-[#ef4444]'}`}>
+                <div className={`text-sm ${pair.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {pair.change >= 0 ? '+' : ''}{pair.change.toFixed(2)}%
                 </div>
               </div>
