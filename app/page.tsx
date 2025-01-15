@@ -6,36 +6,116 @@ import { DepositModal } from '@/components/deposit-modal'
 import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import type { Language } from '@/app/types/app'
-import { translations } from '@/utils/translations'
 import { LanguageSwitcher } from '@/components/language-switcher'
 
+type Language = 'ru' | 'en';
+type CurrencyId = 'RUB' | 'KZT' | 'BYN';
+
+interface Translations {
+  totalBalance: Record<Language, string>;
+  deposit: Record<Language, string>;
+  withdraw: Record<Language, string>;
+  exchange: Record<Language, string>;
+  profile: Record<Language, string>;
+  accountId: Record<Language, string>;
+  statistics: Record<Language, string>;
+  tradingVolume: Record<Language, string>;
+  fiatAccounts: Record<Language, string>;
+  cryptocurrencies: Record<Language, string>;
+  settings: Record<Language, string>;
+  currencyNames: {
+    [K in CurrencyId]: Record<Language, string>;
+  };
+}
+
+export const translations: Translations = {
+  totalBalance: {
+    ru: 'Общий баланс',
+    en: 'Total Balance'
+  },
+  deposit: {
+    ru: 'Пополнить',
+    en: 'Deposit'
+  },
+  withdraw: {
+    ru: 'Вывести',
+    en: 'Withdraw'
+  },
+  exchange: {
+    ru: 'Обмен',
+    en: 'Exchange'
+  },
+  profile: {
+    ru: 'Профиль',
+    en: 'Profile'
+  },
+  accountId: {
+    ru: 'ID аккаунта',
+    en: 'Account ID'
+  },
+  statistics: {
+    ru: 'Статистика',
+    en: 'Statistics'
+  },
+  tradingVolume: {
+    ru: 'Объем торгов',
+    en: 'Trading Volume'
+  },
+  fiatAccounts: {
+    ru: 'Фиатные счета',
+    en: 'Fiat Accounts'
+  },
+  cryptocurrencies: {
+    ru: 'Криптовалюты',
+    en: 'Cryptocurrencies'
+  },
+  settings: {
+    ru: 'Настройки',
+    en: 'Settings'
+  },
+  currencyNames: {
+    RUB: {
+      ru: 'Российский рубль',
+      en: 'Russian Ruble'
+    },
+    KZT: {
+      ru: 'Казахстанский тенге',
+      en: 'Kazakhstani Tenge'
+    },
+    BYN: {
+      ru: 'Белорусский рубль',
+      en: 'Belarusian Ruble'
+    }
+  }
+};
+
 interface Currency {
-  id: string
-  name: string
-  symbol: string
-  rate: string
-  balance: string
-  bgColor: string
-  textColor: string
-  icon: React.ReactNode
-  isVisible: boolean
+  id: CurrencyId;
+  name: string;
+  symbol: string;
+  rate: string;
+  balance: string;
+  bgColor: string;
+  textColor: string;
+  icon: React.ReactNode;
+  isVisible: boolean;
 }
 
 interface Crypto {
-  id: string
-  name: string
-  symbol: string
-  balance: number
-  price: number
-  change: number
-  bgColor: string
-  textColor: string
-  icon: string
-  isVisible: boolean
+  id: string;
+  name: string;
+  symbol: string;
+  balance: number;
+  price: number;
+  change: number;
+  bgColor: string;
+  textColor: string;
+  icon: string;
+  isVisible: boolean;
 }
 
-const DEFAULT_VISIBLE = ['RUB', 'BTC', 'ETH', 'USDT']
+const DEFAULT_VISIBLE: CurrencyId[] = ['RUB'];
+const DEFAULT_VISIBLE_CRYPTO = ['BTC', 'ETH', 'USDT'];
 
 const INITIAL_CURRENCIES: Omit<Currency, 'rate' | 'balance'>[] = [
   {
@@ -65,7 +145,7 @@ const INITIAL_CURRENCIES: Omit<Currency, 'rate' | 'balance'>[] = [
     icon: 'Br',
     isVisible: false,
   },
-]
+];
 
 const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
   {
@@ -95,14 +175,33 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
     isVisible: true,
   },
-]
+];
 
 export default function Home() {
   const [balance] = useState('0.00$');
   const [userId, setUserId] = useState<string>('0');
-
-  // Синхронізація мови
   const [language, setLanguage] = useState<Language>('ru');
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+
+  const [currencies, setCurrencies] = useState<Currency[]>(() =>
+    INITIAL_CURRENCIES.map((c) => ({
+      ...c,
+      rate: `0.00${c.symbol}`,
+      balance: '0.00',
+      isVisible: DEFAULT_VISIBLE.includes(c.id),
+    }))
+  );
+
+  const [cryptos, setCryptos] = useState<Crypto[]>(() =>
+    INITIAL_CRYPTOS.map((c) => ({
+      ...c,
+      balance: 0,
+      price: 0,
+      change: 0,
+      isVisible: DEFAULT_VISIBLE_CRYPTO.includes(c.id),
+    }))
+  );
+
   useEffect(() => {
     const preferredLanguage = localStorage.getItem('preferred-language') as Language;
     if (preferredLanguage) {
@@ -110,54 +209,33 @@ export default function Home() {
     }
   }, []);
 
-  // Синхронізація валют
-  const [currencies, setCurrencies] = useState<Currency[]>(
-    INITIAL_CURRENCIES.map((c) => ({
-      ...c,
-      rate: `0.00${c.symbol}`,
-      balance: `0.00`,
-      isVisible: DEFAULT_VISIBLE.includes(c.id),
-    }))
-  );
   useEffect(() => {
     const savedCurrencies = localStorage.getItem('currencies');
     if (savedCurrencies) {
       setCurrencies(JSON.parse(savedCurrencies));
     }
   }, []);
-  useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies));
-  }, [currencies]);
 
-  // Синхронізація криптовалют
-  const [cryptos, setCryptos] = useState<Crypto[]>(
-    INITIAL_CRYPTOS.map((c) => ({
-      ...c,
-      balance: 0,
-      price: 0,
-      change: 0,
-      isVisible: DEFAULT_VISIBLE.includes(c.id),
-    }))
-  );
   useEffect(() => {
     const savedCryptos = localStorage.getItem('cryptos');
     if (savedCryptos) {
       setCryptos(JSON.parse(savedCryptos));
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('currencies', JSON.stringify(currencies));
+  }, [currencies]);
+
   useEffect(() => {
     localStorage.setItem('cryptos', JSON.stringify(cryptos));
   }, [cryptos]);
 
-  // Отримання userId з URL
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const userIdFromUrl = searchParams.get('user_id') || '0';
     setUserId(userIdFromUrl);
   }, []);
-
-  // Модальне вікно для депозиту
-  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
 
   return (
     <main className="pb-20">
@@ -238,13 +316,9 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="text-gray-900">
-                        {
-                          translations.currencyNames[
-                            currency.id as keyof typeof translations.currencyNames
-                          ][language]
-                        }
+                        {translations.currencyNames[currency.id][language]}
                       </div>
-                      <div className="text-sm text-gray-600">{`${currency.rate}`}</div>
+                      <div className="text-sm text-gray-600">{currency.rate}</div>
                     </div>
                   </div>
                   <div className="text-gray-900">{`${currency.balance}${currency.symbol}`}</div>
@@ -302,10 +376,10 @@ export default function Home() {
       <Navigation />
 
       <DepositModal 
-        isOpen={false}
-        onClose={() => {}}
+        isOpen={isDepositModalOpen}
+        onClose={() => setIsDepositModalOpen(false)}
         language={language}
       />
     </main>
-  )
+  );
 }
