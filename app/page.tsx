@@ -7,87 +7,10 @@ import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-
 import Link from 'next/link'
 import Image from 'next/image'
 import { LanguageSwitcher } from '@/components/language-switcher'
+import { homeTranslations } from '@/utils/home-translations'
 
 type Language = 'ru' | 'en';
 type CurrencyId = 'RUB' | 'KZT' | 'BYN';
-
-interface Translations {
-  totalBalance: Record<Language, string>;
-  deposit: Record<Language, string>;
-  withdraw: Record<Language, string>;
-  exchange: Record<Language, string>;
-  profile: Record<Language, string>;
-  accountId: Record<Language, string>;
-  statistics: Record<Language, string>;
-  tradingVolume: Record<Language, string>;
-  fiatAccounts: Record<Language, string>;
-  cryptocurrencies: Record<Language, string>;
-  settings: Record<Language, string>;
-  currencyNames: {
-    [K in CurrencyId]: Record<Language, string>;
-  };
-}
-
-export const translations: Translations = {
-  totalBalance: {
-    ru: 'Общий баланс',
-    en: 'Total Balance'
-  },
-  deposit: {
-    ru: 'Пополнить',
-    en: 'Deposit'
-  },
-  withdraw: {
-    ru: 'Вывести',
-    en: 'Withdraw'
-  },
-  exchange: {
-    ru: 'Обмен',
-    en: 'Exchange'
-  },
-  profile: {
-    ru: 'Профиль',
-    en: 'Profile'
-  },
-  accountId: {
-    ru: 'ID аккаунта',
-    en: 'Account ID'
-  },
-  statistics: {
-    ru: 'Статистика',
-    en: 'Statistics'
-  },
-  tradingVolume: {
-    ru: 'Объем торгов',
-    en: 'Trading Volume'
-  },
-  fiatAccounts: {
-    ru: 'Фиатные счета',
-    en: 'Fiat Accounts'
-  },
-  cryptocurrencies: {
-    ru: 'Криптовалюты',
-    en: 'Cryptocurrencies'
-  },
-  settings: {
-    ru: 'Настройки',
-    en: 'Settings'
-  },
-  currencyNames: {
-    RUB: {
-      ru: 'Российский рубль',
-      en: 'Russian Ruble'
-    },
-    KZT: {
-      ru: 'Казахстанский тенге',
-      en: 'Kazakhstani Tenge'
-    },
-    BYN: {
-      ru: 'Белорусский рубль',
-      en: 'Belarusian Ruble'
-    }
-  }
-};
 
 interface Currency {
   id: CurrencyId;
@@ -246,7 +169,7 @@ export default function Home() {
       <div className="p-4 space-y-6">
         <div className="text-center">
           <div suppressHydrationWarning className="text-sm text-gray-700">
-            {translations.totalBalance[language]}
+            {homeTranslations.totalBalance[language]}
           </div>
           <div className="text-2xl font-bold text-black">
             {balance}
@@ -259,28 +182,28 @@ export default function Home() {
               <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowUpFromLine className="h-6 w-6" />
               </div>
-              <span className="text-sm mt-1">{translations.deposit[language]}</span>
+              <span className="text-sm mt-1">{homeTranslations.deposit[language]}</span>
             </button>
             <button className="flex flex-col items-center text-blue-500">
               <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowDownToLine className="h-6 w-6" />
               </div>
-              <span className="text-sm mt-1">{translations.withdraw[language]}</span>
+              <span className="text-sm mt-1">{homeTranslations.withdraw[language]}</span>
             </button>
             <button className="flex flex-col items-center text-blue-500">
               <div className="p-2 rounded-full bg-blue-500/10">
                 <RefreshCcw className="h-6 w-6" />
               </div>
-              <span className="text-sm mt-1">{translations.exchange[language]}</span>
+              <span className="text-sm mt-1">{homeTranslations.exchange[language]}</span>
             </button>
           </div>
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">{translations.profile[language]}</div>
+          <div className="text-sm text-blue-500/80">{homeTranslations.profile[language]}</div>
           <div className="p-3 rounded bg-ededed">
             <div className="text-gray-900">{userId}</div>
-            <div className="text-gray-600 text-sm">{translations.accountId[language]}</div>
+            <div className="text-gray-600 text-sm">{homeTranslations.accountId[language]}</div>
           </div>
           <div className="p-3 rounded bg-ededed">
             <div className="flex items-center gap-2 text-gray-900">
@@ -290,16 +213,16 @@ export default function Home() {
               <span>/</span>
               <span className="text-red-500">0</span>
             </div>
-            <div className="text-gray-600 text-sm">{translations.statistics[language]}</div>
+            <div className="text-gray-600 text-sm">{homeTranslations.statistics[language]}</div>
           </div>
           <div className="p-3 rounded bg-ededed">
             <div className="text-gray-900">0,00 USDT</div>
-            <div className="text-gray-600 text-sm">{translations.tradingVolume[language]}</div>
+            <div className="text-gray-600 text-sm">{homeTranslations.tradingVolume[language]}</div>
           </div>
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">{translations.fiatAccounts[language]}</div>
+          <div className="text-sm text-blue-500/80">{homeTranslations.fiatAccounts[language]}</div>
           <div className="space-y-2">
             {currencies
               .filter((currency) => currency.isVisible)
@@ -316,7 +239,7 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="text-gray-900">
-                        {translations.currencyNames[currency.id][language]}
+                        {homeTranslations.currencyNames[currency.id][language]}
                       </div>
                       <div className="text-sm text-gray-600">{currency.rate}</div>
                     </div>
@@ -330,12 +253,12 @@ export default function Home() {
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded-xl bg-gray-100"
           >
             <Settings2 className="w-5 h-5" />
-            <span className="text-sm">{translations.settings[language]}</span>
+            <span className="text-sm">{homeTranslations.settings[language]}</span>
           </Link>
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">{translations.cryptocurrencies[language]}</div>
+          <div className="text-sm text-blue-500/80">{homeTranslations.cryptocurrencies[language]}</div>
           <div className="space-y-2">
             {cryptos
               .filter((crypto) => crypto.isVisible)
@@ -368,7 +291,7 @@ export default function Home() {
             className="flex items-center justify-center gap-2 p-3 text-gray-600 hover:text-gray-900 rounded-xl bg-gray-100"
           >
             <Settings2 className="w-5 h-5" />
-            <span className="text-sm">{translations.settings[language]}</span>
+            <span className="text-sm">{homeTranslations.settings[language]}</span>
           </Link>
         </div>
       </div>
@@ -383,3 +306,4 @@ export default function Home() {
     </main>
   );
 }
+
