@@ -18,6 +18,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'static.vecteezy.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn4.cdn-telegram.org',
+      },
     ],
   },
   async headers() {

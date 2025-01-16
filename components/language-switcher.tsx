@@ -5,6 +5,11 @@ import { Globe } from 'lucide-react'
 import type { Language } from '@/app/types/app'
 import { translations } from '@/utils/translations'
 
+import "@next-languages/flags/style.css";
+
+import { Ru } from "@next-languages/flags";
+import { Gb } from "@next-languages/flags";
+
 interface LanguageSwitcherProps {
   language: Language
   onChange: (language: Language) => void
@@ -13,21 +18,22 @@ interface LanguageSwitcherProps {
 interface LanguageOption {
   code: Language
   name: string
-  flag: string
+  flag: string | JSX.Element
 }
 
 const LANGUAGES: LanguageOption[] = [
   {
     code: 'ru',
     name: translations.russian?.ru || 'Русский',
-    flag: '🇷🇺'
+    flag: <span style={{ color: 'black' }}>🇷🇺</span>
   },
   {
     code: 'en',
     name: translations.english?.ru || 'English',
-    flag: '🇺🇸'
+    flag: <span style={{ color: 'black' }}>🇺🇸</span>
   }
 ]
+
 
 export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false)
@@ -39,8 +45,8 @@ export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) 
   }
 
   if (!translations) {
-    console.error('Translations object is undefined');
-    return null;
+    console.error('Translations object is undefined')
+    return null
   }
 
   return (
@@ -75,4 +81,3 @@ export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) 
     </div>
   )
 }
-

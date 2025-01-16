@@ -214,10 +214,10 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
                       <Image
-                        src="/crypto-bot-icon.png"
+                        src="https://cdn4.cdn-telegram.org/file/mfdI8bBuQmJY5ft8JU97lZR41NGi8_sPYfeBqxCkLMIFVct3DKS9XuqiBtO-WboiTxNLbmjzpPzcR24OUqI9xFd4PnvFO91H8cb3xXEer31ly62GOWecC6n-PuQXUoL_rpvNLESnqulUipnstQp8lAEpzQsRdnDD2v-9BBKcPT7-cSJ-s8oTZyAq8tYpam-jFKwoW7JRKx7KzKNL5_0zv9Q_WBkX5-ekECNlnhn2vwMZKWgHCtKaTnx7HQukHruR7ncfrJhmTX-Mrk7dZ6Vkwb2GDkiaqmhwDKd_jb9Y_tKRthvqEV6d_Fyufok1nApkkqze96cIqRXDqaRYkHeTAQ.jpg"
                         alt="Crypto Bot"
-                        width={24}
-                        height={24}
+                        width={35}
+                        height={35}
                         className="rounded-full"
                       />
                     </div>
