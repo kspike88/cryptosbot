@@ -1,7 +1,6 @@
-// import { TranslationKey } from '@/types/app'
-import { TranslationKey } from '@/app/types/app'
+import type { Translations } from '@/app/types/app'
 
-export const translations: TranslationKey = {
+export const translations: Translations = {
   deposit: {
     ru: 'Пополнить',
     en: 'Deposit',
@@ -46,10 +45,6 @@ export const translations: TranslationKey = {
     ru: 'Настроить',
     en: 'Settings'
   },
-  tradingPair: {
-    ru: 'Торговая пара',
-    en: 'Trading Pair'
-  },
   whatToDeposit: {
     ru: 'Что вы хотите пополнить?',
     en: 'What would you like to deposit?'
@@ -70,46 +65,6 @@ export const translations: TranslationKey = {
     ru: 'Продолжить',
     en: 'Continue'
   },
-  russian: {
-    ru: 'Русский',
-    en: 'Russian'
-  },
-  english: {
-    ru: 'Английский',
-    en: 'English'
-  },
-  noDeals: {
-    ru: 'Нет сделок',
-    en: 'No deals'
-  },
-  favorites: {
-    ru: 'Избранное',
-    en: 'Favorites'
-  },
-  available: {
-    ru: 'Доступно',
-    en: 'Available'
-  },
-  back: {
-    ru: 'Назад',
-    en: 'Back'
-  },
-  buy: {
-    ru: 'Купить',
-    en: 'Buy'
-  },
-  sell: {
-    ru: 'Продать',
-    en: 'Sell'
-  },
-  buyingBTC: {
-    ru: 'Покупка BTC',
-    en: 'Buy BTC'
-  },
-  sellingBTC: {
-    ru: 'Продажа BTC',
-    en: 'Sell BTC'
-  },
   currencyNames: {
     RUB: {
       ru: 'Российский рубль',
@@ -122,29 +77,25 @@ export const translations: TranslationKey = {
     BYN: {
       ru: 'Белорусский рубль',
       en: 'Belarusian Ruble'
-    },
-    USDT: {
-      ru: 'Тезер',
-      en: 'Tether'
-    },
-    BTC: {
-      ru: 'Биткоин',
-      en: 'Bitcoin'
-    },
-    ETH: {
-      ru: 'Эфириум',
-      en: 'Ethereum'
     }
+  },
+  russian: {
+    ru: 'Русский',
+    en: 'Russian'
+  },
+  english: {
+    ru: 'Английский',
+    en: 'English'
   },
   navigation: {
     assets: {
       ru: 'Активы',
-      en: 'Assets',
+      en: 'Assets'
     },
     trading: {
       ru: 'Торговля',
-      en: 'Trading',
-    },
-  }
+      en: 'Trading'
+    }
+  },
 }
 

@@ -10,8 +10,7 @@ import { useState, useEffect } from 'react'
 export function Navigation() {
   const pathname = usePathname()
   const [language, setLanguage] = useState<Language>('ru')
-  
-  // Move localStorage logic to useEffect
+
   useEffect(() => {
     const storedLanguage = localStorage.getItem('preferred-language') as Language
     if (storedLanguage) {
@@ -26,15 +25,20 @@ export function Navigation() {
         className={`flex flex-col items-center ${pathname === '/' ? 'text-purple-500' : 'text-gray-600'}`}
       >
         <Wallet className="h-6 w-6" />
-        <span className="text-sm">{translations.navigation.assets[language]}</span>
+        <span className="text-sm">
+          {translations.navigation?.assets?.[language] || 'Assets'}
+        </span>
       </Link>
       <Link 
         href="/trading"
         className={`flex flex-col items-center ${pathname === '/trading' ? 'text-purple-500' : 'text-gray-600'}`}
       >
         <BarChart2 className="h-6 w-6" />
-        <span className="text-sm">{translations.navigation.trading[language]}</span>
+        <span className="text-sm">
+          {translations.navigation?.trading?.[language] || 'Trading'}
+        </span>
       </Link>
     </div>
   )
 }
+

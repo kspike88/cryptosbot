@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ArrowLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
-import type { Language, DepositCurrency } from '@/app/types/app'
+import type { Language, DepositCurrency, CurrencyId } from '@/app/types/app'
 import { translations } from '@/utils/translations'
 
 interface DepositModalProps {
@@ -93,6 +93,13 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
 
   const isFiat = selectedCurrency && FIAT_CURRENCIES.some(c => c.id === selectedCurrency.id)
 
+  const getCurrencyName = (currency: DepositCurrency) => {
+    if (isFiatCurrency(currency.id)) {
+      return translations.currencyNames[currency.id][language]
+    }
+    return currency.name
+  }
+
   return (
     <div className="fixed inset-0 bg-white z-50">
       <div className="flex flex-col h-full">
@@ -125,7 +132,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                       <div className="text-left">
                         <div className="font-medium text-gray-900">{currency.id}</div>
                         <div className="text-sm text-gray-600">
-                          {translations.currencyNames[currency.id as keyof typeof translations.currencyNames][language]}
+                          {isFiatCurrency(currency.id) && translations.currencyNames[currency.id][language]}
                         </div>
                       </div>
                     </div>
@@ -234,5 +241,9 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
       </div>
     </div>
   )
+}
+
+function isFiatCurrency(id: string): id is CurrencyId {
+  return ['RUB', 'KZT', 'BYN'].includes(id)
 }
 

@@ -19,12 +19,12 @@ interface LanguageOption {
 const LANGUAGES: LanguageOption[] = [
   {
     code: 'ru',
-    name: translations.russian.ru,
+    name: translations.russian?.ru || 'Русский',
     flag: '🇷🇺'
   },
   {
     code: 'en',
-    name: translations.english.ru,
+    name: translations.english?.ru || 'English',
     flag: '🇺🇸'
   }
 ]
@@ -36,6 +36,11 @@ export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) 
     onChange(newLanguage)
     localStorage.setItem('preferred-language', newLanguage)
     setIsOpen(false)
+  }
+
+  if (!translations) {
+    console.error('Translations object is undefined');
+    return null;
   }
 
   return (
@@ -61,7 +66,7 @@ export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) 
                 {lang.flag}
               </span>
               <span className="text-gray-900">
-                {translations[lang.code === 'ru' ? 'russian' : 'english'][language]}
+                {translations[lang.code === 'ru' ? 'russian' : 'english']?.[language] || lang.name}
               </span>
             </button>
           ))}
