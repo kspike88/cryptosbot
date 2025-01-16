@@ -1,9 +1,9 @@
-// First, export the basic types
+// Basic types
 export type Language = 'ru' | 'en'
 export type CurrencyId = 'RUB' | 'KZT' | 'BYN'
 export type CryptoId = 'BTC' | 'ETH' | 'USDT' | 'USDC' | 'TON' | 'BNB' | 'SOL' | 'DOGE' | 'ADA' | 'TRX'
 
-// Then export the interfaces that depend on these types
+// Interfaces
 export interface DepositCurrency {
   id: CurrencyId | CryptoId
   name: string
@@ -19,8 +19,9 @@ export interface TranslationKey {
   }
 }
 
+// Fixed: Changed from mapped type to regular interface with index signature
 export interface CurrencyTranslations {
-  [K in CurrencyId]: {
+  [key in CurrencyId]: {
     ru: string
     en: string
   }
