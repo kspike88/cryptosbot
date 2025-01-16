@@ -298,7 +298,7 @@ const translations = {
   },
 }
 
-export default function SettingsPage() {
+const SettingsContent = () => {
   const searchParams = useSearchParams()
   const type = searchParams.get('type')
 
@@ -368,15 +368,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-white">
-      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
-        <div className="flex items-center p-4">
-          <Link href="/" className="text-gray-600 hover:text-gray-900">
-            <ChevronLeft className="h-6 w-6" />
-          </Link>
-          <h1 className="ml-4 text-xl font-medium text-gray-900">BTSE Trade</h1>
-        </div>
-      </div>
+    <>
       <div className="pt-16 p-4">
         <h2 className="text-sm text-gray-500 mb-4">{translations.favorites[language]}</h2>
 
@@ -470,6 +462,24 @@ export default function SettingsPage() {
           </div>
         )}
       </div>
+    </>
+  )
+}
+
+export default function SettingsPage() {
+  return (
+    <main className="min-h-screen bg-white">
+      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10">
+        <div className="flex items-center p-4">
+          <Link href="/" className="text-gray-600 hover:text-gray-900">
+            <ChevronLeft className="h-6 w-6" />
+          </Link>
+          <h1 className="ml-4 text-xl font-medium text-gray-900">BTSE Trade</h1>
+        </div>
+      </div>
+      <Suspense fallback={<div className="min-h-screen bg-white pt-16 p-4">Loading...</div>}>
+        <SettingsContent />
+      </Suspense>
     </main>
   )
 }
