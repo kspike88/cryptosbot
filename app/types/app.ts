@@ -57,6 +57,7 @@ export interface Translations {
   noDeals: Record<Language, string>
   back: Record<Language, string>
   available: Record<Language, string>
+  tradingPair: Record<Language, string>
 }
 
 export interface Currency {

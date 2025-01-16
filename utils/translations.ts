@@ -125,5 +125,9 @@ export const translations: Translations = {
     ru: 'Доступно',
     en: 'Available'
   },
+  tradingPair: {
+    ru: 'Торговая пара',
+    en: 'Trading Pair'
+  }
 }
 
