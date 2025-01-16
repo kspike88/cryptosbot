@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { translations } from '@/utils/translations'
-import type { Language } from '@/app/types/app'
+import type { Language } from '@/app/types/app'  // Updated import path
 
 interface Transaction {
   id: string
