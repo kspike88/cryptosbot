@@ -97,5 +97,33 @@ export const translations: Translations = {
       en: 'Trading'
     }
   },
+  buyingBTC: {
+    ru: 'Вы покупаете BTC',
+    en: 'You are buying BTC'
+  },
+  sellingBTC: {
+    ru: 'Вы продаете BTC',
+    en: 'You are selling BTC'
+  },
+  buy: {
+    ru: 'Купить',
+    en: 'Buy'
+  },
+  sell: {
+    ru: 'Продать',
+    en: 'Sell'
+  },
+  noDeals: {
+    ru: 'Нет сделок',
+    en: 'No deals'
+  },
+  back: {
+    ru: 'Назад',
+    en: 'Back'
+  },
+  available: {
+    ru: 'Доступно',
+    en: 'Available'
+  },
 }
 

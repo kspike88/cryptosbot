@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Globe } from 'lucide-react'
 import type { Language } from '@/app/types/app'
 import { translations } from '@/utils/translations'

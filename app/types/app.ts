@@ -1,72 +1,129 @@
-export type Language = 'ru' | 'en'
+import type { Translations } from '@/types/app'
 
-export type CurrencyId = 'RUB' | 'KZT' | 'BYN'
-export type CryptoId = 'BTC' | 'ETH' | 'USDT' | 'USDC' | 'TON' | 'BNB' | 'SOL' | 'DOGE' | 'ADA' | 'TRX'
-
-export interface DepositCurrency {
-  id: CurrencyId | CryptoId
-  name: string
-  symbol: string
-  icon: string
-  shortName?: string
-}
-
-export interface TranslationKey {
-  [key: string]: {
-    ru: string
-    en: string
-  }
-}
-
-export interface CurrencyTranslations {
-  [K in CurrencyId]: {
-    ru: string
-    en: string
-  }
-}
-
-export interface Translations {
-  totalBalance: Record<Language, string>
-  deposit: Record<Language, string>
-  withdraw: Record<Language, string>
-  exchange: Record<Language, string>
-  profile: Record<Language, string>
-  accountId: Record<Language, string>
-  statistics: Record<Language, string>
-  tradingVolume: Record<Language, string>
-  fiatAccounts: Record<Language, string>
-  cryptocurrencies: Record<Language, string>
-  settings: Record<Language, string>
-  whatToDeposit: Record<Language, string>
-  youAreDepositing: Record<Language, string>
-  balance: Record<Language, string>
-  paymentMethod: Record<Language, string>
-  continue: Record<Language, string>
-  currencyNames: CurrencyTranslations
-}
-
-export interface Currency {
-  id: CurrencyId
-  name: string
-  symbol: string
-  rate: string
-  balance: string
-  bgColor: string
-  textColor: string
-  icon: string
-  isVisible: boolean
-}
-
-export interface Crypto {
-  id: CryptoId
-  name: string
-  symbol: string
-  balance: number
-  price: number
-  change: number
-  bgColor: string
-  textColor: string
-  icon: string
-  isVisible: boolean
+export const translations: Translations = {
+  deposit: {
+    ru: 'Пополнить',
+    en: 'Deposit',
+  },
+  withdraw: {
+    ru: 'Вывести',
+    en: 'Withdraw'
+  },
+  exchange: {
+    ru: 'Обменять',
+    en: 'Exchange'
+  },
+  totalBalance: {
+    ru: 'Общий баланс',
+    en: 'Total Balance'
+  },
+  profile: {
+    ru: 'Профиль',
+    en: 'Profile'
+  },
+  accountId: {
+    ru: 'ID аккаунта',
+    en: 'Account ID'
+  },
+  statistics: {
+    ru: 'Статистика',
+    en: 'Statistics'
+  },
+  tradingVolume: {
+    ru: 'Объем торгов',
+    en: 'Trading Volume'
+  },
+  fiatAccounts: {
+    ru: 'Валютные счета',
+    en: 'Fiat Accounts'
+  },
+  cryptocurrencies: {
+    ru: 'Криптовалюты',
+    en: 'Cryptocurrencies'
+  },
+  settings: {
+    ru: 'Настроить',
+    en: 'Settings'
+  },
+  whatToDeposit: {
+    ru: 'Что вы хотите пополнить?',
+    en: 'What would you like to deposit?'
+  },
+  youAreDepositing: {
+    ru: 'Вы пополняете',
+    en: 'You are depositing'
+  },
+  balance: {
+    ru: 'Баланс',
+    en: 'Balance'
+  },
+  paymentMethod: {
+    ru: 'Метод оплаты',
+    en: 'Payment Method'
+  },
+  continue: {
+    ru: 'Продолжить',
+    en: 'Continue'
+  },
+  currencyNames: {
+    RUB: {
+      ru: 'Российский рубль',
+      en: 'Russian Ruble'
+    },
+    KZT: {
+      ru: 'Казахстанский тенге',
+      en: 'Kazakhstani Tenge'
+    },
+    BYN: {
+      ru: 'Белорусский рубль',
+      en: 'Belarusian Ruble'
+    }
+  },
+  russian: {
+    ru: 'Русский',
+    en: 'Russian'
+  },
+  english: {
+    ru: 'Английский',
+    en: 'English'
+  },
+  navigation: {
+    assets: {
+      ru: 'Активы',
+      en: 'Assets'
+    },
+    trading: {
+      ru: 'Торговля',
+      en: 'Trading'
+    }
+  },
+  buyingBTC: {
+    ru: 'Вы покупаете BTC',
+    en: 'You are buying BTC'
+  },
+  sellingBTC: {
+    ru: 'Вы продаете BTC',
+    en: 'You are selling BTC'
+  },
+  buy: {
+    ru: 'Купить',
+    en: 'Buy'
+  },
+  sell: {
+    ru: 'Продать',
+    en: 'Sell'
+  },
+  noDeals: {
+    ru: 'Нет сделок',
+    en: 'No deals'
+  },
+  back: {
+    ru: 'Назад',
+    en: 'Back'
+  },
+  available: {
+    ru: 'Доступно',
+    en: 'Available'
+  },
 }
 
