@@ -14,22 +14,22 @@ interface DepositModalProps {
 
 const FIAT_CURRENCIES: DepositCurrency[] = [
   {
-    id: 'RUB',
-    name: 'Российский рубль',
+    id: 'RUB' as const,
+    name: translations.currencyNames.RUB.ru,
     symbol: '₽',
     icon: '/rub-icon.svg',
     shortName: 'RUB'
   },
   {
-    id: 'KZT',
-    name: 'Казахстанский тенге',
+    id: 'KZT' as const,
+    name: translations.currencyNames.KZT.ru,
     symbol: '₸',
     icon: '/kzt-icon.svg',
     shortName: 'KZT'
   },
   {
-    id: 'BYN',
-    name: 'Белорусский рубль',
+    id: 'BYN' as const,
+    name: translations.currencyNames.BYN.ru,
     symbol: 'Br',
     icon: '/byn-icon.svg',
     shortName: 'BYN'
@@ -54,19 +54,27 @@ const CRYPTO_CURRENCIES: DepositCurrency[] = [
     name: 'Tether',
     symbol: 'USDT',
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png'
-  },
-  {
-    id: 'USDC',
-    name: 'USD Coin',
-    symbol: 'USDC',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png'
   }
 ]
+
+// Fixed type guard to properly narrow the type
+function isFiatCurrency(id: string): id is CurrencyId {
+  return ['RUB', 'KZT', 'BYN'].includes(id)
+}
 
 export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
   const [selectedCurrency, setSelectedCurrency] = useState<DepositCurrency | null>(null)
   const [amount, setAmount] = useState<string>('')
   const [isExpanded, setIsExpanded] = useState(false)
+
+  // Fixed: Type-safe currency name getter
+  const getCurrencyName = (currency: DepositCurrency) => {
+    if (isFiatCurrency(currency.id)) {
+      // Now TypeScript knows currency.id is CurrencyId
+      return translations.currencyNames[currency.id][language]
+    }
+    return currency.name
+  }
 
   const handleCurrencySelect = (currency: DepositCurrency) => {
     setSelectedCurrency(currency)
@@ -90,15 +98,6 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
   }
 
   if (!isOpen) return null
-
-  const isFiat = selectedCurrency && FIAT_CURRENCIES.some(c => c.id === selectedCurrency.id)
-
-  const getCurrencyName = (currency: DepositCurrency) => {
-    if (isFiatCurrency(currency.id)) {
-      return translations.currencyNames[currency.id][language]
-    }
-    return currency.name
-  }
 
   return (
     <div className="fixed inset-0 bg-white z-50">
@@ -132,7 +131,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                       <div className="text-left">
                         <div className="font-medium text-gray-900">{currency.id}</div>
                         <div className="text-sm text-gray-600">
-                          {isFiatCurrency(currency.id) && translations.currencyNames[currency.id][language]}
+                          {getCurrencyName(currency)}
                         </div>
                       </div>
                     </div>
@@ -145,7 +144,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                     onClick={() => setIsExpanded(true)}
                     className="w-full text-center py-2 text-blue-500"
                   >
-                    Expand
+                    {language === 'ru' ? 'Показать все' : 'Show all'}
                   </button>
                 )}
               </div>
@@ -195,7 +194,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                 </div>
               </div>
 
-              {isFiat && (
+              {isFiatCurrency(selectedCurrency.id) && (
                 <div className="grid grid-cols-4 gap-2 mb-6">
                   {[5000, 10000, 15000, 25000].map((value) => (
                     <button
@@ -241,9 +240,5 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
       </div>
     </div>
   )
-}
-
-function isFiatCurrency(id: string): id is CurrencyId {
-  return ['RUB', 'KZT', 'BYN'].includes(id)
 }
 

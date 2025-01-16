@@ -19,13 +19,11 @@ export interface TranslationKey {
   }
 }
 
-// Fixed: Changed from mapped type to regular interface with index signature
-export interface CurrencyTranslations {
-  [key in CurrencyId]: {
-    ru: string
-    en: string
-  }
-}
+// Fixed: Using Record type instead of mapped type
+export type CurrencyTranslations = Record<CurrencyId, {
+  ru: string
+  en: string
+}>
 
 export interface Translations {
   totalBalance: Record<Language, string>
