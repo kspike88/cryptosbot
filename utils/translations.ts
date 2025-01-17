@@ -3,129 +3,146 @@ import type { Translations } from '@/app/types/app'
 export const translations: Translations = {
   totalBalance: {
     ru: 'Общий баланс',
-    en: 'Total Balance'
+    en: 'Total Balance',
   },
   deposit: {
-    ru: 'Пополнить',
-    en: 'Deposit'
+    ru: 'Депозит',
+    en: 'Deposit',
   },
   withdraw: {
-    ru: 'Вывести',
-    en: 'Withdraw'
+    ru: 'Вывод',
+    en: 'Withdraw',
   },
   exchange: {
     ru: 'Обмен',
-    en: 'Exchange'
+    en: 'Exchange',
   },
   profile: {
     ru: 'Профиль',
-    en: 'Profile'
+    en: 'Profile',
   },
   accountId: {
     ru: 'ID аккаунта',
-    en: 'Account ID'
+    en: 'Account ID',
   },
   statistics: {
     ru: 'Статистика',
-    en: 'Statistics'
+    en: 'Statistics',
   },
   tradingVolume: {
     ru: 'Объем торгов',
-    en: 'Trading Volume'
+    en: 'Trading Volume',
   },
   fiatAccounts: {
     ru: 'Фиатные счета',
-    en: 'Fiat Accounts'
+    en: 'Fiat Accounts',
   },
   cryptocurrencies: {
     ru: 'Криптовалюты',
-    en: 'Cryptocurrencies'
+    en: 'Cryptocurrencies',
   },
   settings: {
     ru: 'Настройки',
-    en: 'Settings'
+    en: 'Settings',
+  },
+  whatToDeposit: {
+    ru: 'Что внести',
+    en: 'What to Deposit',
+  },
+  youAreDepositing: {
+    ru: 'Вы вносите',
+    en: 'You are Depositing',
+  },
+  balance: {
+    ru: 'Баланс',
+    en: 'Balance',
+  },
+  paymentMethod: {
+    ru: 'Способ оплаты',
+    en: 'Payment Method',
+  },
+  continue: {
+    ru: 'Продолжить',
+    en: 'Continue',
   },
   currencyNames: {
     RUB: {
       ru: 'Российский рубль',
-      en: 'Russian Ruble'
+      en: 'Russian Ruble',
     },
     KZT: {
       ru: 'Казахстанский тенге',
-      en: 'Kazakhstani Tenge'
+      en: 'Kazakhstani Tenge',
     },
     BYN: {
       ru: 'Белорусский рубль',
-      en: 'Belarusian Ruble'
-    }
+      en: 'Belarusian Ruble',
+    },
   },
-  youAreDepositing: {
-    ru: 'Вы пополняете',
-    en: 'You are depositing'
+  russian: {
+    ru: 'Русский',
+    en: 'Russian',
   },
-  whatToDeposit: {
-    ru: 'Что пополнить',
-    en: 'What to deposit'
+  english: {
+    ru: 'Английский',
+    en: 'English',
   },
-  balance: {
-    ru: 'Баланс',
-    en: 'Balance'
-  },
-  paymentMethod: {
-    ru: 'Способ оплаты',
-    en: 'Payment Method'
-  },
-  continue: {
-    ru: 'Продолжить',
-    en: 'Continue'
-  },
-  insufficientFunds: {
-    ru: 'У вас недостаточно средств чтобы вывести их',
-    en: 'Insufficient funds for withdrawal'
-  },
-  exchangeTitle: {
-    ru: 'Обменять',
-    en: 'Exchange'
-  },
-  collapse: {
-    ru: 'Свернуть',
-    en: 'Collapse'
-  },
-  showAll: {
-    ru: 'Показать все',
-    en: 'Show all'
-  },
-  tradingPair: {
-    ru: 'Торговые пары',
-    en: 'Trading Pairs'
+  navigation: {
+    assets: {
+      ru: 'Активы',
+      en: 'Assets',
+    },
+    trading: {
+      ru: 'Торговля',
+      en: 'Trading',
+    },
   },
   buyingBTC: {
-    ru: 'Вы покупаете BTC',
-    en: 'You are buying BTC'
+    ru: 'Покупка BTC',
+    en: 'Buying BTC',
   },
   sellingBTC: {
-    ru: 'Вы продаете BTC',
-    en: 'You are selling BTC'
+    ru: 'Продажа BTC',
+    en: 'Selling BTC',
   },
   buy: {
     ru: 'Купить',
-    en: 'Buy'
+    en: 'Buy',
   },
   sell: {
     ru: 'Продать',
-    en: 'Sell'
+    en: 'Sell',
   },
   noDeals: {
     ru: 'Нет сделок',
-    en: 'No deals'
+    en: 'No Deals',
   },
   back: {
     ru: 'Назад',
-    en: 'Back'
+    en: 'Back',
   },
   available: {
     ru: 'Доступно',
-    en: 'Available'
-  }
+    en: 'Available',
+  },
+  tradingPair: {
+    ru: 'Торговая пара',
+    en: 'Trading Pair',
+  },
+  insufficientFunds: {
+    ru: 'Недостаточно средств',
+    en: 'Insufficient Funds',
+  },
+  exchangeTitle: {
+    ru: 'Обмен',
+    en: 'Exchange',
+  },
+  collapse: {
+    ru: 'Свернуть',
+    en: 'Collapse',
+  },
+  showAll: {
+    ru: 'Показать все',
+    en: 'Show All',
+  },
 }
-
