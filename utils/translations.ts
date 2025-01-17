@@ -1,21 +1,21 @@
 import type { Translations } from '@/app/types/app'
 
 export const translations: Translations = {
+  totalBalance: {
+    ru: 'Общий баланс',
+    en: 'Total Balance'
+  },
   deposit: {
     ru: 'Пополнить',
-    en: 'Deposit',
+    en: 'Deposit'
   },
   withdraw: {
     ru: 'Вывести',
     en: 'Withdraw'
   },
   exchange: {
-    ru: 'Обменять',
+    ru: 'Обмен',
     en: 'Exchange'
-  },
-  totalBalance: {
-    ru: 'Общий баланс',
-    en: 'Total Balance'
   },
   profile: {
     ru: 'Профиль',
@@ -34,7 +34,7 @@ export const translations: Translations = {
     en: 'Trading Volume'
   },
   fiatAccounts: {
-    ru: 'Валютные счета',
+    ru: 'Фиатные счета',
     en: 'Fiat Accounts'
   },
   cryptocurrencies: {
@@ -42,28 +42,8 @@ export const translations: Translations = {
     en: 'Cryptocurrencies'
   },
   settings: {
-    ru: 'Настроить',
+    ru: 'Настройки',
     en: 'Settings'
-  },
-  whatToDeposit: {
-    ru: 'Что вы хотите пополнить?',
-    en: 'What would you like to deposit?'
-  },
-  youAreDepositing: {
-    ru: 'Вы пополняете',
-    en: 'You are depositing'
-  },
-  balance: {
-    ru: 'Баланс',
-    en: 'Balance'
-  },
-  paymentMethod: {
-    ru: 'Метод оплаты',
-    en: 'Payment Method'
-  },
-  continue: {
-    ru: 'Продолжить',
-    en: 'Continue'
   },
   currencyNames: {
     RUB: {
@@ -79,23 +59,45 @@ export const translations: Translations = {
       en: 'Belarusian Ruble'
     }
   },
-  russian: {
-    ru: 'Русский',
-    en: 'Russian'
+  youAreDepositing: {
+    ru: 'Вы пополняете',
+    en: 'You are depositing'
   },
-  english: {
-    ru: 'Английский',
-    en: 'English'
+  whatToDeposit: {
+    ru: 'Что пополнить',
+    en: 'What to deposit'
   },
-  navigation: {
-    assets: {
-      ru: 'Активы',
-      en: 'Assets'
-    },
-    trading: {
-      ru: 'Торговля',
-      en: 'Trading'
-    }
+  balance: {
+    ru: 'Баланс',
+    en: 'Balance'
+  },
+  paymentMethod: {
+    ru: 'Способ оплаты',
+    en: 'Payment Method'
+  },
+  continue: {
+    ru: 'Продолжить',
+    en: 'Continue'
+  },
+  insufficientFunds: {
+    ru: 'У вас недостаточно средств чтобы вывести их',
+    en: 'Insufficient funds for withdrawal'
+  },
+  exchangeTitle: {
+    ru: 'Обменять',
+    en: 'Exchange'
+  },
+  collapse: {
+    ru: 'Свернуть',
+    en: 'Collapse'
+  },
+  showAll: {
+    ru: 'Показать все',
+    en: 'Show all'
+  },
+  tradingPair: {
+    ru: 'Торговые пары',
+    en: 'Trading Pairs'
   },
   buyingBTC: {
     ru: 'Вы покупаете BTC',
@@ -124,10 +126,6 @@ export const translations: Translations = {
   available: {
     ru: 'Доступно',
     en: 'Available'
-  },
-  tradingPair: {
-    ru: 'Торговая пара',
-    en: 'Trading Pair'
   }
 }
 

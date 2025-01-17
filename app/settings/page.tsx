@@ -296,6 +296,14 @@ const translations = {
       en: 'Belarusian Ruble',
     },
   },
+  showAll: {
+    ru: 'Показать все',
+    en: 'Show All',
+  },
+  collapse: {
+    ru: 'Свернуть',
+    en: 'Collapse',
+  },
 }
 
 const SettingsContent = () => {
@@ -305,6 +313,7 @@ const SettingsContent = () => {
   const [language, setLanguage] = useState<Language | null>(null)
   const [currencies, setCurrencies] = useState<Item[] | null>(null)
   const [cryptos, setCryptos] = useState<Item[] | null>(null)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
     const savedLanguage = (localStorage.getItem('preferred-language') as Language) || 'ru'
@@ -460,6 +469,21 @@ const SettingsContent = () => {
               ))}
             </div>
           </div>
+        )}
+        {!isExpanded ? (
+          <button
+            onClick={() => setIsExpanded(true)}
+            className="w-full text-center py-2 text-blue-500"
+          >
+            {translations.showAll[language]}
+          </button>
+        ) : (
+          <button
+            onClick={() => setIsExpanded(false)}
+            className="w-full text-center py-2 text-blue-500"
+          >
+            {translations.collapse[language]}
+          </button>
         )}
       </div>
     </>

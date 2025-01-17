@@ -15,21 +15,21 @@ interface DepositModalProps {
 const FIAT_CURRENCIES: DepositCurrency[] = [
   {
     id: 'RUB' as const,
-    name: translations.currencyNames.RUB.ru,
+    name: 'Российский рубль',
     symbol: '₽',
     icon: '/rub-icon.svg',
     shortName: 'RUB'
   },
   {
     id: 'KZT' as const,
-    name: translations.currencyNames.KZT.ru,
+    name: 'Казахстанский тенге',
     symbol: '₸',
     icon: '/kzt-icon.svg',
     shortName: 'KZT'
   },
   {
     id: 'BYN' as const,
-    name: translations.currencyNames.BYN.ru,
+    name: 'Белорусский рубль',
     symbol: 'Br',
     icon: '/byn-icon.svg',
     shortName: 'BYN'
@@ -57,7 +57,6 @@ const CRYPTO_CURRENCIES: DepositCurrency[] = [
   }
 ]
 
-// Fixed type guard to properly narrow the type
 function isFiatCurrency(id: string): id is CurrencyId {
   return ['RUB', 'KZT', 'BYN'].includes(id)
 }
@@ -67,14 +66,12 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
   const [amount, setAmount] = useState<string>('')
   const [isExpanded, setIsExpanded] = useState(false)
 
-  // Fixed: Type-safe currency name getter
   const getCurrencyName = (currency: DepositCurrency) => {
     if (isFiatCurrency(currency.id)) {
-      // Now TypeScript knows currency.id is CurrencyId
-      return translations.currencyNames[currency.id][language]
+      return translations.currencyNames?.[currency.id]?.[language] || currency.name;
     }
-    return currency.name
-  }
+    return currency.name;
+  };
 
   const handleCurrencySelect = (currency: DepositCurrency) => {
     setSelectedCurrency(currency)
@@ -108,8 +105,8 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
           </button>
           <h2 className="ml-4 text-xl font-medium text-gray-900">
             {selectedCurrency 
-              ? `${translations.youAreDepositing[language]} ${selectedCurrency.id}`
-              : translations.whatToDeposit[language]
+              ? `${translations.youAreDepositing?.[language] || 'You are depositing'} ${selectedCurrency.id}`
+              : translations.whatToDeposit?.[language] || 'What to deposit'
             }
           </h2>
         </div>
@@ -190,7 +187,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   <span className="text-2xl text-gray-500">{selectedCurrency.symbol}</span>
                 </div>
                 <div className="text-sm text-gray-500 mt-2">
-                  {translations.balance[language]}: 0.00 {selectedCurrency.symbol}
+                  {translations.balance?.[language] || 'Balance'}: 0.00 {selectedCurrency.symbol}
                 </div>
               </div>
 
@@ -210,7 +207,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
 
               <div className="mt-6">
                 <div className="p-4 rounded-lg bg-gray-50 mb-4">
-                  <div className="text-sm text-gray-500">{translations.paymentMethod[language]}</div>
+                  <div className="text-sm text-gray-500">{translations.paymentMethod?.[language] || 'Payment Method'}</div>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
                       <Image
@@ -230,7 +227,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                     onClick={handleContinue}
                     className="w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
                   >
-                    {translations.continue[language]}
+                    {translations.continue?.[language] || 'Continue'}
                   </button>
                 )}
               </div>

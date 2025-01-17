@@ -185,12 +185,7 @@ const INITIAL_PAIRS: TradingPair[] = [
 export default function Trading() {
   const router = useRouter()
   const [pairs, setPairs] = useState<TradingPair[]>(INITIAL_PAIRS)
-  const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('preferred-language') as Language) || 'ru'
-    }
-    return 'ru'
-  })
+  const [language, setLanguage] = useState<Language>('ru')
 
   useEffect(() => {
     const handleLanguageChange = () => {
@@ -198,6 +193,7 @@ export default function Trading() {
       setLanguage(newLanguage || 'ru')
     }
 
+    handleLanguageChange() 
     window.addEventListener('storage', handleLanguageChange)
     return () => window.removeEventListener('storage', handleLanguageChange)
   }, [])
@@ -231,10 +227,14 @@ export default function Trading() {
     return () => clearInterval(interval)
   }, [])
 
+  const getTranslation = (key: string, lang: Language) => {
+    return translations[key as keyof typeof translations]?.[lang] || key
+  }
+
   return (
     <main className="pb-20 bg-white">
       <div className="p-4">
-        <h1 className="text-sm text-blue-500 mb-3">{translations.tradingPair[language]}</h1>
+        <h1 className="text-sm text-blue-500 mb-3">{getTranslation('tradingPair', language)}</h1>
         <div className="space-y-2">
           {pairs.map((pair) => (
             <div 

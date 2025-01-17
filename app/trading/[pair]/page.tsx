@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import { translations } from '@/utils/translations'
-import type { Language } from '@/app/types/app'  // Updated import path
+import type { Language } from '@/app/types/app'
 
 interface Transaction {
   id: string
@@ -29,7 +29,7 @@ const DURATION_MAP = {
 export default function TradingPairPage() {
   const params = useParams()
   const pairId = decodeURIComponent(params.pair as string)
-  
+
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
@@ -38,12 +38,12 @@ export default function TradingPairPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [showTradeMenu, setShowTradeMenu] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState('30s')
-  const [language, setLanguage] = useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('preferred-language') as Language) || 'ru'
-    }
-    return 'ru'
-  })
+  const [language, setLanguage] = useState<Language>('ru')
+
+  useEffect(() => {
+    const savedLanguage = localStorage.getItem('preferred-language') as Language
+    setLanguage(savedLanguage || 'ru')
+  }, [])
 
   useEffect(() => {
     // Clean expired transactions
@@ -158,6 +158,10 @@ export default function TradingPairPage() {
     setAmount('')
   }
 
+  const getTranslation = (key: string) => {
+    return translations[key as keyof typeof translations]?.[language] || key
+  }
+
   if (!pair) return null
 
   return (
@@ -169,7 +173,7 @@ export default function TradingPairPage() {
           </Link>
           <div className="ml-4 text-[#6b7280]">
             <div className="font-medium">
-              {tradeType === 'buy' ? translations.buyingBTC[language] : translations.sellingBTC[language]}
+              {tradeType === 'buy' ? getTranslation('buyingBTC') : getTranslation('sellingBTC')}
             </div>
           </div>
         </div>
@@ -185,7 +189,7 @@ export default function TradingPairPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
                 </div>
-                <div>{translations.noDeals[language]}</div>
+                <div>{getTranslation('noDeals')}</div>
               </div>
             ) : (
               <div className="space-y-2">
@@ -193,7 +197,7 @@ export default function TradingPairPage() {
                   <div key={transaction.id} className="p-3 bg-white rounded-lg">
                     <div className="flex justify-between items-center">
                       <div className="text-[#6b7280]">
-                        <div>{transaction.type === 'buy' ? translations.buy[language] : translations.sell[language]}</div>
+                        <div>{transaction.type === 'buy' ? getTranslation('buy') : getTranslation('sell')}</div>
                         <div className="text-sm">
                           {new Date(transaction.timestamp).toLocaleTimeString()}
                         </div>
@@ -221,7 +225,7 @@ export default function TradingPairPage() {
               }}
               className="flex-1 py-3 rounded-lg text-white font-medium bg-emerald-500"
             >
-              {translations.buy[language]}
+              {getTranslation('buy')}
             </button>
             <button
               onClick={() => {
@@ -230,7 +234,7 @@ export default function TradingPairPage() {
               }}
               className="flex-1 py-3 rounded-lg text-white font-medium bg-[#ef4444]"
             >
-              {translations.sell[language]}
+              {getTranslation('sell')}
             </button>
           </div>
 
@@ -243,7 +247,7 @@ export default function TradingPairPage() {
                   </button>
                   <div className="ml-4 text-[#6b7280]">
                     <div className="font-medium">
-                      {tradeType === 'buy' ? translations.buyingBTC[language] : translations.sellingBTC[language]}
+                      {tradeType === 'buy' ? getTranslation('buyingBTC') : getTranslation('sellingBTC')}
                     </div>
                   </div>
                 </div>
@@ -261,7 +265,7 @@ export default function TradingPairPage() {
                       <span className="text-3xl text-gray-400">USDT</span>
                     </div>
                     <div className="text-sm text-gray-400 mt-2">
-                      {translations.available[language]}: 0 USDT
+                      {getTranslation('available')}: 0 USDT
                     </div>
                   </div>
 
@@ -293,8 +297,8 @@ export default function TradingPairPage() {
                     }`}
                   >
                     {tradeType === 'buy' 
-                      ? `${translations.buy[language]} ${pair?.base}`
-                      : `${translations.sell[language]} ${pair?.base}`
+                      ? `${getTranslation('buy')} ${pair?.base}`
+                      : `${getTranslation('sell')} ${pair?.base}`
                     }
                   </button>
                   
@@ -302,7 +306,7 @@ export default function TradingPairPage() {
                     onClick={() => setShowTradeMenu(false)}
                     className="w-full mt-2 py-4 text-gray-600 font-medium"
                   >
-                    {translations.back[language]}
+                    {getTranslation('back')}
                   </button>
                 </div>
               </div>

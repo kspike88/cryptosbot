@@ -1,7 +1,7 @@
 // Basic types
 export type Language = 'ru' | 'en'
 export type CurrencyId = 'RUB' | 'KZT' | 'BYN'
-export type CryptoId = 'BTC' | 'ETH' | 'USDT' | 'USDC' | 'TON' | 'BNB' | 'SOL' | 'DOGE' | 'ADA' | 'TRX'
+export type CryptoId = 'BTC' | 'ETH' | 'USDT' | 'USDC' | 'TON' | 'BNB' | 'SOL' | 'DOGE' | 'ADA' | 'TRX' | 'DOT' | 'LINK' | 'LTC' | 'UNI' | 'ETC' | 'APT' | 'FIL' | 'RENDER' | 'ATOM' | 'SUI' | 'OP' | 'GRT' | 'AAVE' | 'NOT'
 
 // Interfaces
 export interface DepositCurrency {
@@ -19,7 +19,6 @@ export interface TranslationKey {
   }
 }
 
-// Fixed: Using Record type instead of mapped type
 export type CurrencyTranslations = Record<CurrencyId, {
   ru: string
   en: string
@@ -57,6 +56,10 @@ export interface Translations {
   back: Record<Language, string>
   available: Record<Language, string>
   tradingPair: Record<Language, string>
+  insufficientFunds: Record<Language, string>
+  exchangeTitle: Record<Language, string>
+  collapse: Record<Language, string>
+  showAll: Record<Language, string>
 }
 
 export interface Currency {
@@ -82,5 +85,17 @@ export interface Crypto {
   textColor: string
   icon: string
   isVisible: boolean
+}
+
+export interface ExchangeModalProps {
+  isOpen: boolean
+  onClose: () => void
+  fromCurrency: Currency | Crypto
+  toCurrency: Currency | Crypto
+}
+
+export interface WithdrawModalProps {
+  isOpen: boolean
+  onClose: () => void
 }
 

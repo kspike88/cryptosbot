@@ -5,11 +5,6 @@ import { Globe } from 'lucide-react'
 import type { Language } from '@/app/types/app'
 import { translations } from '@/utils/translations'
 
-import "@next-languages/flags/style.css";
-
-import { Ru } from "@next-languages/flags";
-import { Gb } from "@next-languages/flags";
-
 interface LanguageSwitcherProps {
   language: Language
   onChange: (language: Language) => void
@@ -81,3 +76,4 @@ export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) 
     </div>
   )
 }
+

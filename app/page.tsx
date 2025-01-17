@@ -8,6 +8,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { homeTranslations } from '@/utils/home-translations'
+import { useSearchParams } from 'next/navigation'
+import { ExchangeModal } from '@/components/exchange-modal'
+import { WithdrawModal } from '@/components/withdraw-modal'
 
 type Language = 'ru' | 'en';
 type CurrencyId = 'RUB' | 'KZT' | 'BYN';
@@ -98,196 +101,7 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
     bgColor: 'bg-green-500',
     isVisible: true,
-  },
-  {
-    id: 'TON',
-    name: 'Toncoin',
-    subtitle: 'TON',
-    symbol: 'TON',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/11419.png',
-    bgColor: 'bg-blue-500',
-    isVisible: false,
-  },
-  {
-    id: 'USDC',
-    name: 'USD Coin',
-    subtitle: 'USDC',
-    symbol: 'USDC',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    bgColor: 'bg-blue-500',
-    isVisible: false,
-  },
-  {
-    id: 'BNB',
-    name: 'BNB',
-    subtitle: 'BNB',
-    symbol: 'BNB',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png',
-    bgColor: 'bg-yellow-500',
-    isVisible: false,
-  },
-  {
-    id: 'SOL',
-    name: 'Solana',
-    subtitle: 'SOL',
-    symbol: 'SOL',
-    icon: 'https://assets.coingecko.com/coins/images/4128/standard/solana.png?1718769756',
-    bgColor: 'bg-purple-500',
-    isVisible: false,
-  },
-  {
-    id: 'DOGE',
-    name: 'Dogecoin',
-    subtitle: 'DOGE',
-    symbol: 'DOGE',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/74.png',
-    bgColor: 'bg-yellow-400',
-    isVisible: false,
-  },
-  {
-    id: 'ADA',
-    name: 'Cardano',
-    subtitle: 'ADA',
-    symbol: 'ADA',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png',
-    bgColor: 'bg-blue-400',
-    isVisible: false,
-  },
-  {
-    id: 'TRX',
-    name: 'Tron',
-    subtitle: 'TRX',
-    symbol: 'TRX',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1958.png',
-    bgColor: 'bg-red-500',
-    isVisible: false,
-  },
-  {
-    id: 'DOT',
-    name: 'Polkadot',
-    subtitle: 'DOT',
-    symbol: 'DOT',
-    icon: 'https://s2.coinmarketcap.com/static/cloud/img/logo/polkadot/Polkadot_Logo_Animation_64x64.gif',
-    bgColor: 'bg-pink-500',
-    isVisible: false,
-  },
-  {
-    id: 'LINK',
-    name: 'Chainlink',
-    subtitle: 'LINK',
-    symbol: 'LINK',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/1975.png',
-    bgColor: 'bg-blue-600',
-    isVisible: false,
-  },
-  {
-    id: 'LTC',
-    name: 'Litecoin',
-    subtitle: 'LTC',
-    symbol: 'LTC',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2.png',
-    bgColor: 'bg-gray-400',
-    isVisible: false,
-  },
-  {
-    id: 'UNI',
-    name: 'Uniswap',
-    subtitle: 'UNI',
-    symbol: 'UNI',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7083.png',
-    bgColor: 'bg-pink-500',
-    isVisible: false,
-  },
-  {
-    id: 'ETC',
-    name: 'Ethereum Classic',
-    subtitle: 'ETC',
-    symbol: 'ETC',
-    icon: 'https://assets.coingecko.com/coins/images/453/standard/ethereum-classic-logo.png?1696501717',
-    bgColor: 'bg-green-600',
-    isVisible: false,
-  },
-  {
-    id: 'APT',
-    name: 'Aptos',
-    subtitle: 'APT',
-    symbol: 'APT',
-    icon: 'https://assets.coingecko.com/coins/images/26455/standard/aptos_round.png?1696525528',
-    bgColor: 'bg-blue-500',
-    isVisible: false,
-  },
-  {
-    id: 'FIL',
-    name: 'Filecoin',
-    subtitle: 'FIL',
-    symbol: 'FIL',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/2280.png',
-    bgColor: 'bg-green-400',
-    isVisible: false,
-  },
-  {
-    id: 'RENDER',
-    name: 'Render',
-    subtitle: 'RENDER',
-    symbol: 'RENDER',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/5690.png',
-    bgColor: 'bg-blue-300',
-    isVisible: false,
-  },
-  {
-    id: 'ATOM',
-    name: 'Cosmos',
-    subtitle: 'ATOM',
-    symbol: 'ATOM',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3794.png',
-    bgColor: 'bg-purple-600',
-    isVisible: false,
-  },
-  {
-    id: 'SUI',
-    name: 'Sui',
-    subtitle: 'SUI',
-    symbol: 'SUI',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/20947.png',
-    bgColor: 'bg-blue-400',
-    isVisible: false,
-  },
-  {
-    id: 'OP',
-    name: 'Optimism',
-    subtitle: 'OP',
-    symbol: 'OP',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/11840.png',
-    bgColor: 'bg-red-500',
-    isVisible: false,
-  },
-  {
-    id: 'GRT',
-    name: 'The Graph',
-    subtitle: 'GRT',
-    symbol: 'GRT',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/6719.png',
-    bgColor: 'bg-indigo-500',
-    isVisible: false,
-  },
-  {
-    id: 'AAVE',
-    name: 'Aave',
-    subtitle: 'AAVE',
-    symbol: 'AAVE',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/7278.png',
-    bgColor: 'bg-purple-400',
-    isVisible: false,
-  },
-  {
-    id: 'NOT',
-    name: 'Notcoin',
-    subtitle: 'NOT',
-    symbol: 'NOT',
-    icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/28850.png',
-    bgColor: 'bg-yellow-300',
-    isVisible: false,
-  },
+  }
 ];
 
 export default function Home() {
@@ -295,6 +109,9 @@ export default function Home() {
   const [userId, setUserId] = useState<string>('0');
   const [language, setLanguage] = useState<Language>('ru');
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false)
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
+  const searchParams = useSearchParams()
 
   const [currencies, setCurrencies] = useState<Currency[]>(() =>
     INITIAL_CURRENCIES.map((c) => ({
@@ -345,17 +162,17 @@ export default function Home() {
   }, [cryptos]);
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const userIdFromUrl = searchParams.get('user_id') || '0';
-    setUserId(userIdFromUrl);
-  }, []);
+    const userIdFromUtm = searchParams.get('utm_source') || '0'
+    setUserId(userIdFromUtm)
+  }, [searchParams])
+
 
   return (
     <main className="pb-20">
       <div className="fixed top-4 right-4 z-10">
         <LanguageSwitcher language={language} onChange={setLanguage} />
       </div>
-  
+
       <div className="p-4 space-y-6">
         <div className="text-center">
           <div suppressHydrationWarning className="text-sm text-gray-700">
@@ -364,7 +181,7 @@ export default function Home() {
           <div className="text-2xl font-bold text-black">
             {balance}
           </div>
-          
+
           <div className="flex justify-center gap-8 mt-4">
             <button
               className="flex flex-col items-center text-blue-500"
@@ -375,15 +192,21 @@ export default function Home() {
               </div>
               <span className="text-sm mt-1">{homeTranslations.deposit[language]}</span>
             </button>
-            
-            <button className="flex flex-col items-center text-blue-500">
+
+            <button
+              className="flex flex-col items-center text-blue-500"
+              onClick={() => setIsWithdrawModalOpen(true)}
+            >
               <div className="p-2 rounded-full bg-blue-500/10">
                 <ArrowDownToLine className="h-6 w-6" />
               </div>
               <span className="text-sm mt-1">{homeTranslations.withdraw[language]}</span>
             </button>
-            
-            <button className="flex flex-col items-center text-blue-500">
+
+            <button
+              className="flex flex-col items-center text-blue-500"
+              onClick={() => setIsExchangeModalOpen(true)}
+            >
               <div className="p-2 rounded-full bg-blue-500/10">
                 <RefreshCcw className="h-6 w-6" />
               </div>
@@ -391,7 +214,7 @@ export default function Home() {
             </button>
           </div>
         </div>
-  
+
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">{homeTranslations.profile[language]}</div>
           <div className="p-3 rounded bg-ededed">
@@ -413,7 +236,7 @@ export default function Home() {
             <div className="text-gray-600 text-sm">{homeTranslations.tradingVolume[language]}</div>
           </div>
         </div>
-  
+
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">{homeTranslations.fiatAccounts[language]}</div>
           <div className="space-y-2">
@@ -430,7 +253,7 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="text-gray-900">
-                        {homeTranslations.currencyNames[currency.id][language]}
+                        {homeTranslations.currencyNames[currency.id as CurrencyId]?.[language] || currency.name}
                       </div>
                       <div className="text-sm text-gray-600">{currency.rate}</div>
                     </div>
@@ -447,7 +270,7 @@ export default function Home() {
             <span className="text-sm">{homeTranslations.settings[language]}</span>
           </Link>
         </div>
-  
+
         <div className="space-y-3">
           <div className="text-sm text-blue-500/80">{homeTranslations.cryptocurrencies[language]}</div>
           <div className="space-y-2">
@@ -486,14 +309,26 @@ export default function Home() {
           </Link>
         </div>
       </div>
-  
+
       <Navigation />
-  
+
       <DepositModal 
         isOpen={isDepositModalOpen}
         onClose={() => setIsDepositModalOpen(false)}
         language={language}
       />
+      {/* <ExchangeModal
+        isOpen={isExchangeModalOpen}
+        onClose={() => setIsExchangeModalOpen(false)}
+        fromCurrency={currencies[0]}
+        toCurrency={cryptos[0]}
+      /> */}
+
+      <WithdrawModal
+        isOpen={isWithdrawModalOpen}
+        onClose={() => setIsWithdrawModalOpen(false)}
+      />
     </main>
   );
 }
+
