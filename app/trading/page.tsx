@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import type { Language } from '@/app/types/app'
 import { translations } from '@/utils/translations'
+import type { Translations, Language } from '@/app/types/app'
 
 interface TradingPair {
   id: string
@@ -227,9 +228,14 @@ export default function Trading() {
     return () => clearInterval(interval)
   }, [])
 
-  const getTranslation = (key: string, lang: Language) => {
-    return translations[key as keyof typeof translations]?.[lang] || key
+  const getTranslation = (key: keyof Translations) => {
+    const translation = translations[key]
+    if (translation && typeof translation === 'object' && language in translation) {
+      return translation[language as keyof typeof translation]
+    }
+    return key
   }
+  
 
   return (
     <main className="pb-20 bg-white">
