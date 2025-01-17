@@ -330,7 +330,7 @@ export default function Home() {
         }}
         toCurrency={{
           ...cryptos[0],
-          id: cryptos[0]?.id as CryptoId,
+          id: cryptos[0]?.id as '123',
           balance: cryptos[0]?.balance ?? 0,
           price: cryptos[0]?.price ?? 0,
         }}
