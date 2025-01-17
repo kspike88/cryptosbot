@@ -35,17 +35,21 @@ export function ExchangeModal({ isOpen, onClose, fromCurrency, toCurrency }: Exc
           <div className="space-y-4">
             <div className="p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden">
-                  {'icon' in from ? (
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    from.icon ? 'bg-white-500' : 'bg-emerald-500'
+                  }`}
+                >
+                  {from.icon && (from.icon.startsWith('/') || from.icon.startsWith('http')) ? (
                     <Image
-                      src={from.icon || "/placeholder.svg"}
+                      src={from.icon}
                       alt={from.name}
                       width={32}
                       height={32}
                       className="object-contain"
                     />
                   ) : (
-                    <span className="text-xl">banana</span>
+                    <span className="font-semibold text-xl text-black">{from.symbol || '₽'}</span>
                   )}
                 </div>
                 <div>
@@ -74,17 +78,21 @@ export function ExchangeModal({ isOpen, onClose, fromCurrency, toCurrency }: Exc
 
             <div className="p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center overflow-hidden">
-                  {'icon' in to ? (
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                    to.icon ? 'bg-white' : 'bg-emerald-500'
+                  }`}
+                >
+                  {to.icon && (to.icon.startsWith('/') || to.icon.startsWith('http')) ? (
                     <Image
-                      src={to.icon || "/placeholder.svg"}
+                      src={to.icon}
                       alt={to.name}
                       width={32}
                       height={32}
                       className="object-contain"
                     />
                   ) : (
-                    <span className="text-xl">pineapple</span>
+                    <span className="font-semibold text-xl text-black">{to.symbol || 'BTC'}</span>
                   )}
                 </div>
                 <div>
@@ -109,4 +117,3 @@ export function ExchangeModal({ isOpen, onClose, fromCurrency, toCurrency }: Exc
     </div>
   )
 }
-

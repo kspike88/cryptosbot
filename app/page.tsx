@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Navigation } from '@/components/navigation'
 import { DepositModal } from '@/components/deposit-modal'
+import { ExchangeModal } from '@/components/exchange-modal'
 import { ArrowUpFromLine, ArrowDownToLine, RefreshCcw, Settings2 } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -10,37 +11,37 @@ import { LanguageSwitcher } from '@/components/language-switcher'
 import { homeTranslations } from '@/utils/home-translations'
 import { WithdrawModal } from '@/components/withdraw-modal'
 
-type Language = 'ru' | 'en';
-type CurrencyId = 'RUB' | 'KZT' | 'BYN';
+type Language = 'ru' | 'en'
+type CurrencyId = 'RUB' | 'KZT' | 'BYN'
 
 interface Currency {
-  id: CurrencyId;
-  name: string;
-  symbol: string;
-  rate: string;
-  balance: string;
-  bgColor: string;
-  textColor: string;
-  icon: React.ReactNode;
-  isVisible: boolean;
+  id: CurrencyId
+  name: string
+  symbol: string
+  rate: string
+  balance: string
+  bgColor: string
+  textColor: string
+  icon: React.ReactNode
+  isVisible: boolean
 }
 
 interface Crypto {
-  id: string;
-  name: string;
-  subtitle: string;
-  symbol: string;
-  balance?: number;
-  price?: number;
-  change?: number;
-  bgColor: string;
-  textColor?: string;
-  icon: string;
-  isVisible: boolean;
+  id: string
+  name: string
+  subtitle: string
+  symbol: string
+  balance?: number
+  price?: number
+  change?: number
+  bgColor: string
+  textColor?: string
+  icon: string
+  isVisible: boolean
 }
 
-const DEFAULT_VISIBLE: CurrencyId[] = ['RUB'];
-const DEFAULT_VISIBLE_CRYPTO = ['BTC', 'ETH', 'USDT'];
+const DEFAULT_VISIBLE: CurrencyId[] = ['RUB']
+const DEFAULT_VISIBLE_CRYPTO = ['BTC', 'ETH', 'USDT']
 
 const INITIAL_CURRENCIES: Omit<Currency, 'rate' | 'balance'>[] = [
   {
@@ -70,7 +71,7 @@ const INITIAL_CURRENCIES: Omit<Currency, 'rate' | 'balance'>[] = [
     icon: 'Br',
     isVisible: false,
   },
-];
+]
 
 const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
   {
@@ -99,17 +100,16 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
     bgColor: 'bg-green-500',
     isVisible: true,
-  }
-];
+  },
+]
 
 export default function Home() {
-  const [balance] = useState('0.00$');
-  const [userId, setUserId] = useState<string>('0');
-  const [language, setLanguage] = useState<Language>('ru');
-  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [balance] = useState('0.00$')
+  const [userId, setUserId] = useState<string>('0')
+  const [language, setLanguage] = useState<Language>('ru')
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false)
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
-  // const searchParams = useSearchParams()
 
   const [currencies, setCurrencies] = useState<Currency[]>(() =>
     INITIAL_CURRENCIES.map((c) => ({
@@ -117,8 +117,8 @@ export default function Home() {
       rate: `0.00${c.symbol}`,
       balance: '0.00',
       isVisible: DEFAULT_VISIBLE.includes(c.id),
-    }))
-  );
+    })),
+  )
 
   const [cryptos, setCryptos] = useState<Crypto[]>(() =>
     INITIAL_CRYPTOS.map((c) => ({
@@ -127,37 +127,43 @@ export default function Home() {
       price: 0,
       change: 0,
       isVisible: DEFAULT_VISIBLE_CRYPTO.includes(c.id),
-    }))
-  );
+    })),
+  )
 
   useEffect(() => {
-    const preferredLanguage = localStorage.getItem('preferred-language') as Language;
+    const preferredLanguage = localStorage.getItem('preferred-language') as Language
     if (preferredLanguage) {
-      setLanguage(preferredLanguage);
+      setLanguage(preferredLanguage)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const savedCurrencies = localStorage.getItem('currencies');
+    const savedCurrencies = localStorage.getItem('currencies')
     if (savedCurrencies) {
-      setCurrencies(JSON.parse(savedCurrencies));
+      setCurrencies(JSON.parse(savedCurrencies))
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    const savedCryptos = localStorage.getItem('cryptos');
+    const savedCryptos = localStorage.getItem('cryptos')
     if (savedCryptos) {
-      setCryptos(JSON.parse(savedCryptos));
+      setCryptos(JSON.parse(savedCryptos))
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem('currencies', JSON.stringify(currencies));
-  }, [currencies]);
+    localStorage.setItem('currencies', JSON.stringify(currencies))
+  }, [currencies])
 
   useEffect(() => {
-    localStorage.setItem('cryptos', JSON.stringify(cryptos));
-  }, [cryptos]);
+    localStorage.setItem('cryptos', JSON.stringify(cryptos))
+  }, [cryptos])
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search)
+    const userIdFromUrl = searchParams.get('user_id') || '0'
+    setUserId(userIdFromUrl)
+  }, [])
 
   return (
     <main className="pb-20">
@@ -170,9 +176,7 @@ export default function Home() {
           <div suppressHydrationWarning className="text-sm text-gray-700">
             {homeTranslations.totalBalance[language]}
           </div>
-          <div className="text-2xl font-bold text-black">
-            {balance}
-          </div>
+          <div className="text-2xl font-bold text-black">{balance}</div>
 
           <div className="flex justify-center gap-8 mt-4">
             <button
@@ -240,12 +244,15 @@ export default function Home() {
                   className="flex items-center justify-between p-3 rounded bg-ededed"
                 >
                   <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm ${currency.bgColor}`}>
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden shadow-sm ${currency.bgColor}`}
+                    >
                       {currency.icon}
                     </div>
                     <div>
                       <div className="text-gray-900">
-                        {homeTranslations.currencyNames[currency.id as CurrencyId]?.[language] || currency.name}
+                        {homeTranslations.currencyNames[currency.id as CurrencyId]?.[language] ||
+                          currency.name}
                       </div>
                       <div className="text-sm text-gray-600">{currency.rate}</div>
                     </div>
@@ -264,7 +271,9 @@ export default function Home() {
         </div>
 
         <div className="space-y-3">
-          <div className="text-sm text-blue-500/80">{homeTranslations.cryptocurrencies[language]}</div>
+          <div className="text-sm text-blue-500/80">
+            {homeTranslations.cryptocurrencies[language]}
+          </div>
           <div className="space-y-2">
             {cryptos
               .filter((crypto) => crypto.isVisible)
@@ -285,7 +294,9 @@ export default function Home() {
                     </div>
                     <div>
                       <div className="text-gray-900">{crypto.name}</div>
-                      <div className="text-sm text-gray-600">${crypto.price?.toFixed(2) || '0.00'}</div>
+                      <div className="text-sm text-gray-600">
+                        ${crypto.price?.toFixed(2) || '0.00'}
+                      </div>
                     </div>
                   </div>
                   <div className="text-gray-900">{crypto.balance || 0}</div>
@@ -304,23 +315,27 @@ export default function Home() {
 
       <Navigation />
 
-      <DepositModal 
+      <DepositModal
         isOpen={isDepositModalOpen}
         onClose={() => setIsDepositModalOpen(false)}
         language={language}
       />
-      {/* <ExchangeModal
+      <ExchangeModal
         isOpen={isExchangeModalOpen}
         onClose={() => setIsExchangeModalOpen(false)}
-        fromCurrency={currencies[0]}
-        toCurrency={cryptos[0]}
-      /> */}
-
-      <WithdrawModal
-        isOpen={isWithdrawModalOpen}
-        onClose={() => setIsWithdrawModalOpen(false)}
+        fromCurrency={{
+          ...currencies[0],
+          icon: currencies[0]?.icon?.toString() ?? '₽',
+        }}
+        toCurrency={{
+          ...cryptos[0],
+          id: cryptos[0]?.id as CryptoId,
+          balance: cryptos[0]?.balance ?? 0,
+          price: cryptos[0]?.price ?? 0,
+        }}
       />
-    </main>
-  );
-}
 
+      <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => setIsWithdrawModalOpen(false)} />
+    </main>
+  )
+}
