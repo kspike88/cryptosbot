@@ -8,7 +8,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { homeTranslations } from '@/utils/home-translations'
-// import { useSearchParams } from 'next/navigation'
 import { WithdrawModal } from '@/components/withdraw-modal'
 
 type Language = 'ru' | 'en';
@@ -159,12 +158,6 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem('cryptos', JSON.stringify(cryptos));
   }, [cryptos]);
-
-  // useEffect(() => {
-  //   const userIdFromUtm = searchParams.get('utm_source') || '0'
-  //   setUserId(userIdFromUtm)
-  // }, [searchParams])
-
 
   return (
     <main className="pb-20">

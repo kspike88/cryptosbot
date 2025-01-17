@@ -97,13 +97,13 @@ export const translations: Translations = {
       en: 'Trading',
     },
   },
-  buyingBTC: {
-    ru: 'Покупка BTC',
-    en: 'Buying BTC',
+  buying: {
+    ru: 'Покупка',
+    en: 'Buying',
   },
-  sellingBTC: {
-    ru: 'Продажа BTC',
-    en: 'Selling BTC',
+  selling: {
+    ru: 'Продажа',
+    en: 'Selling',
   },
   buy: {
     ru: 'Купить',

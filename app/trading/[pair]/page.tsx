@@ -177,7 +177,7 @@ export default function TradingPairPage() {
           </Link>
           <div className="ml-4 text-[#6b7280]">
             <div className="font-medium">
-              {tradeType === 'buy' ? getTranslation('buyingBTC') : getTranslation('sellingBTC')}
+              {tradeType === 'buy' ? getTranslation('buying') : getTranslation('selling')}
             </div>
           </div>
         </div>
@@ -251,7 +251,7 @@ export default function TradingPairPage() {
                   </button>
                   <div className="ml-4 text-[#6b7280]">
                     <div className="font-medium">
-                      {tradeType === 'buy' ? getTranslation('buyingBTC') : getTranslation('sellingBTC')}
+                      {tradeType === 'buy' ? getTranslation('buying') : getTranslation('selling')}
                     </div>
                   </div>
                 </div>

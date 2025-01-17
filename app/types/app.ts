@@ -48,8 +48,8 @@ export interface Translations {
     assets: Record<Language, string>
     trading: Record<Language, string>
   }
-  buyingBTC: Record<Language, string>
-  sellingBTC: Record<Language, string>
+  buying: Record<Language, string>
+  selling: Record<Language, string>
   buy: Record<Language, string>
   sell: Record<Language, string>
   noDeals: Record<Language, string>

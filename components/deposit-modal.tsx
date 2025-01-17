@@ -5,6 +5,7 @@ import { ArrowLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import type { Language, DepositCurrency, CurrencyId } from '@/app/types/app'
 import { translations } from '@/utils/translations'
+import CryptoBotIcon from '@/public/cb.webp'
 
 interface DepositModalProps {
   isOpen: boolean
@@ -111,14 +112,14 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
           </h2>
         </div>
 
-        <div className="flex-1 overflow-auto bg-[#f3f4f6] p-4">
+        <div className="flex-1 overflow-auto bg-[#fffff] p-4">
           {!selectedCurrency ? (
             <div className="space-y-4">
               <div className="space-y-2">
                 {FIAT_CURRENCIES.slice(0, isExpanded ? undefined : 1).map((currency) => (
                   <button
                     key={currency.id}
-                    className="w-full flex items-center justify-between p-4 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors"
+                    className="w-full flex items-center justify-between p-4 rounded-lg bg-white hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
                     onClick={() => handleCurrencySelect(currency)}
                   >
                     <div className="flex items-center gap-3">
@@ -150,7 +151,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                 {CRYPTO_CURRENCIES.map((currency) => (
                   <button
                     key={currency.id}
-                    className="w-full flex items-center justify-between p-4 rounded-xl bg-gray-200 hover:bg-gray-300 transition-colors"
+                    className="w-full flex items-center justify-between p-4 rounded-lg bg-white hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
                     onClick={() => handleCurrencySelect(currency)}
                   >
                     <div className="flex items-center gap-3">
@@ -211,7 +212,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
                       <Image
-                        src="https://cdn4.cdn-telegram.org/file/mfdI8bBuQmJY5ft8JU97lZR41NGi8_sPYfeBqxCkLMIFVct3DKS9XuqiBtO-WboiTxNLbmjzpPzcR24OUqI9xFd4PnvFO91H8cb3xXEer31ly62GOWecC6n-PuQXUoL_rpvNLESnqulUipnstQp8lAEpzQsRdnDD2v-9BBKcPT7-cSJ-s8oTZyAq8tYpam-jFKwoW7JRKx7KzKNL5_0zv9Q_WBkX5-ekECNlnhn2vwMZKWgHCtKaTnx7HQukHruR7ncfrJhmTX-Mrk7dZ6Vkwb2GDkiaqmhwDKd_jb9Y_tKRthvqEV6d_Fyufok1nApkkqze96cIqRXDqaRYkHeTAQ.jpg"
+                        src={CryptoBotIcon}
                         alt="Crypto Bot"
                         width={35}
                         height={35}
