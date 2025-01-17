@@ -10,6 +10,7 @@ import Image from 'next/image'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { homeTranslations } from '@/utils/home-translations'
 import { WithdrawModal } from '@/components/withdraw-modal'
+import { CryptoId } from '@/app/types/app'
 
 type Language = 'ru' | 'en'
 type CurrencyId = 'RUB' | 'KZT' | 'BYN'

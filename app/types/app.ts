@@ -1,5 +1,6 @@
 // Basic types
 export type Language = 'ru' | 'en'
+export type CryptoId1 = 'rub' | 'btc' | 'eth';  // Ваші ідентифікатори
 export type CurrencyId = 'RUB' | 'KZT' | 'BYN'
 export type CryptoId = 'BTC' | 'ETH' | 'USDT' | 'USDC' | 'TON' | 'BNB' | 'SOL' | 'DOGE' | 'ADA' | 'TRX' | 'DOT' | 'LINK' | 'LTC' | 'UNI' | 'ETC' | 'APT' | 'FIL' | 'RENDER' | 'ATOM' | 'SUI' | 'OP' | 'GRT' | 'AAVE' | 'NOT'
 
@@ -93,6 +94,7 @@ export interface ExchangeModalProps {
   fromCurrency: Currency | Crypto
   toCurrency: Currency | Crypto
 }
+
 
 export interface WithdrawModalProps {
   isOpen: boolean
