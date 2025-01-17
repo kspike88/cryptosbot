@@ -161,7 +161,7 @@ export default function TradingPairPage() {
   const getTranslation = (key: keyof Translations) => {
     const translation = translations[key]
     if (translation && typeof translation === 'object' && language in translation) {
-      return translation[language]
+      return translation[language as keyof typeof translation]
     }
     return key
   }
