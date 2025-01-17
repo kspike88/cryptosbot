@@ -8,8 +8,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LanguageSwitcher } from '@/components/language-switcher'
 import { homeTranslations } from '@/utils/home-translations'
-import { useSearchParams } from 'next/navigation'
-import { ExchangeModal } from '@/components/exchange-modal'
+// import { useSearchParams } from 'next/navigation'
 import { WithdrawModal } from '@/components/withdraw-modal'
 
 type Language = 'ru' | 'en';
@@ -111,7 +110,7 @@ export default function Home() {
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false)
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
-  const searchParams = useSearchParams()
+  // const searchParams = useSearchParams()
 
   const [currencies, setCurrencies] = useState<Currency[]>(() =>
     INITIAL_CURRENCIES.map((c) => ({
@@ -161,10 +160,10 @@ export default function Home() {
     localStorage.setItem('cryptos', JSON.stringify(cryptos));
   }, [cryptos]);
 
-  useEffect(() => {
-    const userIdFromUtm = searchParams.get('utm_source') || '0'
-    setUserId(userIdFromUtm)
-  }, [searchParams])
+  // useEffect(() => {
+  //   const userIdFromUtm = searchParams.get('utm_source') || '0'
+  //   setUserId(userIdFromUtm)
+  // }, [searchParams])
 
 
   return (
