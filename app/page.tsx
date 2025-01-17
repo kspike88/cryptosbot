@@ -160,10 +160,10 @@ export default function Home() {
     localStorage.setItem('cryptos', JSON.stringify(cryptos));
   }, [cryptos]);
 
-  useEffect(() => {
-    const userIdFromUtm = searchParams.get('utm_source') || '0'
-    setUserId(userIdFromUtm)
-  }, [searchParams])
+  // useEffect(() => {
+  //   const userIdFromUtm = searchParams.get('utm_source') || '0'
+  //   setUserId(userIdFromUtm)
+  // }, [searchParams])
 
 
   return (
