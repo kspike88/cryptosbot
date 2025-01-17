@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { Navigation } from '@/components/navigation'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import type { Language, Translations } from '@/app/types/app'
 import { translations } from '@/utils/translations'
-import type { Translations, Language } from '@/app/types/app'
 
 interface TradingPair {
   id: string
@@ -233,7 +234,6 @@ export default function Trading() {
     }
     return key
   }
-  
 
   return (
     <main className="pb-20 bg-white">
@@ -241,16 +241,30 @@ export default function Trading() {
         <h1 className="text-sm text-blue-500 mb-3">{getTranslation('tradingPair', language)}</h1>
         <div className="space-y-2">
           {pairs.map((pair) => (
-            <div key={pair.id} className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm">
+            <div 
+              key={pair.id} 
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer border border-gray-100"
+              onClick={() => router.push(`/trading/${encodeURIComponent(pair.id)}`)}
+            >
               <div className="flex items-center gap-3">
-                <Image src={pair.icon} alt={pair.name} width={32} height={32} className="object-cover" />
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white overflow-hidden shadow-sm border border-gray-100">
+                  <Image
+                    src={pair.icon}
+                    alt={pair.name}
+                    width={32}
+                    height={32}
+                    className="object-contain"
+                  />
+                </div>
                 <div>
                   <div className="text-gray-900 font-medium">{pair.id}</div>
                   <div className="text-sm text-gray-500">{pair.subtitle}</div>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-gray-900 font-medium">{pair.price.toFixed(2)}</div>
+                <div className="text-gray-900 font-medium">
+                  {pair.price.toFixed(2)}
+                </div>
                 <div className={`text-sm ${pair.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {pair.change >= 0 ? '+' : ''}{pair.change.toFixed(2)}%
                 </div>
@@ -259,6 +273,7 @@ export default function Trading() {
           ))}
         </div>
       </div>
+      <Navigation />
     </main>
   )
 }
