@@ -321,7 +321,7 @@ export default function Home() {
         onClose={() => setIsDepositModalOpen(false)}
         language={language}
       />
-      <ExchangeModal
+      {/* <ExchangeModal
         isOpen={isExchangeModalOpen}
         onClose={() => setIsExchangeModalOpen(false)}
         fromCurrency={{
@@ -330,11 +330,11 @@ export default function Home() {
         }}
         toCurrency={{
           ...cryptos[0],
-          id: cryptos[0]?.id as '123',
+          id: cryptos[0]?.id as any,
           balance: cryptos[0]?.balance ?? 0,
           price: cryptos[0]?.price ?? 0,
         }}
-      />
+      /> */}
 
       <WithdrawModal isOpen={isWithdrawModalOpen} onClose={() => setIsWithdrawModalOpen(false)} />
     </main>
