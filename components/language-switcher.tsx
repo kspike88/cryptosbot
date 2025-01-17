@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Globe } from 'lucide-react'
 import type { Language } from '@/app/types/app'
 import { translations } from '@/utils/translations'
+import React from 'react'
 
 interface LanguageSwitcherProps {
   language: Language
@@ -13,7 +14,7 @@ interface LanguageSwitcherProps {
 interface LanguageOption {
   code: Language
   name: string
-  flag: string | JSX.Element
+  flag: string | React.JSX.Element
 }
 
 const LANGUAGES: LanguageOption[] = [
@@ -76,4 +77,3 @@ export function LanguageSwitcher({ language, onChange }: LanguageSwitcherProps) 
     </div>
   )
 }
-
