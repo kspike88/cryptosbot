@@ -470,21 +470,6 @@ const SettingsContent = () => {
             </div>
           </div>
         )}
-        {!isExpanded ? (
-          <button
-            onClick={() => setIsExpanded(true)}
-            className="w-full text-center py-2 text-blue-500"
-          >
-            {translations.showAll[language]}
-          </button>
-        ) : (
-          <button
-            onClick={() => setIsExpanded(false)}
-            className="w-full text-center py-2 text-blue-500"
-          >
-            {translations.collapse[language]}
-          </button>
-        )}
       </div>
     </>
   )

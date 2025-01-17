@@ -158,8 +158,8 @@ export default function TradingPairPage() {
     setAmount('')
   }
 
-  const getTranslation = (key: string) => {
-    return translations[key as keyof typeof translations]?.[language] || key
+  const getTranslation = (key: keyof Translations) => {
+    return translations[key]?.[language] || key
   }
 
   if (!pair) return null
