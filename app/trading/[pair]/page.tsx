@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 // import { Translations } from '@/utils/translations'
-import translations from '@/utils/translations'
+import { translations } from '@/utils/translations'
 import type { Language } from '@/app/types/app'
 
 interface Transaction {
