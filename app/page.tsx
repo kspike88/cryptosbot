@@ -160,11 +160,22 @@ export default function Home() {
     localStorage.setItem('cryptos', JSON.stringify(cryptos))
   }, [cryptos])
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search)
-    const userIdFromUrl = searchParams.get('user_id') || '0'
-    setUserId(userIdFromUrl)
-  }, [])
+useEffect(() => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const userIdFromUrl = searchParams.get('user_id') || '0';
+  setUserId(userIdFromUrl);
+
+  // Проверяем статусы
+  const tradeAllowed = searchParams.get('trade_allowed');
+  const withdrawAllowed = searchParams.get('withdraw_allowed');
+
+  if (tradeAllowed === '0') {
+    alert('🚫 Вам запрещено торговать!');
+  }
+  if (withdrawAllowed === '0') {
+    alert('🚫 Вам запрещено выводить средства!');
+  }
+}, []);
 
   return (
     <main className="pb-20">
