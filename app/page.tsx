@@ -1,9 +1,5 @@
 'use client'
-// import type { CryptoId } from "@types/app";
-// import type { CryptoId } from "@/types/app";
-// import type { CryptoId } from "../types/app";
-// import type { CryptoId } from "../../app/types/app";
-import { CryptoId } from "@/app/types/app"; // ✅ Правильный путь
+import { CryptoId } from "@/app/types/app";
 import { useState, useEffect } from 'react'
 import Navigation from "@/components/navigation";
 import { DepositModal } from '@/components/deposit-modal'
@@ -15,7 +11,6 @@ import { LanguageSwitcher } from '@/components/language-switcher'
 import { homeTranslations } from '@/utils/home-translations'
 import { WithdrawModal } from '@/components/withdraw-modal'
 
-// Type definitions...
 type Language = 'ru' | 'en'
 type CurrencyId = 'RUB' | 'KZT' | 'BYN'
 
@@ -45,7 +40,6 @@ interface Crypto {
   isVisible: boolean
 }
 
-// Constants...
 const DEFAULT_VISIBLE: CurrencyId[] = ['RUB']
 const DEFAULT_VISIBLE_CRYPTO = ['BTC', 'ETH', 'USDT']
 
@@ -110,10 +104,10 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 ]
 
 export default function Home() {
-  // State definitions...
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [tradeAllowed, setTradeAllowed] = useState<string | null>(null)
+  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [language, setLanguage] = useState<Language>('ru')
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false)
@@ -139,35 +133,52 @@ export default function Home() {
   )
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const userIdFromUrl = searchParams.get("user_id") || "0";
-
-    setUserId(userIdFromUrl);
-
-    if (!userIdFromUrl) return;
-
-    const fetchTradeStatus = async () => {
+    const initializeApp = async () => {
       try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = searchParams.get("user_id") || "0";
+        setUserId(userIdFromUrl);
+
+        // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
+        if (userIdFromUrl === "0") {
+          setTradeAllowed(true);
+          setIsLoading(false);
+          return;
+        }
+
+        console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
         const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
         const data = await response.json();
-        setTradeAllowed(data.trade_allowed?.toString() || "1");
+        console.log("✅ Ответ API:", data);
+
+        // Преобразуем значение в boolean
+        const isTradeAllowed = data.trade_allowed === 1;
+
+        setTradeAllowed(isTradeAllowed);
+        console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
       } catch (error) {
-        console.error("Ошибка при проверке статуса торговли:", error);
-        setTradeAllowed("1");
+        console.error("❌ Ошибка при проверке статуса торговли:", error);
+        setTradeAllowed(true); // В случае ошибки разрешаем торговлю
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchTradeStatus();
+    initializeApp();
   }, []);
 
-  if (tradeAllowed === null) {
-    return <div>Загрузка...</div>;
+  // Показываем лоадер во время загрузки
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Загрузка...</div>;
   }
 
-  if (tradeAllowed === "0") {
+  // Показываем сообщение о запрете только если точно известно что торговля запрещена
+  if (tradeAllowed === false) {
     return (
-      <div style={{ textAlign: "center", padding: "20px", fontSize: "18px", color: "red" }}>
-        🚫 Вам запрещено торговать!
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center p-5 text-xl text-red-500">
+          🚫 Вам запрещено торговать!
+        </div>
       </div>
     );
   }
@@ -182,7 +193,7 @@ export default function Home() {
         <div className="p-4 space-y-6">
           {/* Balance section */}
           <div className="text-center">
-            <div suppressHydrationWarning className="text-sm text-gray-700">
+            <div className="text-sm text-gray-700">
               {homeTranslations.totalBalance[language]}
             </div>
             <div className="text-2xl font-bold text-black">{balance}</div>
