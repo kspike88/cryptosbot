@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import pool from '@/lib/db';
+import { supabase } from '@/lib/db';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -10,17 +10,17 @@ export async function GET(req: Request) {
   }
 
   try {
-    const client = await pool.connect();
-    try {
-      const result = await client.query(
-        "SELECT trade_allowed FROM user_restrictions WHERE user_id = $1",
-        [userId]
-      );
-      const tradeAllowed = result.rows.length > 0 ? result.rows[0].trade_allowed : 1;
-      return NextResponse.json({ trade_allowed: tradeAllowed });
-    } finally {
-      client.release();
-    }
+    const { data, error } = await supabase
+      .from('user_restrictions')
+      .select('trade_allowed')
+      .eq('user_id', userId)
+      .single();
+
+    if (error) throw error;
+
+    const tradeAllowed = data?.trade_allowed ?? 1;
+    return NextResponse.json({ trade_allowed: tradeAllowed });
+
   } catch (error) {
     console.error("Database error:", error);
     if (error instanceof Error) {
