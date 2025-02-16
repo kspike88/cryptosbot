@@ -302,17 +302,26 @@ export default function TradingPairPage() {
                 <div className="p-4 border-t">
                   <button
                     onClick={async () => {
-                      const response = await fetch(`/api/checkCanTrade?user_id=${userId}`);
-                      const data = await response.json();
+                      try {
+                        const response = await fetch(`/api/checkCanTrade?user_id=${userId}`);
 
-                      if (!data?.can_trade) {
-                        alert("🚫 Вы не можете открыть сделку на данный момент.");
-                        return;
+                        if (!response.ok) {
+                          throw new Error('Network response was not ok');
+                        }
+
+                        const data = await response.json();
+
+                        if (!data?.can_trade) {
+                          alert("🚫 Вы не можете открыть сделку на данный момент.");
+                          return;
+                        }
+
+                        handleTrade();
+                        setShowTradeMenu(false);
+                      } catch (error) {
+                        console.error('Error checking trade permission:', error);
+                        alert("Произошла ошибка при проверке возможности торговли. Попробуйте позже.");
                       }
-
-                      // ✅ Теперь можно выполнить handleTrade()
-                      handleTrade(tradeType);
-                      setShowTradeMenu(false);
                     }}
                     className={`w-full py-4 rounded-lg text-white font-medium ${
                       tradeType === 'buy' ? 'bg-emerald-500' : 'bg-[#ef4444]'
