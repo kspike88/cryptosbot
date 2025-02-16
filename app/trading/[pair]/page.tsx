@@ -1,5 +1,5 @@
 'use client'
-
+import { supabase } from '@/lib/db';
 import { useEffect, useRef, useState } from 'react'
 import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
@@ -27,9 +27,19 @@ const DURATION_MAP = {
 }
 
 export default function TradingPairPage() {
-  const params = useParams()
-  const pairId = decodeURIComponent(params.pair as string)
+  const params = useParams();
+  const pairId = decodeURIComponent(params.pair as string);
 
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userIdFromUrl = urlParams.get('user_id');
+
+    if (userIdFromUrl) {
+      localStorage.setItem('user_id', userIdFromUrl);
+    }
+  }, []);
+
+  const userId = localStorage.getItem('user_id'); // Получаем user_id из localStorage
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
@@ -279,8 +289,8 @@ export default function TradingPairPage() {
                         key={time}
                         onClick={() => setSelectedDuration(time)}
                         className={`px-4 py-2 rounded whitespace-nowrap ${
-                          selectedDuration === time 
-                            ? 'bg-gray-200 text-gray-800' 
+                          selectedDuration === time
+                            ? 'bg-gray-200 text-gray-800'
                             : 'bg-gray-100 text-gray-600'
                         }`}
                       >
@@ -292,20 +302,31 @@ export default function TradingPairPage() {
 
                 <div className="p-4 border-t">
                   <button
-                    onClick={() => {
-                      handleTrade()
-                      setShowTradeMenu(false)
+                    onClick={async () => {
+                      const { data, error } = await supabase
+                        .from('user_restrictions')
+                        .select('can_trade')
+                        .eq('user_id', userId)  // Заменить на переменную с id пользователя
+                        .single();
+
+                      if (error || !data?.can_trade) {
+                        alert("🚫 Вы не можете открыть сделку на данный момент.");
+                        return;
+                      }
+
+                      handleTrade();
+                      setShowTradeMenu(false);
                     }}
                     className={`w-full py-4 rounded-lg text-white font-medium ${
                       tradeType === 'buy' ? 'bg-emerald-500' : 'bg-[#ef4444]'
                     }`}
                   >
-                    {tradeType === 'buy' 
+                    {tradeType === 'buy'
                       ? `${getTranslation('buy')} ${pair?.base}`
                       : `${getTranslation('sell')} ${pair?.base}`
                     }
                   </button>
-                  
+
                   <button
                     onClick={() => setShowTradeMenu(false)}
                     className="w-full mt-2 py-4 text-gray-600 font-medium"
