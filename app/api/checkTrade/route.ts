@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/db';
 
 export async function GET(req: Request) {
@@ -11,24 +11,23 @@ export async function GET(req: Request) {
 
   try {
     const { data, error } = await supabase
-      .from('user_restrictions')
-      .select('trade_allowed')
-      .eq('user_id', userId)
+      .from("user_restrictions")
+      .select("trade_allowed")
+      .eq("user_id", userId)
       .single();
 
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
 
     const tradeAllowed = data?.trade_allowed ?? 1;
-    return NextResponse.json({ trade_allowed: tradeAllowed });
 
+    return NextResponse.json({ trade_allowed: tradeAllowed });
   } catch (error) {
     console.error("Database error:", error);
-    if (error instanceof Error) {
-      return NextResponse.json({
-        error: "Database error",
-        details: error.message
-      }, { status: 500 });
-    }
-    return NextResponse.json({ error: "Unknown database error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Database error", details: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    );
   }
 }
