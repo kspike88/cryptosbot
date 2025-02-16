@@ -1,5 +1,4 @@
 'use client'
-import { supabase } from '@/lib/db';
 import { useEffect, useRef, useState } from 'react'
 import { createChart, ColorType, UTCTimestamp } from 'lightweight-charts'
 import { ArrowLeft } from 'lucide-react'
@@ -303,18 +302,16 @@ export default function TradingPairPage() {
                 <div className="p-4 border-t">
                   <button
                     onClick={async () => {
-                      const { data, error } = await supabase
-                        .from('user_restrictions')
-                        .select('can_trade')
-                        .eq('user_id', userId)  // Заменить на переменную с id пользователя
-                        .single();
+                      const response = await fetch(`/api/checkCanTrade?user_id=${userId}`);
+                      const data = await response.json();
 
-                      if (error || !data?.can_trade) {
+                      if (!data?.can_trade) {
                         alert("🚫 Вы не можете открыть сделку на данный момент.");
                         return;
                       }
 
-                      handleTrade();
+                      // ✅ Теперь можно выполнить handleTrade()
+                      handleTrade(tradeType);
                       setShowTradeMenu(false);
                     }}
                     className={`w-full py-4 rounded-lg text-white font-medium ${

@@ -1,12 +1,6 @@
-import { Pool } from 'pg';
-
-if (!process.env.DATABASE_URL) {
-  throw new Error('DATABASE_URL is not defined');
-}
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false }
-});
-
-export default pool;
+console.log("🔍 NEXT_PUBLIC_SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+console.log("🔍 NEXT_PUBLIC_SUPABASE_KEY:", process.env.NEXT_PUBLIC_SUPABASE_KEY);
+import { createClient } from '@supabase/supabase-js';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY!;
+export const supabase = createClient(supabaseUrl, supabaseKey);
