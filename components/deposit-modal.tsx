@@ -242,13 +242,13 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   <div className="text-sm text-gray-500">{translations.paymentMethod?.[language] || 'Payment Method'}</div>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                      <Image
+{/*                      <Image
                         src={CryptoBotIcon}
                         alt="Crypto Bot"
                         width={35}
                         height={35}
                         className="rounded-full"
-                      />
+                      />*/}
                     </div>
                     <div className="text-gray-900">Crypto Bot</div>
                   </div>
