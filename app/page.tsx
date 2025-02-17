@@ -102,22 +102,26 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
     isVisible: true,
   },
 ]
+
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [tradeAllowed, setTradeAllowed] = useState<string | null>(null)
+  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [language, setLanguage] = useState<Language>('ru')
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false)
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false)
+
   const [currencies, setCurrencies] = useState<Currency[]>(() =>
     INITIAL_CURRENCIES.map((c) => ({
       ...c,
-      rate: 0.00${c.symbol},
+      rate: `0.00${c.symbol}`,
       balance: '0.00',
       isVisible: DEFAULT_VISIBLE.includes(c.id),
     })),
   )
+
   const [cryptos, setCryptos] = useState<Crypto[]>(() =>
     INITIAL_CRYPTOS.map((c) => ({
       ...c,
@@ -127,35 +131,59 @@ export default function Home() {
       isVisible: DEFAULT_VISIBLE_CRYPTO.includes(c.id),
     })),
   )
+
   useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const userIdFromUrl = searchParams.get("user_id") || "0";
-    setUserId(userIdFromUrl);
-    const fetchTradeStatus = async () => {
+    const initializeApp = async () => {
       try {
-        const response = await fetch(/api/checkTrade?user_id=${userIdFromUrl});
+        const searchParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = searchParams.get("user_id") || "0";
+        setUserId(userIdFromUrl);
+
+        // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
+        if (userIdFromUrl === "0") {
+          setTradeAllowed(true);
+          setIsLoading(false);
+          return;
+        }
+
+        console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
+        const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
         const data = await response.json();
-        setTradeAllowed(data.trade_allowed ? "1" : "0"); // Явное преобразование boolean в строку
+        console.log("✅ Ответ API:", data);
+
+        // Преобразуем значение в boolean
+        const isTradeAllowed = data.trade_allowed === true;
+
+        setTradeAllowed(isTradeAllowed);
+        console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
       } catch (error) {
-        console.error("Ошибка при проверке статуса торговли:", error);
-        setTradeAllowed("1");
+        console.error("❌ Ошибка при проверке статуса торговли:", error);
+        setTradeAllowed(true); // В случае ошибки разрешаем торговлю
+      } finally {
+        setIsLoading(false);
       }
     };
-    fetchTradeStatus();
+
+    initializeApp();
   }, []);
-// Если tradeAllowed еще не загрузился
-if (tradeAllowed === null) {
-  return <div>Загрузка...</div>;
-}
-// Если торговля запрещена, показываем только сообщение
-if (tradeAllowed === "0") {
+
+  // Показываем лоадер во время загрузки
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Загрузка...</div>;
+  }
+
+  // Показываем сообщение о запрете только если точно известно что торговля запрещена
+  if (tradeAllowed === false) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center p-5 text-xl text-red-500">
+          🚫 Вам запрещено торговать!
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ textAlign: "center", padding: "20px", fontSize: "18px", color: "red" }}>
-      🚫 Вам запрещено торговать!
-    </div>
-  );
-}
-return (
     <div className="relative min-h-screen">
       <main className="pb-20">
         <div className="fixed top-4 right-4 z-10">
