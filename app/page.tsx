@@ -155,7 +155,6 @@ export default function Home() {
         // Преобразуем значение в boolean
         setTradeAllowed(data.trade_allowed === true);
         setCanTrade(data.can_trade === true);
-        console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
       } catch (error) {
         console.error("❌ Ошибка при проверке статуса торговли:", error);
         setTradeAllowed(true); // В случае ошибки разрешаем торговлю
