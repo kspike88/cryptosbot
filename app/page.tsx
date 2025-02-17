@@ -106,7 +106,7 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null);
+  const [tradeAllowed, setTradeAllowed] = useState<boolean | undefined>(undefined);
   const [canTrade, setCanTrade] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true)
   const [language, setLanguage] = useState<Language>('ru')
@@ -190,7 +190,7 @@ if (tradeAllowed === false) {
 
 
   // Показываем сообщение о запрете только если точно известно что торговля запрещена
-  if (tradeAllowed === false) {
+  if (tradeAllowed === false && isLoading === false) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center p-5 text-xl text-red-500">
