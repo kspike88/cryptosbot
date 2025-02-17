@@ -136,33 +136,35 @@ export default function Home() {
 
 useEffect(() => {
   const initializeApp = async () => {
-    try {
+    if (typeof window !== 'undefined') {  // Проверка на клиентский рендеринг
       const searchParams = new URLSearchParams(window.location.search);
       const userIdFromUrl = searchParams.get("user_id") || "0";
       console.log("🔍 Полученный user_id:", userIdFromUrl);
       setUserId(userIdFromUrl);
 
-      const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
-      const data = await response.json();
+      try {
+        const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
+        const data = await response.json();
 
-      // Если trade_allowed === false, перенаправляем на страницу ошибки
-      if (!data.trade_allowed) {
-        window.location.href = '/error?message=Trade%20Forbidden';
+        // Если trade_allowed === false, перенаправляем на страницу ошибки
+        if (!data.trade_allowed) {
+          window.location.href = '/error?message=Trade%20Forbidden';
+        }
+
+        // Устанавливаем другие данные
+        setTradeAllowed(data.trade_allowed);
+        setCanTrade(data.can_trade === true);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("❌ Ошибка при проверке статуса торговли:", error);
+        setTradeAllowed(false); // Можно оставить false, чтобы пользователь не мог торговать
       }
-
-      // Устанавливаем другие данные
-      setTradeAllowed(data.trade_allowed);
-      setCanTrade(data.can_trade === true);
-      setIsLoading(false);
-
-    } catch (error) {
-      console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(false); // Можно оставить false, чтобы пользователь не мог торговать
     }
   };
 
   initializeApp();
 }, []);
+
 
 
 
