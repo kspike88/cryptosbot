@@ -1,4 +1,40 @@
 'use client'
+"use client";
+import { useEffect, useState } from "react";
+
+export default function Home() {
+  const [isSdkLoaded, setIsSdkLoaded] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && !window.Telegram) {
+      const script = document.createElement("script");
+      script.src = "https://telegram.org/js/telegram-web-app.js";
+      script.async = true;
+      script.onload = () => setIsSdkLoaded(true);
+      document.body.appendChild(script);
+
+      return () => {
+        document.body.removeChild(script);
+      };
+    } else {
+      setIsSdkLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isSdkLoaded && window.Telegram?.WebApp) {
+      console.log("✅ Telegram WebApp SDK загружен");
+      window.Telegram.WebApp.expand(); // Разворачиваем MiniApp
+    }
+  }, [isSdkLoaded]);
+
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <h1>🔥 Добро пожаловать в MiniApp!</h1>
+    </div>
+  );
+}
+
 import { CryptoId } from "@/app/types/app";
 import { useState, useEffect } from 'react'
 import Navigation from "@/components/navigation";
