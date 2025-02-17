@@ -1,36 +1,34 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/db';
+// pages/index.js
+export async function getServerSideProps(context) {
+  const { user_id } = context.query;
 
-export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const userId = url.searchParams.get("user_id");
-
-  if (!userId) {
-    return NextResponse.json({ error: "user_id is required" }, { status: 400 });
+  // Проверяем user_id
+  if (!user_id) {
+    return {
+      redirect: {
+        destination: '/error?message=No User ID',
+        permanent: false,
+      },
+    };
   }
 
-  try {
-    const { data, error } = await supabase
-      .from("user_restrictions")
-      .select("trade_allowed, can_trade")
-      .eq("user_id", userId)
-      .single();
+  // Запрос к бэкенду для проверки trade_allowed
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/checkTrade?user_id=${user_id}`);
+  const data = await res.json();
 
-    if (error) {
-      throw error;
-    }
-
-    console.log("🔍 Полученные данные из БД:", data);
-
-    return NextResponse.json({
-      trade_allowed: !!data?.trade_allowed, // Приводим к boolean
-      can_trade: !!data?.can_trade // Приводим к boolean
-    });
-  } catch (error) {
-    console.error("Database error:", error);
-    return NextResponse.json(
-      { error: "Database error", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
+  // Если trade_allowed === false, делаем редирект
+  if (data.trade_allowed === false) {
+    return {
+      redirect: {
+        destination: '/error?message=Trade Not Allowed',
+        permanent: false,
+      },
+    };
   }
+
+  return {
+    props: {
+      userId: user_id,
+    },
+  };
 }
