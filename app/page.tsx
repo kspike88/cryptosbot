@@ -156,7 +156,7 @@ export default function Home() {
 
         // Преобразуем значение в boolean
         console.log("🔍 trade_allowed:", data.trade_allowed);
-        setTradeAllowed(data.trade_allowed ?? null);
+        setTradeAllowed(Boolean(data.trade_allowed));
         setCanTrade(data.can_trade === true);
         console.log("🔄 tradeAllowed:", data.trade_allowed);
         console.log("🔄 canTrade:", data.can_trade);

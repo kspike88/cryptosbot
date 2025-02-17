@@ -20,7 +20,8 @@ export async function GET(req: Request) {
       throw error;
     }
 
-    const tradeAllowed = data?.trade_allowed ?? 1;
+    const tradeAllowed = data?.trade_allowed === 1;
+
 
     return NextResponse.json({ trade_allowed: tradeAllowed });
   } catch (error) {
