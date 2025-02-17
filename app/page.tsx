@@ -142,9 +142,9 @@ useEffect(() => {
       console.log("🔍 Полученный user_id:", userIdFromUrl);
       setUserId(userIdFromUrl);
 
+      // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
       if (userIdFromUrl === "0") {
-        setTradeAllowed(true);
-        setCanTrade(true);
+        setTradeAllowed(true); // Разрешаем торговлю сразу
         setIsLoading(false);
         return;
       }
@@ -154,17 +154,17 @@ useEffect(() => {
       const data = await response.json();
       console.log("✅ Ответ API:", data);
 
-      if (typeof data.trade_allowed === "boolean" && typeof data.can_trade === "boolean") {
-        setTradeAllowed(data.trade_allowed);
-        setCanTrade(data.can_trade);
-      } else {
-        console.error("❌ Некорректный ответ API:", data);
-        setTradeAllowed(false);
-      }
+      // Устанавливаем tradeAllowed с учетом ответа
+      const isTradeAllowed = Boolean(data.trade_allowed);
+      setTradeAllowed(isTradeAllowed);
+      setCanTrade(data.can_trade === true);
+
+      console.log("🔄 tradeAllowed:", isTradeAllowed);
+      console.log("🔄 canTrade:", data.can_trade);
 
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(false); // В случае ошибки запрещаем доступ
+      setTradeAllowed(false); // Можно оставить false, чтобы пользователь не мог торговать
     } finally {
       setIsLoading(false);
     }
@@ -177,9 +177,8 @@ useEffect(() => {
 
   // Показываем лоадер во время загрузки
 if (isLoading || tradeAllowed === null) {
-  // ⛔️ Останавливаем рендеринг до завершения проверки
   console.log("⏳ Проверка статуса торговли...");
-  return null;
+  return null;  // Пока идет проверка, ничего не рендерим
 }
 
 
