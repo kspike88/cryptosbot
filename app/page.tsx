@@ -140,7 +140,7 @@ useEffect(() => {
       const userIdFromUrl = searchParams.get("user_id") || "0";
       setUserId(userIdFromUrl);
 
-      // Если userId === "0", разрешаем использование и выходим
+      // Если userId === "0", разрешаем использование
       if (userIdFromUrl === "0") {
         setTradeAllowed(true);
         setIsLoading(false);
@@ -152,18 +152,25 @@ useEffect(() => {
       const data = await response.json();
       console.log("✅ Ответ API:", data);
 
-      // Обновляем статус в зависимости от значения trade_allowed
-      setTradeAllowed(data.trade_allowed);
-      setIsLoading(false);
-
-      // Если запрещено, то принудительно остановить рендеринг
+      // Если торговля запрещена, закрываем MiniApp
       if (!data.trade_allowed) {
-        console.log("⛔️ Торговля запрещена! Прерываем загрузку...");
+        console.warn("⛔️ Торговля запрещена! Закрываем MiniApp...");
+
+        if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.close(); // Закрываем MiniApp в Telegram
+        } else {
+          alert("🚫 Вам запрещено использовать приложение.");
+          window.location.href = "tg://resolve?domain=cryptradebtse_bot"; // Возвращаем в Telegram
+        }
+
         return;
       }
+
+      setTradeAllowed(true);
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
       setTradeAllowed(true);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -188,6 +195,8 @@ useEffect(() => {
     );
   }
 
+
+// Показываем лоадер во время загрузки
   return (
     <div className="relative min-h-screen">
       <main className="pb-20">
