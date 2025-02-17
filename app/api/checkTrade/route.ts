@@ -12,7 +12,7 @@ export async function GET(req: Request) {
   try {
     const { data, error } = await supabase
       .from("user_restrictions")
-      .select("trade_allowed")
+      .select("trade_allowed, can_trade")
       .eq("user_id", userId)
       .single();
 
@@ -20,10 +20,12 @@ export async function GET(req: Request) {
       throw error;
     }
 
-    const tradeAllowed = data?.trade_allowed === 1;
+    console.log("🔍 Полученные данные из БД:", data);
 
-
-    return NextResponse.json({ trade_allowed: tradeAllowed });
+    return NextResponse.json({
+      trade_allowed: !!data?.trade_allowed, // Приводим к boolean
+      can_trade: !!data?.can_trade // Приводим к boolean
+    });
   } catch (error) {
     console.error("Database error:", error);
     return NextResponse.json(
