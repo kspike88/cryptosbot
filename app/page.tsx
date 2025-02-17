@@ -154,6 +154,7 @@ export default function Home() {
         console.log("✅ Ответ API:", data);
 
         // Преобразуем значение в boolean
+        console.log("🔍 trade_allowed:", data.trade_allowed);
         setTradeAllowed(data.trade_allowed === true);
         setCanTrade(data.can_trade === true);
         console.log("🔄 tradeAllowed:", data.trade_allowed);
