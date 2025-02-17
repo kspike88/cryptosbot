@@ -138,6 +138,7 @@ export default function Home() {
       try {
         const searchParams = new URLSearchParams(window.location.search);
         const userIdFromUrl = searchParams.get("user_id") || "0";
+        console.log("🔍 Полученный user_id:", userIdFromUrl);
         setUserId(userIdFromUrl);
 
         // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
@@ -155,6 +156,9 @@ export default function Home() {
         // Преобразуем значение в boolean
         setTradeAllowed(data.trade_allowed === true);
         setCanTrade(data.can_trade === true);
+        console.log("🔄 tradeAllowed:", data.trade_allowed);
+        console.log("🔄 canTrade:", data.can_trade);
+
       } catch (error) {
         console.error("❌ Ошибка при проверке статуса торговли:", error);
         setTradeAllowed(true); // В случае ошибки разрешаем торговлю
