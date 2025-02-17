@@ -106,7 +106,8 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [tradeAllowed, setTradeAllowed] = useState<boolean | undefined>(undefined);
+  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null);
+
   const [canTrade, setCanTrade] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true)
   const [language, setLanguage] = useState<Language>('ru')
