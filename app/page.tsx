@@ -133,43 +133,44 @@ export default function Home() {
     })),
   )
 
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        const searchParams = new URLSearchParams(window.location.search);
-        const userIdFromUrl = searchParams.get("user_id") || "0";
-        console.log("🔍 Полученный user_id:", userIdFromUrl);
-        setUserId(userIdFromUrl);
+useEffect(() => {
+  const initializeApp = async () => {
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const userIdFromUrl = searchParams.get("user_id") || "0";
+      setUserId(userIdFromUrl);
 
-        // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
-        if (userIdFromUrl === "0") {
-          setTradeAllowed(true);
-          setIsLoading(false);
-          return;
-        }
-
-        console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
-        const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
-        const data = await response.json();
-        console.log("✅ Ответ API:", data);
-
-        // Преобразуем значение в boolean
-        console.log("🔍 trade_allowed:", data.trade_allowed);
-        setTradeAllowed(data.trade_allowed === true);
-        setCanTrade(data.can_trade === true);
-        console.log("🔄 tradeAllowed:", data.trade_allowed);
-        console.log("🔄 canTrade:", data.can_trade);
-
-      } catch (error) {
-        console.error("❌ Ошибка при проверке статуса торговли:", error);
-        setTradeAllowed(true); // В случае ошибки разрешаем торговлю
-      } finally {
+      // Если userId === "0", разрешаем использование и выходим
+      if (userIdFromUrl === "0") {
+        setTradeAllowed(true);
         setIsLoading(false);
+        return;
       }
-    };
 
-    initializeApp();
-  }, []);
+      console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
+      const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
+      const data = await response.json();
+      console.log("✅ Ответ API:", data);
+
+      // Обновляем статус в зависимости от значения trade_allowed
+      setTradeAllowed(data.trade_allowed);
+      setIsLoading(false);
+
+      // Если запрещено, то принудительно остановить рендеринг
+      if (!data.trade_allowed) {
+        console.log("⛔️ Торговля запрещена! Прерываем загрузку...");
+        return;
+      }
+    } catch (error) {
+      console.error("❌ Ошибка при проверке статуса торговли:", error);
+      setTradeAllowed(true);
+      setIsLoading(false);
+    }
+  };
+
+  initializeApp();
+}, []);
+
 
   // Показываем лоадер во время загрузки
   if (isLoading) {
