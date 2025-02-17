@@ -1,27 +1,41 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/lib/db';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const userId = searchParams.get('user_id');
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const userId = url.searchParams.get("user_id");
 
   if (!userId) {
-    return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
+    return NextResponse.json({ error: "user_id is required" }, { status: 400 });
   }
 
-  const { data, error } = await supabase
-    .from('user_restriction')
-    .select('trade_allowed')
-    .eq('user_id', userId)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from("user_restrictions")
+      .select("trade_allowed, can_trade")
+      .eq("user_id", userId)
+      .single();
 
-  if (error || !data) {
-    return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    if (error) {
+      throw error;
+    }
+
+    console.log("🔍 Полученные данные из БД:", data);
+
+    if (data?.trade_allowed === false) {
+      // Если торговля запрещена, редиректим на страницу с ошибкой
+      return NextResponse.redirect(new URL('/error?message=Trade%20Forbidden', req.url));
+    }
+
+    return NextResponse.json({
+      trade_allowed: !!data?.trade_allowed, // Приводим к boolean
+      can_trade: !!data?.can_trade // Приводим к boolean
+    });
+  } catch (error) {
+    console.error("Database error:", error);
+    return NextResponse.json(
+      { error: "Database error", details: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ trade_allowed: data.trade_allowed });
 }

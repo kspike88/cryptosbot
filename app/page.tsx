@@ -142,38 +142,28 @@ useEffect(() => {
       console.log("🔍 Полученный user_id:", userIdFromUrl);
       setUserId(userIdFromUrl);
 
-      // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
-      if (userIdFromUrl === "0") {
-        setTradeAllowed(true);
-        setIsLoading(false);
-        return;
-      }
-
-      console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
       const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
       const data = await response.json();
-      console.log("✅ Ответ API:", data);
 
-      // Проверяем тип данных
-      console.log("🔎 Тип данных trade_allowed:", typeof data.trade_allowed);
+      // Если trade_allowed === false, перенаправляем на страницу ошибки
+      if (!data.trade_allowed) {
+        window.location.href = '/error?message=Trade%20Forbidden';
+      }
 
-      // Используем явное сравнение с true
-      const isTradeAllowed = data.trade_allowed === true;
-      setTradeAllowed(isTradeAllowed);
+      // Устанавливаем другие данные
+      setTradeAllowed(data.trade_allowed);
       setCanTrade(data.can_trade === true);
+      setIsLoading(false);
 
-      console.log("🔄 tradeAllowed:", isTradeAllowed);
-      console.log("🔄 canTrade:", data.can_trade);
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(false);
-    } finally {
-      setIsLoading(false);
+      setTradeAllowed(false); // Можно оставить false, чтобы пользователь не мог торговать
     }
   };
 
   initializeApp();
 }, []);
+
 
 
 
