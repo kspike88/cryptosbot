@@ -144,6 +144,7 @@ useEffect(() => {
 
       if (userIdFromUrl === "0") {
         setTradeAllowed(true);
+        setCanTrade(true);
         setIsLoading(false);
         return;
       }
@@ -153,12 +154,17 @@ useEffect(() => {
       const data = await response.json();
       console.log("✅ Ответ API:", data);
 
-      setTradeAllowed(data.trade_allowed);
-      setCanTrade(data.can_trade);
+      if (typeof data.trade_allowed === "boolean" && typeof data.can_trade === "boolean") {
+        setTradeAllowed(data.trade_allowed);
+        setCanTrade(data.can_trade);
+      } else {
+        console.error("❌ Некорректный ответ API:", data);
+        setTradeAllowed(false);
+      }
 
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(true); // Разрешаем торговлю в случае ошибки
+      setTradeAllowed(false); // В случае ошибки запрещаем доступ
     } finally {
       setIsLoading(false);
     }
@@ -166,6 +172,7 @@ useEffect(() => {
 
   initializeApp();
 }, []);
+
 
 
   // Показываем лоадер во время загрузки
