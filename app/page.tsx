@@ -106,7 +106,8 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null)
+  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null);
+  const [canTrade, setCanTrade] = useState<boolean | null>(null);
   const [isLoading, setIsLoading] = useState(true)
   const [language, setLanguage] = useState<Language>('ru')
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
@@ -152,9 +153,8 @@ export default function Home() {
         console.log("✅ Ответ API:", data);
 
         // Преобразуем значение в boolean
-        const isTradeAllowed = data.trade_allowed === true;
-
-        setTradeAllowed(isTradeAllowed);
+        setTradeAllowed(data.trade_allowed === true);
+        setCanTrade(data.can_trade === true);
         console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
       } catch (error) {
         console.error("❌ Ошибка при проверке статуса торговли:", error);
@@ -177,7 +177,7 @@ export default function Home() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center p-5 text-xl text-red-500">
-          🚫 Вам запрещено торговать!
+          🚫 Вам запрещено использовать приложение!
         </div>
       </div>
     );
