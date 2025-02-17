@@ -7,10 +7,7 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "Crypto Dashboard",
-  description: "Real-time cryptocurrency trading dashboard",
-};
+
 
 export default function RootLayout({
   children,
