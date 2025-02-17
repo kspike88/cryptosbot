@@ -156,7 +156,7 @@ export default function Home() {
 
         // Преобразуем значение в boolean
         console.log("🔍 trade_allowed:", data.trade_allowed);
-        setTradeAllowed(data.trade_allowed === true);
+        setTradeAllowed(data.trade_allowed ?? null);
         setCanTrade(data.can_trade === true);
         console.log("🔄 tradeAllowed:", data.trade_allowed);
         console.log("🔄 canTrade:", data.can_trade);
@@ -191,7 +191,7 @@ if (tradeAllowed === false) {
 
 
   // Показываем сообщение о запрете только если точно известно что торговля запрещена
-  if (tradeAllowed === false && isLoading === false) {
+  if (tradeAllowed === false) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center p-5 text-xl text-red-500">
