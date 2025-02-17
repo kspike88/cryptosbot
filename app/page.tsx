@@ -182,15 +182,21 @@ if (isLoading || tradeAllowed === null) {
 
 
   // Показываем сообщение о запрете только если точно известно что торговля запрещена
-  if (tradeAllowed === false) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center p-5 text-xl text-red-500">
-          🚫 Вам запрещено использовать приложение!
-        </div>
+if (tradeAllowed === false) {
+  return (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="text-center p-5 text-xl text-red-500">
+        🚫 Вам запрещено использовать приложение!
       </div>
-    );
-  }
+      {/* Отладочная информация */}
+      <div className="p-4 bg-gray-100 text-xs">
+        <div>Platform: {window.Telegram?.WebApp ? "Telegram" : "Browser"}</div>
+        <div>UserID: {userId}</div>
+        <div>Trade Allowed: {String(tradeAllowed)}</div>
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="relative min-h-screen">
