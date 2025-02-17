@@ -179,15 +179,6 @@ if (isLoading || tradeAllowed === null) {
   return null;
 }
 
-if (tradeAllowed === false) {
-  console.log("🚫 Торговля запрещена! Остановка рендера.");
-  // Принудительно останавливаем рендеринг
-  document.body.innerHTML = `
-    <div style="text-align: center; padding: 20px; font-size: 18px; color: red;">
-      🚫 Вам запрещено использовать приложение!
-    </div>`;
-  return;
-}
 
 
   // Показываем сообщение о запрете только если точно известно что торговля запрещена
