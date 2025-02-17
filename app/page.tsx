@@ -144,7 +144,7 @@ useEffect(() => {
 
       // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
       if (userIdFromUrl === "0") {
-        setTradeAllowed(true); // Разрешаем торговлю сразу
+        setTradeAllowed(true);
         setIsLoading(false);
         return;
       }
@@ -154,17 +154,19 @@ useEffect(() => {
       const data = await response.json();
       console.log("✅ Ответ API:", data);
 
-      // Устанавливаем tradeAllowed с учетом ответа
-      const isTradeAllowed = Boolean(data.trade_allowed);
+      // Проверяем тип данных
+      console.log("🔎 Тип данных trade_allowed:", typeof data.trade_allowed);
+
+      // Используем явное сравнение с true
+      const isTradeAllowed = data.trade_allowed === true;
       setTradeAllowed(isTradeAllowed);
       setCanTrade(data.can_trade === true);
 
       console.log("🔄 tradeAllowed:", isTradeAllowed);
       console.log("🔄 canTrade:", data.can_trade);
-
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(false); // Можно оставить false, чтобы пользователь не мог торговать
+      setTradeAllowed(false);
     } finally {
       setIsLoading(false);
     }
@@ -172,6 +174,7 @@ useEffect(() => {
 
   initializeApp();
 }, []);
+
 
 
 
