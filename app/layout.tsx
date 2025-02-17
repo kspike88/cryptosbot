@@ -1,3 +1,5 @@
+"use client"; // ✅ Добавляем, чтобы сделать компонент клиентским
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
