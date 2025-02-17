@@ -1,40 +1,4 @@
 'use client'
-"use client";
-import { useEffect, useState } from "react";
-
-export default function Home() {
-  const [isSdkLoaded, setIsSdkLoaded] = useState(false);
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && !window.Telegram) {
-      const script = document.createElement("script");
-      script.src = "https://telegram.org/js/telegram-web-app.js";
-      script.async = true;
-      script.onload = () => setIsSdkLoaded(true);
-      document.body.appendChild(script);
-
-      return () => {
-        document.body.removeChild(script);
-      };
-    } else {
-      setIsSdkLoaded(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isSdkLoaded && window.Telegram?.WebApp) {
-      console.log("✅ Telegram WebApp SDK загружен");
-      window.Telegram.WebApp.expand(); // Разворачиваем MiniApp
-    }
-  }, [isSdkLoaded]);
-
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <h1>🔥 Добро пожаловать в MiniApp!</h1>
-    </div>
-  );
-}
-
 import { CryptoId } from "@/app/types/app";
 import { useState, useEffect } from 'react'
 import Navigation from "@/components/navigation";
@@ -169,56 +133,61 @@ export default function Home() {
     })),
   )
 
-useEffect(() => {
-  const initializeApp = async () => {
-    try {
-      const searchParams = new URLSearchParams(window.location.search);
-      const userIdFromUrl = searchParams.get("user_id") || "0";
-      setUserId(userIdFromUrl);
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = searchParams.get("user_id") || "0";
+        console.log("🔍 Полученный user_id:", userIdFromUrl);
+        setUserId(userIdFromUrl);
 
-      // Если userId === "0", разрешаем использование
-      if (userIdFromUrl === "0") {
-        setTradeAllowed(true);
-        setIsLoading(false);
-        return;
-      }
-
-      console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
-      const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
-      const data = await response.json();
-      console.log("✅ Ответ API:", data);
-
-      // Если торговля запрещена, закрываем MiniApp
-      if (!data.trade_allowed) {
-        console.warn("⛔️ Торговля запрещена! Закрываем MiniApp...");
-
-        if (window.Telegram?.WebApp) {
-          window.Telegram.WebApp.close(); // Закрываем MiniApp в Telegram
-        } else {
-          alert("🚫 Вам запрещено использовать приложение.");
-          window.location.href = "tg://resolve?domain=cryptradebtse_bot"; // Возвращаем в Telegram
+        // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
+        if (userIdFromUrl === "0") {
+          setTradeAllowed(true);
+          setIsLoading(false);
+          return;
         }
 
-        return;
+        console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
+        const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
+        const data = await response.json();
+        console.log("✅ Ответ API:", data);
+
+        // Преобразуем значение в boolean
+        console.log("🔍 trade_allowed:", data.trade_allowed);
+        setTradeAllowed(data.trade_allowed === true);
+        setCanTrade(data.can_trade === true);
+        console.log("🔄 tradeAllowed:", data.trade_allowed);
+        console.log("🔄 canTrade:", data.can_trade);
+
+      } catch (error) {
+        console.error("❌ Ошибка при проверке статуса торговли:", error);
+        setTradeAllowed(true); // В случае ошибки разрешаем торговлю
+      } finally {
+        setIsLoading(false);
       }
+    };
 
-      setTradeAllowed(true);
-    } catch (error) {
-      console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  initializeApp();
-}, []);
-
+    initializeApp();
+  }, []);
 
   // Показываем лоадер во время загрузки
-  if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Загрузка...</div>;
-  }
+if (isLoading || tradeAllowed === null) {
+  // ⛔️ Останавливаем рендеринг до завершения проверки
+  console.log("⏳ Проверка статуса торговли...");
+  return null;
+}
+
+if (tradeAllowed === false) {
+  console.log("🚫 Торговля запрещена! Остановка рендера.");
+  // Принудительно останавливаем рендеринг
+  document.body.innerHTML = `
+    <div style="text-align: center; padding: 20px; font-size: 18px; color: red;">
+      🚫 Вам запрещено использовать приложение!
+    </div>`;
+  return;
+}
+
 
   // Показываем сообщение о запрете только если точно известно что торговля запрещена
   if (tradeAllowed === false) {
@@ -231,8 +200,6 @@ useEffect(() => {
     );
   }
 
-
-// Показываем лоадер во время загрузки
   return (
     <div className="relative min-h-screen">
       <main className="pb-20">
