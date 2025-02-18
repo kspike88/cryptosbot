@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { pool } from '@/lib/db';  // Здесь был supabase, меняем на pool
+import { pool } from '@/lib/db';  // Меняем импорт на pool
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -13,11 +13,11 @@ export async function GET(req: Request) {
     const client = await pool.connect();
     try {
       const result = await client.query(
-        "SELECT trade_allowed FROM user_restrictions WHERE user_id = $1",
+        "SELECT can_trade FROM user_restrictions WHERE user_id = $1",
         [userId]
       );
-      const tradeAllowed = result.rows.length > 0 ? result.rows[0].trade_allowed : 1;
-      return NextResponse.json({ trade_allowed: tradeAllowed });
+      const canTrade = result.rows.length > 0 ? result.rows[0].can_trade : 1;
+      return NextResponse.json({ can_trade: canTrade });
     } finally {
       client.release();
     }
