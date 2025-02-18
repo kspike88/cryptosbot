@@ -1,11 +1,22 @@
-import { createClient } from '@supabase/supabase-js';
+import { Pool } from 'pg';
 
-if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_KEY) {
-  throw new Error('Missing Supabase environment variables');
+// Проверяем наличие переменной окружения
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not set in environment variables');
 }
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY;
+// Создаем и экспортируем пул подключений
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
 
-console.log("🔍 Initializing Supabase client...");
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Проверяем подключение при инициализации
+pool.connect((err, client, release) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+    return;
+  }
+  release();
+  console.log('✅ Successfully connected to PostgreSQL');
+});
