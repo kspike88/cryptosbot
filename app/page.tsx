@@ -132,40 +132,44 @@ export default function Home() {
     })),
   )
 
-  useEffect(() => {
-    const initializeApp = async () => {
-      try {
-        const searchParams = new URLSearchParams(window.location.search);
-        const userIdFromUrl = searchParams.get("user_id") || "0";
-        setUserId(userIdFromUrl);
+useEffect(() => {
+  const checkAccess = async () => {
+    setIsLoading(true);
+    try {
+      // Получаем user_id из URL или из Telegram WebApp
+      const webAppData = (window as any).Telegram?.WebApp?.initDataUnsafe;
+      const urlParams = new URLSearchParams(window.location.search);
+      const userIdFromUrl = urlParams.get("user_id");
 
-        // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
-        if (userIdFromUrl === "0") {
-          setTradeAllowed(true);
-          setIsLoading(false);
-          return;
-        }
+      const finalUserId = webAppData?.user?.id || userIdFromUrl || "0";
+      setUserId(finalUserId);
 
-        console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
-        const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
-        const data = await response.json();
-        console.log("✅ Ответ API:", data);
-
-        // Преобразуем значение в boolean
-        const isTradeAllowed = data.trade_allowed === true;
-
-        setTradeAllowed(isTradeAllowed);
-        console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
-      } catch (error) {
-        console.error("❌ Ошибка при проверке статуса торговли:", error);
-        setTradeAllowed(true); // В случае ошибки разрешаем торговлю
-      } finally {
-        setIsLoading(false);
+      // Если нет ID - блокируем доступ
+      if (finalUserId === "0") {
+        setTradeAllowed(false);
+        return;
       }
-    };
 
-    initializeApp();
-  }, []);
+      // Проверяем доступ в базе
+      const response = await fetch(`/api/checkTrade?user_id=${finalUserId}`);
+      if (!response.ok) {
+        setTradeAllowed(false);
+        return;
+      }
+
+      const data = await response.json();
+      setTradeAllowed(data.trade_allowed === true);
+
+    } catch (error) {
+      console.error("Ошибка проверки доступа:", error);
+      setTradeAllowed(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  checkAccess();
+}, []);
 
   // Показываем лоадер во время загрузки
   if (isLoading) {
