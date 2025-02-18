@@ -16,18 +16,19 @@ export async function GET(req: Request) {
         "SELECT trade_allowed FROM user_restrictions WHERE user_id = $1",
         [userId]
       );
-
-      const tradeAllowed = result.rows.length > 0 ? Boolean(result.rows[0].trade_allowed) : true;
-
+      const tradeAllowed = result.rows.length > 0 ? result.rows[0].trade_allowed : false;
       return NextResponse.json({ trade_allowed: tradeAllowed });
     } finally {
       client.release();
     }
   } catch (error) {
     console.error("Database error:", error);
-    return NextResponse.json(
-      { error: "Database error", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      return NextResponse.json({
+        error: "Database error",
+        details: error.message
+      }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Unknown database error" }, { status: 500 });
   }
 }
