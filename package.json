@@ -16,7 +16,7 @@
     "lightweight-charts": "^4.2.2",
     "lucide-react": "^0.469.0",
     "next": "^15.1.3",
-    "sharp": "latest",
+
     "pg": "^8.13.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

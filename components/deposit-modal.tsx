@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { toast } from 'react-hot-toast'
 import type { Language, DepositCurrency, CurrencyId } from '@/app/types/app'
 import { translations } from '@/utils/translations'
-import CryptoBotIcon from '@/public/cb.webp'
+
 
 interface DepositModalProps {
   isOpen: boolean
@@ -107,7 +107,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
           amount: Number(amount),
           description: `Пополнение баланса на ${amount} ${selectedCurrency.symbol}`,
           hidden_message: `Пополнение через BTSEPrime_bot`,
-          paid_btn_name: 'openBot', 
+          paid_btn_name: 'openBot',
           paid_btn_url: `https://t.me/BTSEPrime_bot`,
         }),
       })
