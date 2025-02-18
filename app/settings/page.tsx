@@ -308,7 +308,7 @@ const translations = {
 
 const SettingsContent = () => {
   const searchParams = useSearchParams()
-  const type = searchParams.get('type')
+  const type = searchParams ? searchParams.get('type') : null;
 
   const [language, setLanguage] = useState<Language | null>(null)
   const [currencies, setCurrencies] = useState<Item[] | null>(null)
