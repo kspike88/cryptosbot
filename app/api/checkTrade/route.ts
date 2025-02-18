@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { pool } from '@/lib/db';  // Изменили импорт с supabase на pool
+import { pool } from '@/lib/db';  // Здесь был supabase, меняем на pool
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
