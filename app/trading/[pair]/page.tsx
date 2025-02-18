@@ -27,8 +27,9 @@ const DURATION_MAP = {
 }
 
 export default function TradingPairPage() {
-  const params = useParams()
-  const pairId = decodeURIComponent(params.pair as string)
+  const params = useParams();
+  const pairId = params?.pair ? decodeURIComponent(params.pair as string) : "";
+
 
   const chartContainerRef = useRef<HTMLDivElement>(null)
   const [candleData, setCandleData] = useState<any[]>([])
@@ -279,8 +280,8 @@ export default function TradingPairPage() {
                         key={time}
                         onClick={() => setSelectedDuration(time)}
                         className={`px-4 py-2 rounded whitespace-nowrap ${
-                          selectedDuration === time 
-                            ? 'bg-gray-200 text-gray-800' 
+                          selectedDuration === time
+                            ? 'bg-gray-200 text-gray-800'
                             : 'bg-gray-100 text-gray-600'
                         }`}
                       >
@@ -300,12 +301,12 @@ export default function TradingPairPage() {
                       tradeType === 'buy' ? 'bg-emerald-500' : 'bg-[#ef4444]'
                     }`}
                   >
-                    {tradeType === 'buy' 
+                    {tradeType === 'buy'
                       ? `${getTranslation('buy')} ${pair?.base}`
                       : `${getTranslation('sell')} ${pair?.base}`
                     }
                   </button>
-                  
+
                   <button
                     onClick={() => setShowTradeMenu(false)}
                     className="w-full mt-2 py-4 text-gray-600 font-medium"
