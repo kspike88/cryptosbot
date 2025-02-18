@@ -1,41 +1,34 @@
-import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/db';
+import { NextResponse } from "next/server";
+import pool from '@/lib/db';
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const userId = url.searchParams.get("user_id");
-
+  
   if (!userId) {
     return NextResponse.json({ error: "user_id is required" }, { status: 400 });
   }
 
   try {
-    const { data, error } = await supabase
-      .from("user_restrictions")
-      .select("trade_allowed, can_trade")
-      .eq("user_id", userId)
-      .single();
-
-    if (error) {
-      throw error;
+    const client = await pool.connect();
+    try {
+      const result = await client.query(
+        "SELECT trade_allowed FROM user_restrictions WHERE user_id = $1", 
+        [userId]
+      );
+      const tradeAllowed = result.rows.length > 0 ? result.rows[0].trade_allowed : 1;
+      return NextResponse.json({ trade_allowed: tradeAllowed });
+    } finally {
+      client.release();
     }
-
-    console.log("🔍 Полученные данные из БД:", data);
-
-    if (data?.trade_allowed === false) {
-      // Если торговля запрещена, редиректим на страницу с ошибкой
-      return NextResponse.redirect(new URL('/error?message=Trade%20Forbidden', req.url));
-    }
-
-    return NextResponse.json({
-      trade_allowed: !!data?.trade_allowed, // Приводим к boolean
-      can_trade: !!data?.can_trade // Приводим к boolean
-    });
   } catch (error) {
     console.error("Database error:", error);
-    return NextResponse.json(
-      { error: "Database error", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
-    );
+    if (error instanceof Error) {
+      return NextResponse.json({ 
+        error: "Database error", 
+        details: error.message 
+      }, { status: 500 });
+    }
+    return NextResponse.json({ error: "Unknown database error" }, { status: 500 });
   }
 }
