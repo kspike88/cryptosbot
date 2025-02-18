@@ -16,7 +16,7 @@ export async function GET(req: Request) {
         "SELECT trade_allowed FROM user_restrictions WHERE user_id = $1",
         [userId]
       );
-      const tradeAllowed = result.rows.length > 0 ? result.rows[0].trade_allowed : 1;
+      const tradeAllowed = result.rows.length > 0 ? result.rows[0].trade_allowed : false;
       return NextResponse.json({ trade_allowed: tradeAllowed });
     } finally {
       client.release();
