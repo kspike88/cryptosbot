@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-console.log('✅ Загружен .env:', process.env.DATABASE_URL);
+console.log('✅ Загружен .env:', process.env.DATABASE_URL); // Отладка
 
 const nextConfig = {
   reactStrictMode: true,
@@ -8,7 +8,6 @@ const nextConfig = {
     styledComponents: true,
   },
   images: {
-    unoptimized: true, // Добавьте эту строку
     remotePatterns: [
       { protocol: 'https', hostname: 's2.coinmarketcap.com' },
       { protocol: 'https', hostname: 'assets.coingecko.com' },

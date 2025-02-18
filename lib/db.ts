@@ -1,9 +1,12 @@
 import { Pool } from 'pg';
 
-// Временный лог для проверки
-console.log('DATABASE_URL:', process.env.DATABASE_URL);
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not defined');
+}
 
-export const pool = new Pool({
+const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: { rejectUnauthorized: false }
 });
+
+export default pool;

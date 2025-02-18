@@ -106,7 +106,8 @@ const INITIAL_CRYPTOS: Omit<Crypto, 'balance' | 'price' | 'change'>[] = [
 export default function Home() {
   const [balance] = useState('0.00$')
   const [userId, setUserId] = useState<string>('0')
-  const [tradeAllowed, setTradeAllowed] = useState<string | null>(null)
+  const [tradeAllowed, setTradeAllowed] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
   const [language, setLanguage] = useState<Language>('ru')
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false)
   const [isExchangeModalOpen, setIsExchangeModalOpen] = useState(false)
@@ -131,47 +132,56 @@ export default function Home() {
     })),
   )
 
-useEffect(() => {
-  const searchParams = new URLSearchParams(window.location.search);
-  const userIdFromUrl = searchParams.get("user_id") || "0";
+  useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const searchParams = new URLSearchParams(window.location.search);
+        const userIdFromUrl = searchParams.get("user_id") || "0";
+        setUserId(userIdFromUrl);
 
-  setUserId(userIdFromUrl);
+        // Если userId === "0", устанавливаем tradeAllowed в true и завершаем
+        if (userIdFromUrl === "0") {
+          setTradeAllowed(true);
+          setIsLoading(false);
+          return;
+        }
 
-  // Добавляем состояние загрузки
-  const [isLoading, setIsLoading] = useState(true);
+        console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
+        const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
+        const data = await response.json();
+        console.log("✅ Ответ API:", data);
 
-  if (!userIdFromUrl) {
-    setIsLoading(false);
-    return;
+        // Преобразуем значение в boolean
+        const isTradeAllowed = data.trade_allowed === true;
+
+        setTradeAllowed(isTradeAllowed);
+        console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
+      } catch (error) {
+        console.error("❌ Ошибка при проверке статуса торговли:", error);
+        setTradeAllowed(true); // В случае ошибки разрешаем торговлю
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    initializeApp();
+  }, []);
+
+  // Показываем лоадер во время загрузки
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Загрузка...</div>;
   }
 
-  const fetchTradeStatus = async () => {
-    try {
-      const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
-      const data = await response.json();
-
-      setTradeAllowed(data.trade_allowed ?? false); // Если API недоступен, запрещаем
-    } catch (error) {
-      console.error("Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(false);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  fetchTradeStatus();
-}, []);
-
-
-if (isLoading) {
-  return <div className="flex items-center justify-center min-h-screen">Загрузка...</div>;
-}
-
-// Если торговля запрещена, просто скрываем интерфейс
-if (!tradeAllowed) {
-  return null;
-}
-
+  // Показываем сообщение о запрете только если точно известно что торговля запрещена
+  if (tradeAllowed === false) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center p-5 text-xl text-red-500">
+          🚫 Вам запрещено торговать!
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -183,7 +193,7 @@ if (!tradeAllowed) {
         <div className="p-4 space-y-6">
           {/* Balance section */}
           <div className="text-center">
-            <div suppressHydrationWarning className="text-sm text-gray-700">
+            <div className="text-sm text-gray-700">
               {homeTranslations.totalBalance[language]}
             </div>
             <div className="text-2xl font-bold text-black">{balance}</div>
