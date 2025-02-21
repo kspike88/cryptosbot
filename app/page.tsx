@@ -140,23 +140,23 @@ useEffect(() => {
       setUserId(userIdFromUrl);
 
       if (userIdFromUrl === "0") {
-        setTradeAllowed(true);
+        setTradeAllowed(false);
         setIsLoading(false);
         return;
       }
 
       console.log("🚀 Запрос к /api/checkTrade", userIdFromUrl);
-      const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}`);
+      const response = await fetch(`/api/checkTrade?user_id=${userIdFromUrl}&timestamp=${Date.now()}`);
+
+      if (!response.ok) throw new Error("Ошибка запроса");
+
       const data = await response.json();
       console.log("✅ Ответ API:", data);
 
-      const isTradeAllowed = Boolean(data.trade_allowed);
-
-      setTradeAllowed(isTradeAllowed);
-      console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
+      setTradeAllowed(data.trade_allowed);
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(true);
+      setTradeAllowed(false); // Запрещаем торговлю при ошибке!
     } finally {
       setIsLoading(false);
     }
