@@ -29,14 +29,11 @@ export function TradeModal({ isOpen, onClose, pair, type }: TradeModalProps) {
     }
   }, [])
 
-const urlParams = new URLSearchParams(window.location.search);
-const userId = urlParams.get("user_id"); // Получаем user_id из URL
 
 
 const handleTrade = async () => {
   if (!pair || !amount || parseFloat(amount) <= 0) return;
 
-  // Получаем user_id из URL
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user_id");
 
@@ -45,45 +42,41 @@ const handleTrade = async () => {
     return;
   }
 
-  console.log("Проверяем статус торговли для user_id:", userId);
-
   try {
+    // Сначала проверяем разрешение на торговлю
     const res = await fetch(`/api/toggleDealStatus?user_id=${userId}`);
     const data = await res.json();
 
-    console.log("Ответ API:", data);
-
-    if (!data.can_exc_deal) {
+    // Если торговля запрещена, показываем сообщение и прерываем выполнение
+    if (data.can_exc_deal === false) {
       alert("Вам запрещено осуществлять торговые сделки");
       return;
     }
+
+    // Если торговля разрешена, создаем транзакцию
+    const newTransaction: Transaction = {
+      id: Math.random().toString(36).substr(2, 9),
+      type,
+      pair: pair.id,
+      amount: parseFloat(amount),
+      price: pair.price,
+      total: parseFloat(amount) * pair.price,
+      timestamp: Date.now(),
+    };
+
+    const updatedTransactions = [...transactions, newTransaction];
+    setTransactions(updatedTransactions);
+    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+    setAmount("0");
+    onClose();
+
   } catch (error) {
-    console.error("Ошибка проверки торговли", error);
+    console.error("Ошибка при проверке разрешения на торговлю:", error);
+    alert("Произошла ошибка при проверке разрешения на торговлю");
     return;
   }
+};
 
-
-
-
-
-  // const handleTrade = () => {
-  //   if (!pair || !amount || parseFloat(amount) <= 0) return
-
-  //   const newTransaction: Transaction = {
-  //     id: Math.random().toString(36).substr(2, 9),
-  //     type,
-  //     pair: pair.id,
-  //     amount: parseFloat(amount),
-  //     price: pair.price,
-  //     total: parseFloat(amount) * pair.price,
-  //     timestamp: Date.now(),
-  //   }
-
-  //   const updatedTransactions = [...transactions, newTransaction]
-  //   setTransactions(updatedTransactions)
-  //   localStorage.setItem('transactions', JSON.stringify(updatedTransactions))
-  //   setAmount('0')
-  // }
 
   if (!isOpen || !pair) return null
 
