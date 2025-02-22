@@ -135,8 +135,10 @@ export default function Home() {
 useEffect(() => {
   const initializeApp = async () => {
     try {
-      const searchParams = new URLSearchParams(window.location.search);
-      const userIdFromUrl = searchParams.get("user_id") || "0";
+      // const searchParams = new URLSearchParams(window.location.search);
+      // const userIdFromUrl = searchParams.get("user_id") || "0";
+      const telegram = (window as any).Telegram?.WebApp;
+      const userIdFromUrl = telegram?.initDataUnsafe?.user?.id?.toString() || "0";
       setUserId(userIdFromUrl);
 
       if (userIdFromUrl === "0") {
