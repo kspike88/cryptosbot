@@ -4,6 +4,17 @@ import { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import type { Transaction } from '@/app/types/trading'
 
+interface Transaction {
+  id: string;
+  type: 'buy' | 'sell';
+  pair: string;
+  amount: number;
+  price: number;
+  total: number;
+  timestamp: number;
+}
+
+
 interface TradeModalProps {
   isOpen: boolean
   onClose: () => void
@@ -43,13 +54,9 @@ useEffect(() => {
 const handleTrade = async () => {
   if (!pair || !amount || parseFloat(amount) <= 0) return;
 
-  // Получаем userId с более надежной проверкой
+  // Получаем userId из URL или localStorage
   const urlParams = new URLSearchParams(window.location.search);
   const userId = urlParams.get("user_id") || localStorage.getItem("user_id");
-
-  console.log("Текущий URL:", window.location.href);
-  console.log("Параметры URL:", urlParams.toString());
-  console.log("User ID из URL или localStorage:", userId);
 
   if (!userId) {
     alert("Ошибка: не найден user_id");
@@ -57,38 +64,47 @@ const handleTrade = async () => {
   }
 
   try {
-    console.log("Отправляем запрос на /api/toggleDealStatus с user_id:", userId);
-    const res = await fetch(`/api/toggleDealStatus?user_id=${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    console.log("Отправляем запрос на API для проверки разрешения...");
+    const res = await fetch(`/api/toggleDealStatus?user_id=${userId}`);
 
     if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+      throw new Error(`Ошибка запроса: ${res.status}`);
     }
 
     const data = await res.json();
-    console.log("Получен ответ от API:", data);
+    console.log("Ответ от API:", data);
 
-    // Строгая проверка на false
-    if (data.can_exc_deal === false || !data.can_exc_deal) {
-      console.log("Торговля запрещена, прерываем операцию");
+    // Проверяем строгое значение can_exc_deal
+    if (!data || data.can_exc_deal === false || data.can_exc_deal === null || data.can_exc_deal === undefined) {
+      console.warn("Торговля запрещена! Показываем уведомление");
       alert("Вам запрещено осуществлять торговые сделки");
       onClose();
       return;
     }
 
-    // Если дошли до этой точки, значит торговля разрешена
-    console.log("Торговля разрешена, создаем транзакцию");
+    // Если все в порядке, создаем транзакцию
+    console.log("Торговля разрешена, продолжаем...");
     const newTransaction: Transaction = {
       id: Math.random().toString(36).substr(2, 9),
       type,
       pair: pair.id,
       amount: parseFloat(amount),
       price: pair.price,
-      total:
+      total: parseFloat(amount) * pair.price,
+      timestamp: Date.now(),
+    };
+
+    // Сохраняем в localStorage
+    const updatedTransactions = [...transactions, newTransaction];
+    setTransactions(updatedTransactions);
+    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+
+    onClose();
+  } catch (error) {
+    console.error("Ошибка при проверке торгового статуса:", error);
+    alert("Произошла ошибка при проверке торгового статуса");
+  }
+};
 
 
   if (!isOpen || !pair) return null
