@@ -36,14 +36,22 @@ const userId = urlParams.get("user_id"); // Получаем user_id из URL
 const handleTrade = async () => {
   if (!pair || !amount || parseFloat(amount) <= 0) return;
 
+  // Получаем user_id из URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("user_id");
+
   if (!userId) {
-    alert("Ошибка: не удалось получить ID пользователя.");
+    alert("Ошибка: не найден user_id");
     return;
   }
 
+  console.log("Проверяем статус торговли для user_id:", userId);
+
   try {
-    const res = await fetch(`/api/toggleDealStatus?userId=${userId}`);
+    const res = await fetch(`/api/toggleDealStatus?user_id=${userId}`);
     const data = await res.json();
+
+    console.log("Ответ API:", data);
 
     if (!data.can_exc_deal) {
       alert("Вам запрещено осуществлять торговые сделки");
@@ -54,21 +62,6 @@ const handleTrade = async () => {
     return;
   }
 
-  const newTransaction: Transaction = {
-    id: Math.random().toString(36).substr(2, 9),
-    type,
-    pair: pair.id,
-    amount: parseFloat(amount),
-    price: pair.price,
-    total: parseFloat(amount) * pair.price,
-    timestamp: Date.now(),
-  };
-
-  const updatedTransactions = [...transactions, newTransaction];
-  setTransactions(updatedTransactions);
-  localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
-  setAmount("0");
-};
 
 
 
