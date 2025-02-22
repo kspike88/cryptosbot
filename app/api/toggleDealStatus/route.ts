@@ -4,7 +4,8 @@ import pool from '@/lib/db';
 // Обработка запроса
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
+  const userId = searchParams.get("user_id"); // Правильное название параметра
+
 
   if (!userId) {
     return NextResponse.json({ error: "User ID is required" }, { status: 400 });
