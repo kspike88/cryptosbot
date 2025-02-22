@@ -36,6 +36,7 @@ export default function TradingPairPage() {
   const [tradeType, setTradeType] = useState<'buy' | 'sell'>('buy')
   const [amount, setAmount] = useState('')
   const [pair, setPair] = useState<any>(null)
+  const [canTrade, setCanTrade] = useState<boolean | null>(null) // Разрешена ли торговля
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [showTradeMenu, setShowTradeMenu] = useState(false)
   const [selectedDuration, setSelectedDuration] = useState('30s')
@@ -55,6 +56,26 @@ export default function TradingPairPage() {
 
     return () => clearInterval(interval)
   }, [])
+
+// #  🔹 Проверка
+useEffect(() => {
+  const fetchTradeStatus = async () => {
+    try {
+      const userId = new URLSearchParams(window.location.search).get("user_id");
+      if (!userId) return;
+
+      const response = await fetch(`/api/toggleDealStatus?user_id=${userId}`);
+      const data = await response.json();
+      setCanTrade(data.can_exc_deal);
+    } catch (error) {
+      console.error('Ошибка проверки торговли:', error);
+      setCanTrade(false); // Если ошибка — запрещаем сделки
+    }
+  };
+
+  fetchTradeStatus();
+}, []);
+
 
   useEffect(() => {
     // Fetch pair data
@@ -221,28 +242,44 @@ export default function TradingPairPage() {
           </div>
         </div>
 
+{/*#  🔹 Проверка УВЕДОМЛЕНИЕ*/}
+        {canTrade === false && (
+          <div className="p-4 text-red-600 text-center bg-red-100">
+            ⚠️ Вам нельзя торговать
+          </div>
+        )}
+
         <div className="p-4 bg-white border-t">
           <div className="flex gap-4">
             <button
               onClick={() => {
-                setTradeType('buy')
-                setShowTradeMenu(true)
+                if (canTrade) {
+                  setTradeType('buy');
+                  setShowTradeMenu(true);
+                }
               }}
-              className="flex-1 py-3 rounded-lg text-white font-medium bg-emerald-500"
+              disabled={canTrade === false}
+              className={`flex-1 py-3 rounded-lg text-white font-medium ${
+                canTrade === false ? 'bg-gray-300 cursor-not-allowed' : 'bg-emerald-500'
+              }`}
             >
-              {getTranslation('buy')}
+              Купить
             </button>
             <button
               onClick={() => {
-                setTradeType('sell')
-                setShowTradeMenu(true)
+                if (canTrade) {
+                  setTradeType('sell');
+                  setShowTradeMenu(true);
+                }
               }}
-              className="flex-1 py-3 rounded-lg text-white font-medium bg-[#ef4444]"
+              disabled={canTrade === false}
+              className={`flex-1 py-3 rounded-lg text-white font-medium ${
+                canTrade === false ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-500'
+              }`}
             >
-              {getTranslation('sell')}
+              Продать
             </button>
-          </div>
-
+          </div> {/* Добавьте этот закрывающий тег */}
           {showTradeMenu && (
             <div className="fixed inset-0 bg-white z-50">
               <div className="flex flex-col h-full">
