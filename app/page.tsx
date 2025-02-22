@@ -158,7 +158,7 @@ useEffect(() => {
       console.log("🔄 tradeAllowed обновлено:", isTradeAllowed);
     } catch (error) {
       console.error("❌ Ошибка при проверке статуса торговли:", error);
-      setTradeAllowed(true);
+      setTradeAllowed(false); // Должно быть false, а не true!
     } finally {
       setIsLoading(false);
     }
