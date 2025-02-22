@@ -64,7 +64,7 @@ useEffect(() => {
       const userId = new URLSearchParams(window.location.search).get("user_id");
       if (!userId) return;
 
-      const response = await fetch(`/api/toggleTradeStatus?user_id=${userId}`);
+      const response = await fetch(`/api/toggleDealStatus?user_id=${userId}`);
       const data = await response.json();
       setCanTrade(data.can_exc_deal);
     } catch (error) {
