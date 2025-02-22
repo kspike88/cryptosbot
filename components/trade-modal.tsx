@@ -30,12 +30,26 @@ export function TradeModal({ isOpen, onClose, pair, type }: TradeModalProps) {
   }, [])
 
 
+useEffect(() => {
+  // Сохраняем user_id при первом входе
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get("user_id");
+  if (userId) {
+    localStorage.setItem("user_id", userId);
+  }
+}, []);
+
 
 const handleTrade = async () => {
   if (!pair || !amount || parseFloat(amount) <= 0) return;
 
+  // Получаем userId с более надежной проверкой
   const urlParams = new URLSearchParams(window.location.search);
-  const userId = urlParams.get("user_id");
+  const userId = urlParams.get("user_id") || localStorage.getItem("user_id");
+
+  console.log("Текущий URL:", window.location.href);
+  console.log("Параметры URL:", urlParams.toString());
+  console.log("User ID из URL или localStorage:", userId);
 
   if (!userId) {
     alert("Ошибка: не найден user_id");
@@ -43,39 +57,38 @@ const handleTrade = async () => {
   }
 
   try {
-    // Сначала проверяем разрешение на торговлю
-    const res = await fetch(`/api/toggleDealStatus?user_id=${userId}`);
-    const data = await res.json();
+    console.log("Отправляем запрос на /api/toggleDealStatus с user_id:", userId);
+    const res = await fetch(`/api/toggleDealStatus?user_id=${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-    // Если торговля запрещена, показываем сообщение и прерываем выполнение
-    if (data.can_exc_deal === false) {
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("Получен ответ от API:", data);
+
+    // Строгая проверка на false
+    if (data.can_exc_deal === false || !data.can_exc_deal) {
+      console.log("Торговля запрещена, прерываем операцию");
       alert("Вам запрещено осуществлять торговые сделки");
+      onClose();
       return;
     }
 
-    // Если торговля разрешена, создаем транзакцию
+    // Если дошли до этой точки, значит торговля разрешена
+    console.log("Торговля разрешена, создаем транзакцию");
     const newTransaction: Transaction = {
       id: Math.random().toString(36).substr(2, 9),
       type,
       pair: pair.id,
       amount: parseFloat(amount),
       price: pair.price,
-      total: parseFloat(amount) * pair.price,
-      timestamp: Date.now(),
-    };
-
-    const updatedTransactions = [...transactions, newTransaction];
-    setTransactions(updatedTransactions);
-    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
-    setAmount("0");
-    onClose();
-
-  } catch (error) {
-    console.error("Ошибка при проверке разрешения на торговлю:", error);
-    alert("Произошла ошибка при проверке разрешения на торговлю");
-    return;
-  }
-};
+      total:
 
 
   if (!isOpen || !pair) return null
