@@ -279,7 +279,7 @@ useEffect(() => {
             >
               Продать
             </button>
-
+          </div> {/* Добавьте этот закрывающий тег */}
           {showTradeMenu && (
             <div className="fixed inset-0 bg-white z-50">
               <div className="flex flex-col h-full">
