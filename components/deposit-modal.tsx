@@ -280,7 +280,8 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   </div>
                 </div>
 
-                {console.log("✅ Проверка кнопки CoinPayments:", amount)}
+                console.log("✅ Проверка кнопки CoinPayments:", amount);
+
                 {amount && (
                   <>
                     <button onClick={handleContinue} className="...">
