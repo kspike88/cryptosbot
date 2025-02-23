@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { ArrowLeft, ChevronRight } from 'lucide-react'
-import Image from 'next/image'
-import { toast } from 'react-hot-toast'
-import type { Language, DepositCurrency, CurrencyId } from '@/app/types/app'
-import { translations } from '@/utils/translations'
-// import CryptoBotIcon from '@/public/cb.webp'
+import { useState } from 'react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
+import { toast } from 'react-hot-toast';
+import type { Language, DepositCurrency, CurrencyId } from '@/app/types/app';
+import { translations } from '@/utils/translations';
+// import CryptoBotIcon from '@/public/cb.webp';
 
 interface DepositModalProps {
-  isOpen: boolean
-  onClose: () => void
-  language: Language
+  isOpen: boolean;
+  onClose: () => void;
+  language: Language;
 }
 
 const FIAT_CURRENCIES: DepositCurrency[] = [
@@ -36,7 +36,7 @@ const FIAT_CURRENCIES: DepositCurrency[] = [
     icon: '/byn-icon.svg',
     shortName: 'BYN',
   },
-]
+];
 
 const CRYPTO_CURRENCIES: DepositCurrency[] = [
   {
@@ -57,47 +57,47 @@ const CRYPTO_CURRENCIES: DepositCurrency[] = [
     symbol: 'USDT',
     icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/825.png',
   },
-]
+];
 
 function isFiatCurrency(id: string): id is CurrencyId {
-  return ['RUB', 'KZT', 'BYN'].includes(id)
+  return ['RUB', 'KZT', 'BYN'].includes(id);
 }
 
 export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
-  const [selectedCurrency, setSelectedCurrency] = useState<DepositCurrency | null>(null)
-  const [amount, setAmount] = useState<string>('')
-  const [isExpanded, setIsExpanded] = useState(false)
-  const [isLoading, setIsLoading] = useState(false) // Индикатор загрузки
+  const [selectedCurrency, setSelectedCurrency] = useState<DepositCurrency | null>(null);
+  const [amount, setAmount] = useState<string>('');
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Индикатор загрузки
 
   const getCurrencyName = (currency: DepositCurrency) => {
     if (isFiatCurrency(currency.id)) {
-      return translations.currencyNames?.[currency.id]?.[language] || currency.name
+      return translations.currencyNames?.[currency.id]?.[language] || currency.name;
     }
-    return currency.name
-  }
+    return currency.name;
+  };
 
   const handleCurrencySelect = (currency: DepositCurrency) => {
-    setSelectedCurrency(currency)
-  }
+    setSelectedCurrency(currency);
+  };
 
   const handleBack = () => {
     if (selectedCurrency) {
-      setSelectedCurrency(null)
-      setAmount('')
+      setSelectedCurrency(null);
+      setAmount('');
     } else if (isExpanded) {
-      setIsExpanded(false)
+      setIsExpanded(false);
     } else {
-      onClose()
+      onClose();
     }
-  }
+  };
 
   const handleContinue = async () => {
     if (!selectedCurrency || !amount) {
-      toast.error('Выберите валюту и укажите сумму')
-      return
+      toast.error('Выберите валюту и укажите сумму');
+      return;
     }
 
-    setIsLoading(true) // Включаем индикатор загрузки
+    setIsLoading(true); // Включаем индикатор загрузки
     try {
       const response = await fetch('/api/createInvoice', {
         method: 'POST',
@@ -112,39 +112,39 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
           paid_btn_name: 'openBot',
           paid_btn_url: `https://t.me/BTSEPrime_bot`,
         }),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.ok && data.result.pay_url) {
-        window.open(data.result.pay_url, '_blank')
-        toast.success('Переход в CryptoBot для оплаты')
+        window.open(data.result.pay_url, '_blank');
+        toast.success('Переход в CryptoBot для оплаты');
       } else {
-        toast.error(data.error || 'Ошибка при создании платежа')
+        toast.error(data.error || 'Ошибка при создании платежа');
       }
     } catch (error) {
-      console.error('Ошибка создания инвойса:', error)
-      toast.error('Ошибка при создании платежа')
+      console.error('Ошибка создания инвойса:', error);
+      toast.error('Ошибка при создании платежа');
     } finally {
-      setIsLoading(false) // Выключаем индикатор загрузки
+      setIsLoading(false); // Выключаем индикатор загрузки
     }
-  }
+  };
 
   const handleCoinPaymentsDeposit = async () => {
     if (!selectedCurrency || !amount) {
-      toast.error('Выберите валюту и укажите сумму')
-      return
+      toast.error('Выберите валюту и укажите сумму');
+      return;
     }
 
-    setIsLoading(true) // Включаем индикатор загрузки
+    setIsLoading(true); // Включаем индикатор загрузки
     try {
       // Получаем userId из URL
-      const urlParams = new URLSearchParams(window.location.search)
-      const userId = urlParams.get('user_id')
+      const urlParams = new URLSearchParams(window.location.search);
+      const userId = urlParams.get('user_id');
 
       if (!userId) {
-        toast.error('Не удалось определить ID пользователя')
-        return
+        toast.error('Не удалось определить ID пользователя');
+        return;
       }
 
       const response = await fetch('/api/createCoinPayment', {
@@ -155,30 +155,30 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
           currency: selectedCurrency.id,
           userId: userId, // Используем реальный userId
         }),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Ошибка сервера')
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка сервера');
       }
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.success && data.payment?.checkout_url) {
-        window.open(data.payment.checkout_url, '_blank')
-        toast.success('Переход в CoinPayments для оплаты')
+        window.open(data.payment.checkout_url, '_blank');
+        toast.success('Переход в CoinPayments для оплаты');
       } else {
-        toast.error(data.error || 'Не удалось создать платеж')
+        toast.error(data.error || 'Не удалось создать платеж');
       }
     } catch (error) {
-      console.error('Ошибка создания платежа:', error)
-      toast.error(error instanceof Error ? error.message : 'Ошибка при создании платежа')
+      console.error('Ошибка создания платежа:', error);
+      toast.error(error instanceof Error ? error.message : 'Ошибка при создании платежа');
     } finally {
-      setIsLoading(false) // Выключаем индикатор загрузки
+      setIsLoading(false); // Выключаем индикатор загрузки
     }
-  }
+  };
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-white z-50">
@@ -190,8 +190,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
           <h2 className="ml-4 text-xl font-medium text-gray-900">
             {selectedCurrency
               ? `${translations.youAreDepositing?.[language] || 'You are depositing'} ${selectedCurrency.id}`
-              : translations.whatToDeposit?.[language] || 'What to deposit'
-            }
+              : translations.whatToDeposit?.[language] || 'What to deposit'}
           </h2>
         </div>
 
@@ -294,45 +293,43 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   <div className="text-sm text-gray-500">{translations.paymentMethod?.[language] || 'Payment Method'}</div>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-{/*                      <Image
+                      {/* <Image
                         src={CryptoBotIcon}
                         alt="Crypto Bot"
                         width={35}
                         height={35}
                         className="rounded-full"
-                      />*/}
+                      /> */}
                     </div>
                     <div className="text-gray-900">Crypto Bot</div>
                   </div>
                 </div>
-                {amount && (
-                  <div className="space-y-4">
-                    <button
-                      onClick={handleContinue}
-                      disabled={isLoading}
-                      className={`w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors ${
-                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      {isLoading ? 'Загрузка...' : `${translations.continue?.[language] || 'Continue → CryptoBot'}`}
-                    </button>
+                <div className="space-y-4">
+                  <button
+                    onClick={handleContinue}
+                    disabled={!amount || isLoading}
+                    className={`w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors ${
+                      !amount || isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {isLoading ? 'Загрузка...' : `${translations.continue?.[language] || 'Continue → CryptoBot'}`}
+                  </button>
 
-                    <button
-                      onClick={handleCoinPaymentsDeposit}
-                      disabled={isLoading}
-                      className={`w-full py-4 bg-gray-100 text-gray-900 rounded-xl font-medium hover:bg-gray-200 transition-colors ${
-                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                    >
-                      {isLoading ? 'Загрузка...' : 'Пополнить через CoinPayments'}
-                    </button>
-                  </div>
-                )}
+                  <button
+                    onClick={handleCoinPaymentsDeposit}
+                    disabled={!amount || isLoading}
+                    className={`w-full py-4 bg-gray-100 text-gray-900 rounded-xl font-medium hover:bg-gray-200 transition-colors ${
+                      !amount || isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    {isLoading ? 'Загрузка...' : 'Пополнить через CoinPayments'}
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
     </div>
-  )
+  );
 }
