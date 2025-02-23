@@ -67,6 +67,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
   const [selectedCurrency, setSelectedCurrency] = useState<DepositCurrency | null>(null)
   const [amount, setAmount] = useState<string>('')
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false) // Индикатор загрузки
 
   const getCurrencyName = (currency: DepositCurrency) => {
     if (isFiatCurrency(currency.id)) {
@@ -96,6 +97,7 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
       return
     }
 
+    setIsLoading(true) // Включаем индикатор загрузки
     try {
       const response = await fetch('/api/createInvoice', {
         method: 'POST',
@@ -123,36 +125,56 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
     } catch (error) {
       console.error('Ошибка создания инвойса:', error)
       toast.error('Ошибка при создании платежа')
+    } finally {
+      setIsLoading(false) // Выключаем индикатор загрузки
     }
   }
+
   const handleCoinPaymentsDeposit = async () => {
     if (!selectedCurrency || !amount) {
       toast.error('Выберите валюту и укажите сумму')
       return
     }
 
+    setIsLoading(true) // Включаем индикатор загрузки
     try {
+      // Получаем userId из URL
+      const urlParams = new URLSearchParams(window.location.search)
+      const userId = urlParams.get('user_id')
+
+      if (!userId) {
+        toast.error('Не удалось определить ID пользователя')
+        return
+      }
+
       const response = await fetch('/api/createCoinPayment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           amount: Number(amount),
           currency: selectedCurrency.id,
-          userId: 'USER_ID', // Здесь нужно передавать реальный userId
+          userId: userId, // Используем реальный userId
         }),
       })
 
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Ошибка сервера')
+      }
+
       const data = await response.json()
 
-      if (data.success && data.payment) {
+      if (data.success && data.payment?.checkout_url) {
         window.open(data.payment.checkout_url, '_blank')
         toast.success('Переход в CoinPayments для оплаты')
       } else {
-        toast.error(data.error || 'Ошибка при создании платежа')
+        toast.error(data.error || 'Не удалось создать платеж')
       }
     } catch (error) {
       console.error('Ошибка создания платежа:', error)
-      toast.error('Ошибка при создании платежа')
+      toast.error(error instanceof Error ? error.message : 'Ошибка при создании платежа')
+    } finally {
+      setIsLoading(false) // Выключаем индикатор загрузки
     }
   }
 
@@ -287,16 +309,22 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   <div className="space-y-4">
                     <button
                       onClick={handleContinue}
-                      className="w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
+                      disabled={isLoading}
+                      className={`w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors ${
+                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
                     >
-                      {translations.continue?.[language] || 'Continue → CryptoBot'}
+                      {isLoading ? 'Загрузка...' : `${translations.continue?.[language] || 'Continue → CryptoBot'}`}
                     </button>
 
                     <button
                       onClick={handleCoinPaymentsDeposit}
-                      className="w-full py-4 bg-gray-100 text-gray-900 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                      disabled={isLoading}
+                      className={`w-full py-4 bg-gray-100 text-gray-900 rounded-xl font-medium hover:bg-gray-200 transition-colors ${
+                        isLoading ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
                     >
-                      Пополнить через CoinPayments
+                      {isLoading ? 'Загрузка...' : 'Пополнить через CoinPayments'}
                     </button>
                   </div>
                 )}
