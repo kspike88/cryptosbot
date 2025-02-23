@@ -127,36 +127,35 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
   }
 
   const handleCoinPaymentsDeposit = async () => {
-  if (!selectedCurrency || !amount) {
-    toast.error('Выберите валюту и укажите сумму');
-    return;
-  }
-
-  try {
-    const response = await fetch('/api/createCoinPayment', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: Number(amount),
-        currency: selectedCurrency.id,
-        userId: 'USER_ID', // Здесь нужно передавать реальный userId
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success && data.payment) {
-      window.open(data.payment.checkout_url, '_blank');
-      toast.success('Переход в CoinPayments для оплаты');
-    } else {
-      toast.error(data.error || 'Ошибка при создании платежа');
+    if (!selectedCurrency || !amount) {
+      toast.error('Выберите валюту и укажите сумму')
+      return
     }
-  } catch (error) {
-    console.error('Ошибка создания платежа:', error);
-    toast.error('Ошибка при создании платежа');
-  }
-};
 
+    try {
+      const response = await fetch('/api/createCoinPayment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: Number(amount),
+          currency: selectedCurrency.id,
+          userId: 'USER_ID', // Здесь нужно передавать реальный userId
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.payment) {
+        window.open(data.payment.checkout_url, '_blank')
+        toast.success('Переход в CoinPayments для оплаты')
+      } else {
+        toast.error(data.error || 'Ошибка при создании платежа')
+      }
+    } catch (error) {
+      console.error('Ошибка создания платежа:', error)
+      toast.error('Ошибка при создании платежа')
+    }
+  }
 
   if (!isOpen) return null
 
@@ -271,28 +270,31 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
 
               <div className="mt-6">
                 <div className="p-4 rounded-lg bg-gray-50 mb-4">
-                  <div className="text-sm text-gray-500">{translations.paymentMethod?.[language] || 'Payment Method'}</div>
+                  <div className="text-sm text-gray-500">
+                    {translations.paymentMethod?.[language] || 'Payment Method'}
+                  </div>
                   <div className="flex items-center gap-2 mt-2">
                     <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-
                     </div>
                     <div className="text-gray-900">Crypto Bot</div>
                   </div>
                 </div>
 
                 {amount && (
-                  <button
-                    onClick={handleContinue}
-                    className="w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
-                  >
-                    {translations.continue?.[language] || 'Continue → CryptoBot'}
-                  </button>
-                  <button
-                    onClick={handleCoinPaymentsDeposit}
-                    className="w-full py-4 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors mt-2"
-                  >
-                    Пополнить через CoinPayments
-                  </button>
+                  <>
+                    <button
+                      onClick={handleContinue}
+                      className="w-full py-4 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 transition-colors"
+                    >
+                      {translations.continue?.[language] || 'Continue → CryptoBot'}
+                    </button>
+                    <button
+                      onClick={handleCoinPaymentsDeposit}
+                      className="w-full py-4 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 transition-colors mt-2"
+                    >
+                      Пополнить через CoinPayments
+                    </button>
+                  </>
                 )}
               </div>
             </div>

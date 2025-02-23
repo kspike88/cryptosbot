@@ -12,6 +12,7 @@
     "@next-languages/flags": "^0.4.2",
     "@radix-ui/react-dialog": "^1.1.4",
     "clsx": "^2.1.1",
+    "coinpayments": "^2.2.0",
     "dotenv": "^16.4.7",
     "lightweight-charts": "^4.2.2",
     "lucide-react": "^0.469.0",
