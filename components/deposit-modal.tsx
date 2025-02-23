@@ -280,18 +280,24 @@ export function DepositModal({ isOpen, onClose, language }: DepositModalProps) {
                   </div>
                 </div>
 
-                console.log("✅ Проверка кнопки CoinPayments:", amount);
+                  console.log("✅ Проверка кнопки CoinPayments:", amount);
 
-                {amount && (
-                  <>
-                    <button onClick={handleContinue} className="...">
-                      {translations.continue?.[language] || 'Continue → CryptoBot'}
-                    </button>
-                    <button onClick={handleCoinPaymentsDeposit} className="...">
-                      Пополнить через CoinPayments
-                    </button>
-                  </>
-                )}
+                  {amount && (
+                    <>
+                      <button
+                        onClick={handleContinue}
+                        className="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors relative z-10 mb-4"
+                      >
+                        {translations.continue?.[language] || 'Continue → CryptoBot'}
+                      </button>
+                      <button
+                        onClick={handleCoinPaymentsDeposit}
+                        className="w-full py-4 px-6 bg-gray-100 hover:bg-gray-200 text-gray-900 rounded-lg font-medium transition-colors relative z-10"
+                      >
+                        Пополнить через CoinPayments
+                      </button>
+                    </>
+                  )}
 
               </div>
             </div>
